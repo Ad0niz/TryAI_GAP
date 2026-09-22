@@ -1,0 +1,11 @@
+# Local dev artifacts — never commit
+.env
+dev.db
+dev.db-journal
+dev.db-wal
+dev.db-shm
+dev_settings.txt
+.venv/
+__pycache__/
+*.pyc
+_storage/

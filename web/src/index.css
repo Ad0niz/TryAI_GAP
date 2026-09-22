@@ -1,0 +1,115 @@
+@import '@fontsource-variable/inter';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 214 45% 97%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    /* teal-700 — AA contrast with white text on light surfaces */
+    --primary: 175 84% 26%;
+    --primary-foreground: 0 0% 100%;
+    /* brand magenta used as secondary accent */
+    --secondary: 317 58% 96%;
+    --secondary-foreground: 317 58% 38%;
+    --muted: 214 32% 91%;
+    --muted-foreground: 220 14% 40%;
+    --accent: 317 58% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
+    --ring: 175 84% 26%;
+    --radius: 0.625rem;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 30% 26%;
+    --sidebar-primary: 175 84% 26%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 45% 94%;
+    --sidebar-accent-foreground: 222 47% 16%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 175 84% 26%;
+    /* brand tokens */
+    --brand-magenta: 317 58% 50%;
+    --brand-teal: 174 80% 40%;
+    --brand-navy: 222 49% 8%;
+    --brand-gradient: linear-gradient(120deg, hsl(317 58% 50%) 0%, hsl(280 45% 45%) 45%, hsl(174 80% 36%) 100%);
+  }
+
+  .dark {
+    --background: 222 49% 8%;
+    --foreground: 214 32% 91%;
+    --card: 222 44% 11%;
+    --card-foreground: 214 32% 91%;
+    --popover: 222 44% 11%;
+    --popover-foreground: 214 32% 91%;
+    /* teal-400 — AA contrast against dark navy surfaces */
+    --primary: 172 66% 50%;
+    --primary-foreground: 222 49% 8%;
+    --secondary: 317 40% 18%;
+    --secondary-foreground: 317 70% 82%;
+    --muted: 222 30% 16%;
+    --muted-foreground: 218 15% 62%;
+    --accent: 317 70% 62%;
+    --accent-foreground: 222 49% 8%;
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 25% 20%;
+    --input: 222 25% 20%;
+    --ring: 172 66% 50%;
+    --sidebar-background: 222 49% 7%;
+    --sidebar-foreground: 214 25% 80%;
+    --sidebar-primary: 172 66% 50%;
+    --sidebar-primary-foreground: 222 49% 8%;
+    --sidebar-accent: 222 35% 14%;
+    --sidebar-accent-foreground: 214 32% 91%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-ring: 172 66% 50%;
+    --brand-magenta: 317 70% 62%;
+    --brand-teal: 172 66% 50%;
+    --brand-navy: 222 49% 8%;
+    --brand-gradient: linear-gradient(120deg, hsl(317 70% 60%) 0%, hsl(280 60% 55%) 45%, hsl(172 66% 45%) 100%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    font-family: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer utilities {
+  .brand-gradient {
+    background-image: var(--brand-gradient);
+  }
+  .text-brand-gradient {
+    background-image: var(--brand-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .brand-gradient-soft {
+    background-image: linear-gradient(
+      120deg,
+      hsl(var(--brand-magenta) / 0.14) 0%,
+      hsl(var(--brand-teal) / 0.14) 100%
+    );
+  }
+}

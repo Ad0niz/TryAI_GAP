@@ -1,0 +1,754 @@
+{
+  "maturity": {
+    "moduleLabel": "Diagnóstico de maturidade",
+    "blocks": [
+      {
+        "id": "A",
+        "title": "Bloco A — Dados",
+        "dim": "Dados",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Vocês mantêm um inventário atualizado das fontes de dados críticas para o negócio, com donos nomeados?"
+          },
+          {
+            "id": "A2",
+            "text": "Vocês medem e monitoram a qualidade dos dados continuamente, não apenas em projetos pontuais?"
+          },
+          {
+            "id": "A3",
+            "text": "Existem políticas formais de privacidade, retenção e residência de dados, aplicadas e auditadas?"
+          },
+          {
+            "id": "A4",
+            "text": "Existe um catálogo de dados onde um novo analista encontra o que precisa em minutos, não em semanas?"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "Bloco B — Tecnologia",
+        "dim": "Tecnologia",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Vocês têm uma plataforma padronizada de analytics e modelagem, ou cada equipe monta a sua?"
+          },
+          {
+            "id": "B2",
+            "text": "Vocês têm capacidades de integração (APIs, eventos) que permitem conectar novos serviços sem um projeto especial?"
+          },
+          {
+            "id": "B3",
+            "text": "Vocês praticam MLOps ou LLMOps em algum caso em produção (deploy, monitoramento, retreino)?"
+          },
+          {
+            "id": "B4",
+            "text": "As soluções de IA atuais são projetadas para que o modelo ou fornecedor possa ser substituído sem refazer tudo?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "Bloco C — Talento",
+        "dim": "Talento",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Vocês têm perfis internos de data science, ML ou engenharia de IA, ou dependem apenas de fornecedores externos?"
+          },
+          {
+            "id": "C2",
+            "text": "Existe um plano formal de capacitação em IA por tipo de função, e ele está sendo executado?"
+          },
+          {
+            "id": "C3",
+            "text": "Os líderes das áreas de negócio entendem o suficiente de IA para tomar decisões informadas, sem delegar tudo à TI?"
+          },
+          {
+            "id": "C4",
+            "text": "Vocês conseguem reter o talento técnico chave (não sai no primeiro ano por uma oferta melhor)?"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "Bloco D — Processo",
+        "dim": "Processo",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "As iniciativas de IA passam por um portfólio formal com priorização e revisão periódica?"
+          },
+          {
+            "id": "D2",
+            "text": "Existem quality gates documentados entre as fases de discovery, piloto, escala e operação?"
+          },
+          {
+            "id": "D3",
+            "text": "Existe um comitê de IA que revisa periodicamente o portfólio, os riscos e os modelos em produção?"
+          },
+          {
+            "id": "D4",
+            "text": "Toda solução em produção tem um dono identificável, runbooks e um plano de desativação definido?"
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "title": "Bloco E — Cultura",
+        "dim": "Cultura",
+        "questions": [
+          {
+            "id": "E1",
+            "text": "As decisões importantes de negócio incorporam dados como insumo natural, não como esforço extraordinário?"
+          },
+          {
+            "id": "E2",
+            "text": "A organização tolera experimentos que podem falhar sem penalizar os responsáveis?"
+          },
+          {
+            "id": "E3",
+            "text": "Existe confiança institucional para conduzir honestamente a conversa sobre o impacto da IA nos empregos?"
+          },
+          {
+            "id": "E4",
+            "text": "Os líderes executivos modelam pessoalmente o uso de ferramentas de IA, em vez de apenas pregá-lo?"
+          }
+        ]
+      }
+    ]
+  },
+  "areas": {
+    "ventas": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain comercial",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O percentual de leads desperdiçados (sem contato, mal qualificados, sem follow-up) é:"
+          },
+          {
+            "id": "A2",
+            "text": "O erro do forecast comercial mensal/trimestral que temos hoje é:"
+          },
+          {
+            "id": "A3",
+            "text": "O tempo administrativo do vendedor (notas, CRM, propostas) em relação ao tempo com o cliente é:"
+          },
+          {
+            "id": "A4",
+            "text": "A taxa de churn/não renovação comercial é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness dos dados comerciais",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos um CRM corporativo único com mais de 80% de adoção pelos vendedores:"
+          },
+          {
+            "id": "B2",
+            "text": "As atividades comerciais (ligações, e-mails, reuniões) são registradas sistematicamente:"
+          },
+          {
+            "id": "B3",
+            "text": "Temos um histórico de pelo menos 12 meses de oportunidades com seu desfecho (ganhas/perdidas):"
+          },
+          {
+            "id": "B4",
+            "text": "As ligações comerciais são gravadas/transcritas com consentimento:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe de vendas",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "O VP/Diretor Comercial está aberto a incorporar IA e patrocina a iniciativa:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem champions de tecnologia (RevOps, Sales Ops) na equipe de vendas:"
+          },
+          {
+            "id": "C3",
+            "text": "Os vendedores aceitam ferramentas digitais e mudam de comportamento quando veem valor:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe concluiu com sucesso projetos de transformação comercial:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas de win rate, produtividade por vendedor, NRR ou redução de CAC:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em revtech/IA nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "A regulação aplicável nos permite usar IA com dados de prospects e clientes:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe um business case claro de impacto em receita, margem ou eficiência comercial:"
+          }
+        ]
+      }
+    ],
+    "servicio": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain operacional (quanto dói)",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O volume de tickets recorrentes que meus agentes resolvem várias vezes ao dia é:"
+          },
+          {
+            "id": "A2",
+            "text": "O tempo médio de atendimento/resolução de um ticket que gostaríamos de reduzir é:"
+          },
+          {
+            "id": "A3",
+            "text": "O tempo de espera ou resposta que nossas contas experimentam hoje é:"
+          },
+          {
+            "id": "A4",
+            "text": "A taxa de escalonamento entre níveis de suporte (erros, retrabalho, reatribuições) é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness de dados",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos registros digitais completos de tickets/ligações históricos (12+ meses):"
+          },
+          {
+            "id": "B2",
+            "text": "As ligações e/ou chats são gravados ou transcritos com qualidade razoável:"
+          },
+          {
+            "id": "B3",
+            "text": "Existe uma base de conhecimento técnica (KB) atualizada e acessível:"
+          },
+          {
+            "id": "B4",
+            "text": "Os dados desta área estão integrados com CRM, ERP e outros sistemas relevantes:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "A liderança da área de atendimento está aberta a incorporar IA e patrocina a iniciativa:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem aliados naturais (champions de tecnologia / superusuários) na equipe:"
+          },
+          {
+            "id": "C3",
+            "text": "A cultura da área tolera experimentos em que a IA pode errar no início:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe passou por projetos de transformação anteriores com resultados razoáveis:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas de melhorar NPS / CSAT / retenção ou reduzir o custo de atendimento:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em IA no atendimento nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "A regulação aplicável nos permite usar IA nas interações com contas/clientes:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe um business case claro de impacto em custos, receita ou experiência:"
+          }
+        ]
+      }
+    ],
+    "finanzas": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain financeiro-administrativo",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Tempo e erros no fechamento contábil mensal são uma grande dor:"
+          },
+          {
+            "id": "A2",
+            "text": "Nosso DSO / prazo médio de recebimento e os custos de capital de giro associados são altos:"
+          },
+          {
+            "id": "A3",
+            "text": "O erro na previsão de fluxo de caixa / surpresas de liquidez é relevante:"
+          },
+          {
+            "id": "A4",
+            "text": "O tempo que a equipe financeira gasta em tarefas manuais repetitivas (conciliações, relatórios, categorização) é alto:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness dos dados financeiros",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos um ERP/sistema contábil corporativo único com histórico de 12+ meses:"
+          },
+          {
+            "id": "B2",
+            "text": "Os dados bancários e transacionais estão digitalizados, completos e rastreáveis (extratos, AR, AP):"
+          },
+          {
+            "id": "B3",
+            "text": "O plano de contas, a taxonomia de centros e as políticas contábeis estão padronizados e documentados:"
+          },
+          {
+            "id": "B4",
+            "text": "Os dados estão integrados entre ERP, banco, cobrança e sistemas de orçamento (não em silos ou planilhas separadas):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe financeira",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "A liderança financeira (CFO, controller) está aberta a incorporar IA e patrocina a iniciativa:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem aliados naturais (champions de tecnologia / superusuários) na equipe financeira:"
+          },
+          {
+            "id": "C3",
+            "text": "A cultura tolera IA com human-in-the-loop, especialmente em números assinados pelo CFO:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe tem experiência com projetos anteriores de digitalização financeira com resultados razoáveis:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico e compliance contábil",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas: reduzir DSO, melhorar precisão do forecast, acelerar fechamentos, reduzir erros:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em IA em finanças nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "O compliance fiscal/contábil está coberto e o marco regulatório (IFRS, auditoria externa) está identificado:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe alinhamento com CFO, comitê de auditoria e conselho sobre as prioridades de transformação financeira:"
+          }
+        ]
+      }
+    ],
+    "rrhh": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain de RH e talento",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O volume de vagas ativas e o time-to-hire que vivemos hoje é:"
+          },
+          {
+            "id": "A2",
+            "text": "O tempo administrativo da equipe de RH (publicar, triar, agendar, responder consultas) é:"
+          },
+          {
+            "id": "A3",
+            "text": "Nossa taxa de rotatividade/perda de talentos chave e o custo associado é:"
+          },
+          {
+            "id": "A4",
+            "text": "A inconsistência entre descrições de vaga, entrevistas e experiência do colaborador é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness dos dados de talento",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos um ATS / sistema de recrutamento corporativo único com histórico de 12+ meses:"
+          },
+          {
+            "id": "B2",
+            "text": "Temos um HRIS/sistema de folha com dados de colaboradores atualizados e rastreáveis:"
+          },
+          {
+            "id": "B3",
+            "text": "As políticas, manuais e processos de RH estão digitalizados, acessíveis e atualizados:"
+          },
+          {
+            "id": "B4",
+            "text": "Os dados de desempenho, clima e pesquisas estão digitalizados e rastreáveis por pessoa/equipe:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe de RH",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "A liderança de RH está aberta a incorporar IA e patrocina a iniciativa:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem aliados naturais (champions de tecnologia / superusuários) na equipe de RH:"
+          },
+          {
+            "id": "C3",
+            "text": "A cultura tolera IA com human-in-the-loop, especialmente em decisões que afetam pessoas:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe passou por projetos anteriores de transformação ou adoção tecnológica com resultados razoáveis:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico e compliance trabalhista",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas: time-to-hire, cost-to-hire, retenção, NPS do colaborador, mobilidade interna:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em IA em RH nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "O marco legal trabalhista e de proteção de dados pessoais (LGPD, GDPR, EU AI Act, não discriminação) está identificado e gerenciado:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe alinhamento com os líderes de negócio sobre necessidades de talento e prioridades de RH:"
+          }
+        ]
+      }
+    ],
+    "operaciones": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain operacional da planta",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O volume de paradas não planejadas (corretivas) em máquinas críticas que vivemos é:"
+          },
+          {
+            "id": "A2",
+            "text": "A taxa de não conformidades, refugo ou retrabalho que temos hoje é:"
+          },
+          {
+            "id": "A3",
+            "text": "O erro de previsão de demanda e a dificuldade no planejamento de produção é:"
+          },
+          {
+            "id": "A4",
+            "text": "A rotatividade/curva de aprendizado dos operadores e a dependência de operadores experientes é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness dos dados operacionais",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "As máquinas críticas têm sensores básicos (vibração, temperatura, corrente, pressão):"
+          },
+          {
+            "id": "B2",
+            "text": "Temos histórico digital de pelo menos 12 meses de operação, qualidade e manutenção:"
+          },
+          {
+            "id": "B3",
+            "text": "Receitas, procedimentos e registros de turno estão digitalizados e acessíveis:"
+          },
+          {
+            "id": "B4",
+            "text": "Existe alguma conexão/leitura de dados entre CLPs/SCADA e sistemas de TI?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe da planta",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "O Gerente de Planta / Diretor de Operações está aberto a incorporar IA e patrocina:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem champions de transformação digital em manutenção, qualidade ou planejamento:"
+          },
+          {
+            "id": "C3",
+            "text": "A equipe tem cultura de melhoria contínua / lean / TPM em operação:"
+          },
+          {
+            "id": "C4",
+            "text": "Os operadores estão abertos a usar novas ferramentas (tablets, apps, sensores):"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas de OEE, refugo, produtividade ou redução de custos operacionais:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para Indústria 4.0 / IA na planta nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "Existe apoio da direção geral/comitê diretivo para iniciativas de planta inteligente:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe um business case claro de impacto em custos operacionais ou produtividade:"
+          }
+        ]
+      }
+    ],
+    "legal": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain operacional",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O volume de contratos/documentos jurídicos que a equipe revisa manualmente por mês é:"
+          },
+          {
+            "id": "A2",
+            "text": "O tempo que investimos em manuais de compliance e documentação regulatória é:"
+          },
+          {
+            "id": "A3",
+            "text": "A pressão regulatória atual (auditorias, inspeções, sanções recentes) sobre nosso setor é:"
+          },
+          {
+            "id": "A4",
+            "text": "Nossa taxa de erros ou omissões em documentação jurídica/de compliance é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness de dados",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos um repositório digital atualizado de contratos, políticas e documentação jurídica:"
+          },
+          {
+            "id": "B2",
+            "text": "A taxonomia/classificação de documentos jurídicos está definida e é aplicada:"
+          },
+          {
+            "id": "B3",
+            "text": "Existe um sistema de gestão documental (DMS) com busca e rastreabilidade:"
+          },
+          {
+            "id": "B4",
+            "text": "Os dados estão integrados com sistemas de negócio (CRM, ERP, ticketing):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "O General Counsel / a liderança jurídica está aberta a incorporar IA e patrocina:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem perfis de legaltech ou aliados naturais na equipe:"
+          },
+          {
+            "id": "C3",
+            "text": "A cultura tolera experimentos em que a IA pode errar no início:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe concluiu com sucesso projetos de transformação anteriores:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas de eficiência jurídica, redução de risco ou velocidade de revisão:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em legaltech/IA nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "A regulação aplicável nos permite usar IA em revisões e procedimentos jurídicos:"
+          },
+          {
+            "id": "D4",
+            "text": "Existe um business case claro de impacto em custos, riscos ou tempo:"
+          }
+        ]
+      }
+    ],
+    "marketing": [
+      {
+        "id": "A",
+        "title": "BLOCO A — Pain de marketing e demand gen",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "O percentual de leads inbound desperdiçados (sem contato, mal qualificados, sem nurturing) é:"
+          },
+          {
+            "id": "A2",
+            "text": "O tempo e o esforço da equipe na produção manual de conteúdo é:"
+          },
+          {
+            "id": "A3",
+            "text": "A pressão para gerar mais leads qualificados (MQL/SQL) e mais rápido é:"
+          },
+          {
+            "id": "A4",
+            "text": "A inconsistência de mensagens, branding e personalização entre canais é:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCO B — Readiness dos dados de marketing",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Temos um CRM corporativo único com 12+ meses de leads, contas e resultados:"
+          },
+          {
+            "id": "B2",
+            "text": "O site tem instrumentação adequada (eventos, formulários, tracking) e dados digitais limpos:"
+          },
+          {
+            "id": "B3",
+            "text": "As plataformas de marketing automation, mídia paga e CRM estão integradas (não em silos):"
+          },
+          {
+            "id": "B4",
+            "text": "Existe um ICP (Ideal Customer Profile) e um modelo de segmentação documentados e operacionais:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCO C — Readiness da equipe de marketing",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "A liderança de marketing está aberta a incorporar IA e patrocina a iniciativa:"
+          },
+          {
+            "id": "C2",
+            "text": "Existem aliados naturais (champions de tecnologia / superusuários) na equipe:"
+          },
+          {
+            "id": "C3",
+            "text": "A cultura da equipe tolera conteúdo gerado por IA com human-in-the-loop:"
+          },
+          {
+            "id": "C4",
+            "text": "A equipe passou por projetos anteriores de transformação ou adoção tecnológica com sucesso razoável:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCO D — Alinhamento estratégico e comercial",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Temos metas explícitas de crescer pipeline / reduzir CAC / encurtar o ciclo de vendas etc.:"
+          },
+          {
+            "id": "D2",
+            "text": "Existe orçamento razoável para investir em IA em marketing nos próximos 12 meses:"
+          },
+          {
+            "id": "D3",
+            "text": "A regulação aplicável nos permite usar IA nas comunicações com leads/clientes (LGPD/GDPR/EU AI Act):"
+          },
+          {
+            "id": "D4",
+            "text": "Existe alinhamento com Vendas (SLAs, definições de MQL/SQL, handoff) que sustente um funil apoiado por IA:"
+          }
+        ]
+      }
+    ]
+  }
+}

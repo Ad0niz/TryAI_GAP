@@ -1,0 +1,754 @@
+{
+  "maturity": {
+    "moduleLabel": "Maturity diagnostic",
+    "blocks": [
+      {
+        "id": "A",
+        "title": "Block A — Data",
+        "dim": "Data",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Do you keep an up-to-date inventory of the business-critical data sources, with named owners?"
+          },
+          {
+            "id": "A2",
+            "text": "Do you measure and monitor data quality continuously, not just on specific projects?"
+          },
+          {
+            "id": "A3",
+            "text": "Are there formal data privacy, retention and residency policies that are enforced and audited?"
+          },
+          {
+            "id": "A4",
+            "text": "Is there a data catalog where a new analyst can find what they need in minutes, not weeks?"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "Block B — Technology",
+        "dim": "Technology",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Do you have a standardized analytics and modeling platform, or does each team set up its own?"
+          },
+          {
+            "id": "B2",
+            "text": "Do you have integration capabilities (APIs, events) that let you connect new services without a special project?"
+          },
+          {
+            "id": "B3",
+            "text": "Do you practice MLOps or LLMOps in any production case (deployment, monitoring, retraining)?"
+          },
+          {
+            "id": "B4",
+            "text": "Are current AI solutions designed so that the model or vendor can be replaced without redoing everything?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "Block C — Talent",
+        "dim": "Talent",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Do you have in-house data science, ML or AI engineering profiles, or do you only rely on external vendors?"
+          },
+          {
+            "id": "C2",
+            "text": "Is there a formal AI training plan by role type, and is it being executed?"
+          },
+          {
+            "id": "C3",
+            "text": "Do business-area leaders understand enough about AI to make informed decisions without delegating everything to IT?"
+          },
+          {
+            "id": "C4",
+            "text": "Can you retain key technical talent (they do not leave within the first year for a better offer)?"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "Block D — Process",
+        "dim": "Process",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Do AI initiatives go through a formal portfolio with prioritization and periodic review?"
+          },
+          {
+            "id": "D2",
+            "text": "Are there documented quality gates between discovery, pilot, scaling and operation phases?"
+          },
+          {
+            "id": "D3",
+            "text": "Is there an AI committee that periodically reviews the portfolio, risks and models in production?"
+          },
+          {
+            "id": "D4",
+            "text": "Does every production solution have an identifiable owner, runbooks and a defined retirement plan?"
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "title": "Block E — Culture",
+        "dim": "Culture",
+        "questions": [
+          {
+            "id": "E1",
+            "text": "Do important business decisions incorporate data as a natural input, not as an extraordinary effort?"
+          },
+          {
+            "id": "E2",
+            "text": "Does the organization tolerate experiments that may fail without penalizing those responsible?"
+          },
+          {
+            "id": "E3",
+            "text": "Is there institutional trust to honestly manage the conversation about AI’s impact on jobs?"
+          },
+          {
+            "id": "E4",
+            "text": "Do executive leaders personally model the use of AI tools, not just preach it?"
+          }
+        ]
+      }
+    ]
+  },
+  "areas": {
+    "ventas": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Commercial Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The percentage of wasted leads (no contact, poorly qualified, no follow-up) is:"
+          },
+          {
+            "id": "A2",
+            "text": "The monthly/quarterly business forecast error we have today is:"
+          },
+          {
+            "id": "A3",
+            "text": "The administrative time of the rep (notes, CRM, proposals) versus the time with the client is:"
+          },
+          {
+            "id": "A4",
+            "text": "The commercial churn/non-renewal rate is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Commercial Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have a unique corporate CRM with over 80% adoption by salespeople:"
+          },
+          {
+            "id": "B2",
+            "text": "Business activities (calls, emails, meetings) are systematically recorded:"
+          },
+          {
+            "id": "B3",
+            "text": "We have a history of at least 12 months of opportunities with their outcome (won/lost):"
+          },
+          {
+            "id": "B4",
+            "text": "Commercial calls are recorded/transcribed with consent:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Sales Team Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "The VP/Commercial Director is open to incorporating AI and sponsors the initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "There are technology champions (RevOps, Sales Ops) on the sales team:"
+          },
+          {
+            "id": "C3",
+            "text": "Reps accept digital tools and change their behavior if they see value:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has successfully completed business transformation projects:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic Alignment",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals for win rate, productivity per rep, NRR, or CAC reduction:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in revtech/AI in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "Applicable regulations allow us to use AI with prospect and customer data:"
+          },
+          {
+            "id": "D4",
+            "text": "There is a clear business case for impact on revenue, margin, or commercial efficiency:"
+          }
+        ]
+      }
+    ],
+    "servicio": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Operational pain (how hurt are you)",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The volume of recurring tickets that my agents resolve multiple times a day is:"
+          },
+          {
+            "id": "A2",
+            "text": "The average handling/resolution time for a ticket that we would like to reduce is:"
+          },
+          {
+            "id": "A3",
+            "text": "The waiting or response time that our accounts experience today is:"
+          },
+          {
+            "id": "A4",
+            "text": "The escalation rate between support levels (errors, rework, reassignments) is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have complete digital records of historical tickets/calls (12+ months):"
+          },
+          {
+            "id": "B2",
+            "text": "The calls and/or chats are recorded or transcribed with reasonable quality:"
+          },
+          {
+            "id": "B3",
+            "text": "There is an up-to-date and accessible technical knowledge base (KB):"
+          },
+          {
+            "id": "B4",
+            "text": "The data for this area is integrated with CRM, ERP, and other relevant systems:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Team Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "The service area leadership is open to incorporating AI and sponsors the initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "There are natural allies (technological champions / superusers) on the team:"
+          },
+          {
+            "id": "C3",
+            "text": "The culture in the area tolerates experiments where AI can make mistakes at the beginning:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has gone through previous transformation projects with reasonable results:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic Alignment",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals to improve NPS / CSAT / retention or reduce the cost of care:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in AI for customer service in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "Applicable regulations allow us to use AI in interactions with accounts/customers:"
+          },
+          {
+            "id": "D4",
+            "text": "There is a clear business case for impact on costs, revenue, or experience:"
+          }
+        ]
+      }
+    ],
+    "finanzas": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Financial-Administrative Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Time and errors in the monthly accounting close are a major pain:"
+          },
+          {
+            "id": "A2",
+            "text": "Our DSO / days outstanding collection and associated working capital costs are high:"
+          },
+          {
+            "id": "A3",
+            "text": "The error in the cash flow forecast / liquidity surprises is relevant:"
+          },
+          {
+            "id": "A4",
+            "text": "The time the finance team spends on repetitive manual tasks (reconciliations, reporting, categorization) is high:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Financial Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have a unique corporate ERP/accounting system with a history of 12+ months:"
+          },
+          {
+            "id": "B2",
+            "text": "Banking and transaction data are digitized, complete and traceable (statements, AR, AP):"
+          },
+          {
+            "id": "B3",
+            "text": "The chart of accounts, taxonomy of centers, and accounting policies are standardized and documented:"
+          },
+          {
+            "id": "B4",
+            "text": "The data is integrated across ERP, bank, collections, and budgeting systems (not in silos or separate Excel files):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Financial Team Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Finance leadership (CFO, controller) is open to incorporating AI and sponsors the initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "There are natural allies (technological champions / superusers) on the finance team:"
+          },
+          {
+            "id": "C3",
+            "text": "The culture tolerates AI with a human-in-the-loop, especially on figures signed off by the CFO:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has experience with previous financial digitization projects with reasonable results:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic alignment and accounting compliance",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals: reduce DSO, improve forecast accuracy, accelerate closing times, reduce errors:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in AI in finance in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "Tax/accounting compliance is covered and the regulatory framework (IFRS, SAT/SII/DIAN, external audit) is identified:"
+          },
+          {
+            "id": "D4",
+            "text": "There is alignment with the CFO, audit committee, and board on financial transformation priorities:"
+          }
+        ]
+      }
+    ],
+    "rrhh": [
+      {
+        "id": "A",
+        "title": "BLOCK A — HR and Talent Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The volume of active vacancies and the time-to-hire we are experiencing today is:"
+          },
+          {
+            "id": "A2",
+            "text": "The administrative time of the HR team (posting, screen, scheduling, answering queries) is:"
+          },
+          {
+            "id": "A3",
+            "text": "Our turnover rate/loss of key talent and the associated cost is:"
+          },
+          {
+            "id": "A4",
+            "text": "The inconsistency between job descriptions, interviews, and employee experience is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Talent Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have a unique ATS / corporate recruiting system with a 12+ month history:"
+          },
+          {
+            "id": "B2",
+            "text": "We have an HRIS/payroll system with up-to-date and traceable employee data:"
+          },
+          {
+            "id": "B3",
+            "text": "HR policies, manuals, and processes are digitized, accessible, and up-to-date:"
+          },
+          {
+            "id": "B4",
+            "text": "Performance, climate, and survey data are digitized and traceable to person/team:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — HR Team Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "HR leadership is open to incorporating AI and sponsors the initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "There are natural allies (technological champions / superusers) in the HR team:"
+          },
+          {
+            "id": "C3",
+            "text": "Culture tolerates AI with human-in-the-loop, especially in decisions that affect people:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has undergone previous technological transformation or adoption projects with reasonable results:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic alignment and labor compliance",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals: time-to-hire, cost-to-hire, retention, employee NPS, internal mobility:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in AI in HR in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "The legal framework for labor and personal data protection (LFPDPPP, GDPR, EU AI Act, non-discrimination) is identified and managed:"
+          },
+          {
+            "id": "D4",
+            "text": "There is alignment with business leaders on talent needs and HR priorities:"
+          }
+        ]
+      }
+    ],
+    "operaciones": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Plant operating pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The volume of unplanned (corrective) downtime on critical machines that we experience is:"
+          },
+          {
+            "id": "A2",
+            "text": "The rate of non-conformities, scrap, or rework we have today is:"
+          },
+          {
+            "id": "A3",
+            "text": "The demand forecasting error and the difficulty in production planning is:"
+          },
+          {
+            "id": "A4",
+            "text": "The turnover/learning curve of operators and dependence on expert operators is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Operational Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Critical machines have basic sensors (vibration, temperature, current, pressure):"
+          },
+          {
+            "id": "B2",
+            "text": "We have a digital history of at least 12 months of operation, quality, and maintenance:"
+          },
+          {
+            "id": "B3",
+            "text": "Recipes, procedures, and shift records are digitized and accessible:"
+          },
+          {
+            "id": "B4",
+            "text": "Is there any connection/data reading between PLCs/SCADA and IT systems?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Plant Equipment Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "The Plant Manager / Operations Director is open to incorporating AI and sponsors:"
+          },
+          {
+            "id": "C2",
+            "text": "There are champions of digital transformation in maintenance, quality, or planning:"
+          },
+          {
+            "id": "C3",
+            "text": "The team has a culture of continuous improvement / lean / TPM in operation:"
+          },
+          {
+            "id": "C4",
+            "text": "Operators are open to using new tools (tablets, apps, sensors):"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic Alignment",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals for OEE, scrap, productivity, or reduction of operating costs:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget for Industry 4.0 / AI in the plant in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "There is general management/steering committee support for smart plant initiatives:"
+          },
+          {
+            "id": "D4",
+            "text": "There is a clear business case for impact on operating costs or productivity:"
+          }
+        ]
+      }
+    ],
+    "legal": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Operational Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The volume of contracts/legal documents that the team manually reviews each month is:"
+          },
+          {
+            "id": "A2",
+            "text": "The time we invest in compliance manuals and regulatory documentation is:"
+          },
+          {
+            "id": "A3",
+            "text": "The current regulatory pressure (audits, inspections, recent sanctions) on our sector is:"
+          },
+          {
+            "id": "A4",
+            "text": "Our error or omission rate in legal/compliance documentation is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Data Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have an updated digital repository of contracts, policies, and legal documentation:"
+          },
+          {
+            "id": "B2",
+            "text": "The taxonomy/classification of legal documents is defined and applied:"
+          },
+          {
+            "id": "B3",
+            "text": "There is a document management system (DMS) with search and traceability:"
+          },
+          {
+            "id": "B4",
+            "text": "The data is integrated with business systems (CRM, ERP, ticketing):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Team Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "The General Counsel/legal leadership is open to incorporating AI and sponsors:"
+          },
+          {
+            "id": "C2",
+            "text": "There are legaltech profiles or natural allies on the team:"
+          },
+          {
+            "id": "C3",
+            "text": "Culture tolerates experiments where AI can make mistakes at the beginning:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has successfully completed previous transformation projects:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic Alignment",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals for legal efficiency, risk reduction, or speed of review:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in legaltech/AI in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "Applicable regulations allow us to use AI in legal reviews and proceedings:"
+          },
+          {
+            "id": "D4",
+            "text": "There is a clear business case for impact on costs, risks, or time:"
+          }
+        ]
+      }
+    ],
+    "marketing": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Marketing & demand-gen pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "The percentage of inbound leads wasted (no contact, poorly qualified, no nurturing) is:"
+          },
+          {
+            "id": "A2",
+            "text": "The team’s time and effort spent on producing content manually is:"
+          },
+          {
+            "id": "A3",
+            "text": "The pressure to generate more qualified leads (MQL/SQL) and faster is:"
+          },
+          {
+            "id": "A4",
+            "text": "The inconsistency of messaging, branding and personalization across channels is:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Marketing data readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "We have a single corporate CRM with 12+ months of leads, accounts and outcomes:"
+          },
+          {
+            "id": "B2",
+            "text": "There is proper website instrumentation (events, forms, tracking) and clean digital data:"
+          },
+          {
+            "id": "B3",
+            "text": "Marketing automation, paid media and CRM platforms are integrated (not silos):"
+          },
+          {
+            "id": "B4",
+            "text": "There is a documented and operational ICP (Ideal Customer Profile) and segmentation model:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Marketing team readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Marketing leadership is open to incorporating AI and sponsors the initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "There are natural allies (technology champions / superusers) on the team:"
+          },
+          {
+            "id": "C3",
+            "text": "Team culture tolerates AI-generated content with a human-in-the-loop:"
+          },
+          {
+            "id": "C4",
+            "text": "The team has been through previous transformation or tech-adoption projects with reasonable success:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategic & commercial alignment",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "We have explicit goals to grow pipeline / reduce CAC / shorten the sales cycle, etc.:"
+          },
+          {
+            "id": "D2",
+            "text": "There is a reasonable budget to invest in AI for marketing in the next 12 months:"
+          },
+          {
+            "id": "D3",
+            "text": "Applicable regulation allows us to use AI in lead/customer communications (GDPR/UK GDPR/EU AI Act):"
+          },
+          {
+            "id": "D4",
+            "text": "There is alignment with Sales (SLAs, MQL/SQL definitions, handoff) that supports an AI-backed funnel:"
+          }
+        ]
+      }
+    ]
+  }
+}

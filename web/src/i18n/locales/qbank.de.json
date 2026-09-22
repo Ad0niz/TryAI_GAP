@@ -1,0 +1,754 @@
+{
+  "maturity": {
+    "moduleLabel": "Reifegrad-Diagnose",
+    "blocks": [
+      {
+        "id": "A",
+        "title": "Block A — Daten",
+        "dim": "Daten",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Führen Sie ein aktuelles Inventar der geschäftskritischen Datenquellen mit benannten Ownern?"
+          },
+          {
+            "id": "A2",
+            "text": "Messen und überwachen Sie die Datenqualität kontinuierlich, nicht nur in einzelnen Projekten?"
+          },
+          {
+            "id": "A3",
+            "text": "Gibt es formale Richtlinien zu Datenschutz, Aufbewahrung und Datenresidenz, die durchgesetzt und auditiert werden?"
+          },
+          {
+            "id": "A4",
+            "text": "Gibt es einen Datenkatalog, in dem ein neuer Analyst in Minuten statt Wochen findet, was er braucht?"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "Block B — Technologie",
+        "dim": "Technologie",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Haben Sie eine standardisierte Analytik- und Modellierungsplattform, oder baut jedes Team seine eigene auf?"
+          },
+          {
+            "id": "B2",
+            "text": "Verfügen Sie über Integrationsfähigkeiten (APIs, Events), um neue Dienste ohne Sonderprojekt anzubinden?"
+          },
+          {
+            "id": "B3",
+            "text": "Praktizieren Sie MLOps oder LLMOps in einem Produktivfall (Deployment, Monitoring, Retraining)?"
+          },
+          {
+            "id": "B4",
+            "text": "Sind aktuelle KI-Lösungen so konzipiert, dass Modell oder Anbieter ersetzt werden können, ohne alles neu zu bauen?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "Block C — Talent",
+        "dim": "Talent",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Haben Sie interne Data-Science-, ML- oder KI-Engineering-Profile, oder verlassen Sie sich nur auf externe Anbieter?"
+          },
+          {
+            "id": "C2",
+            "text": "Gibt es einen formalen KI-Schulungsplan je Rollentyp, und wird er umgesetzt?"
+          },
+          {
+            "id": "C3",
+            "text": "Verstehen die Fachbereichsleiter genug von KI, um fundierte Entscheidungen zu treffen, ohne alles an die IT zu delegieren?"
+          },
+          {
+            "id": "C4",
+            "text": "Können Sie technisches Schlüsselpersonal halten (es geht nicht im ersten Jahr für ein besseres Angebot)?"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "Block D — Prozess",
+        "dim": "Prozess",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Durchlaufen KI-Initiativen ein formales Portfolio mit Priorisierung und regelmäßiger Überprüfung?"
+          },
+          {
+            "id": "D2",
+            "text": "Gibt es dokumentierte Quality Gates zwischen den Phasen Discovery, Pilot, Skalierung und Betrieb?"
+          },
+          {
+            "id": "D3",
+            "text": "Gibt es ein KI-Komitee, das regelmäßig Portfolio, Risiken und Modelle in Produktion überprüft?"
+          },
+          {
+            "id": "D4",
+            "text": "Hat jede Produktivlösung einen identifizierbaren Owner, Runbooks und einen definierten Ablöseplan?"
+          }
+        ]
+      },
+      {
+        "id": "E",
+        "title": "Block E — Kultur",
+        "dim": "Kultur",
+        "questions": [
+          {
+            "id": "E1",
+            "text": "Fließen Daten als selbstverständlicher Input in wichtige Geschäftsentscheidungen ein, nicht als Sonderaufwand?"
+          },
+          {
+            "id": "E2",
+            "text": "Toleriert die Organisation Experimente, die scheitern können, ohne die Verantwortlichen zu bestrafen?"
+          },
+          {
+            "id": "E3",
+            "text": "Gibt es institutionelles Vertrauen, um das Gespräch über die Auswirkungen von KI auf Arbeitsplätze ehrlich zu führen?"
+          },
+          {
+            "id": "E4",
+            "text": "Leben die Führungskräfte den Einsatz von KI-Tools persönlich vor, statt ihn nur zu predigen?"
+          }
+        ]
+      }
+    ]
+  },
+  "areas": {
+    "ventas": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Kommerzieller Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Der Prozentsatz verschwendeter Leads (kein Kontakt, schlecht qualifiziert, kein Follow-up) ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Der Fehler unserer monatlichen/quartalsweisen Umsatzprognose beträgt heute:"
+          },
+          {
+            "id": "A3",
+            "text": "Die Verwaltungszeit der Vertriebsmitarbeiter (Notizen, CRM, Angebote) im Verhältnis zur Kundenzeit ist:"
+          },
+          {
+            "id": "A4",
+            "text": "Die kommerzielle Churn-/Nichtverlängerungsrate ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Readiness der Vertriebsdaten",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben ein einziges Unternehmens-CRM mit über 80 % Adoption durch die Vertriebsmitarbeiter:"
+          },
+          {
+            "id": "B2",
+            "text": "Vertriebsaktivitäten (Anrufe, E-Mails, Meetings) werden systematisch erfasst:"
+          },
+          {
+            "id": "B3",
+            "text": "Wir haben eine Historie von mindestens 12 Monaten Opportunities mit Ergebnis (gewonnen/verloren):"
+          },
+          {
+            "id": "B4",
+            "text": "Vertriebsanrufe werden mit Einwilligung aufgezeichnet/transkribiert:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Readiness des Vertriebsteams",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Der VP/Vertriebsleiter ist offen für KI und sponsert die Initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt Technologie-Champions (RevOps, Sales Ops) im Vertriebsteam:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Vertriebsmitarbeiter akzeptieren digitale Tools und ändern ihr Verhalten, wenn sie Wert erkennen:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat Geschäftstransformationsprojekte erfolgreich abgeschlossen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele für Win Rate, Produktivität je Mitarbeiter, NRR oder CAC-Reduktion:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für RevTech/KI-Investitionen in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Die anwendbare Regulierung erlaubt uns, KI mit Interessenten- und Kundendaten zu nutzen:"
+          },
+          {
+            "id": "D4",
+            "text": "Es gibt einen klaren Business Case für Wirkung auf Umsatz, Marge oder Vertriebseffizienz:"
+          }
+        ]
+      }
+    ],
+    "servicio": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Operativer Pain (wie stark schmerzt es)",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Das Volumen wiederkehrender Tickets, die meine Agenten mehrmals täglich lösen, ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Die durchschnittliche Bearbeitungs-/Lösungszeit je Ticket, die wir reduzieren möchten, ist:"
+          },
+          {
+            "id": "A3",
+            "text": "Die Warte- oder Antwortzeit, die unsere Accounts heute erleben, ist:"
+          },
+          {
+            "id": "A4",
+            "text": "Die Eskalationsrate zwischen Support-Ebenen (Fehler, Nacharbeit, Neuzuweisungen) ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Daten-Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben vollständige digitale Aufzeichnungen historischer Tickets/Anrufe (12+ Monate):"
+          },
+          {
+            "id": "B2",
+            "text": "Anrufe und/oder Chats werden in angemessener Qualität aufgezeichnet oder transkribiert:"
+          },
+          {
+            "id": "B3",
+            "text": "Es gibt eine aktuelle und zugängliche technische Wissensdatenbank (KB):"
+          },
+          {
+            "id": "B4",
+            "text": "Die Daten dieses Bereichs sind mit CRM, ERP und anderen relevanten Systemen integriert:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Team-Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Die Leitung des Servicebereichs ist offen für KI und sponsert die Initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt natürliche Verbündete (Technologie-Champions / Superuser) im Team:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Kultur im Bereich toleriert Experimente, bei denen die KI anfangs Fehler machen darf:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat frühere Transformationsprojekte mit vernünftigen Ergebnissen durchlaufen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele zur Verbesserung von NPS / CSAT / Retention oder zur Senkung der Servicekosten:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für KI im Kundenservice in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Die anwendbare Regulierung erlaubt uns, KI in Interaktionen mit Accounts/Kunden zu nutzen:"
+          },
+          {
+            "id": "D4",
+            "text": "Es gibt einen klaren Business Case für Wirkung auf Kosten, Umsatz oder Erlebnis:"
+          }
+        ]
+      }
+    ],
+    "finanzas": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Finanz-administrativer Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Zeit und Fehler beim monatlichen Buchhaltungsabschluss sind ein großer Schmerzpunkt:"
+          },
+          {
+            "id": "A2",
+            "text": "Unser DSO / Forderungslaufzeiten und die damit verbundenen Working-Capital-Kosten sind hoch:"
+          },
+          {
+            "id": "A3",
+            "text": "Der Fehler in der Cashflow-Prognose / Liquiditätsüberraschungen ist relevant:"
+          },
+          {
+            "id": "A4",
+            "text": "Die Zeit, die das Finanzteam mit repetitiven manuellen Aufgaben verbringt (Abstimmungen, Reporting, Kategorisierung), ist hoch:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Readiness der Finanzdaten",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben ein einziges Unternehmens-ERP/Buchhaltungssystem mit 12+ Monaten Historie:"
+          },
+          {
+            "id": "B2",
+            "text": "Bank- und Transaktionsdaten sind digitalisiert, vollständig und nachvollziehbar (Auszüge, AR, AP):"
+          },
+          {
+            "id": "B3",
+            "text": "Kontenplan, Kostenstellentaxonomie und Buchhaltungsrichtlinien sind standardisiert und dokumentiert:"
+          },
+          {
+            "id": "B4",
+            "text": "Die Daten sind über ERP, Bank, Inkasso und Budgetsysteme integriert (keine Silos oder separate Excel-Dateien):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Readiness des Finanzteams",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Die Finanzleitung (CFO, Controller) ist offen für KI und sponsert die Initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt natürliche Verbündete (Technologie-Champions / Superuser) im Finanzteam:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Kultur toleriert KI mit Human-in-the-Loop, besonders bei vom CFO freigegebenen Zahlen:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat Erfahrung mit früheren Finanz-Digitalisierungsprojekten mit vernünftigen Ergebnissen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung und Buchhaltungs-Compliance",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele: DSO senken, Prognosegenauigkeit verbessern, Abschlusszeiten beschleunigen, Fehler reduzieren:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für KI im Finanzbereich in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Die steuerliche/buchhalterische Compliance ist abgedeckt und der Regulierungsrahmen (IFRS, externe Prüfung) identifiziert:"
+          },
+          {
+            "id": "D4",
+            "text": "Es besteht Abstimmung mit CFO, Prüfungsausschuss und Vorstand über die Prioritäten der Finanztransformation:"
+          }
+        ]
+      }
+    ],
+    "rrhh": [
+      {
+        "id": "A",
+        "title": "BLOCK A — HR- und Talent-Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Das Volumen offener Stellen und die Time-to-Hire, die wir heute erleben, ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Die Verwaltungszeit des HR-Teams (Ausschreiben, Screening, Terminierung, Anfragen beantworten) ist:"
+          },
+          {
+            "id": "A3",
+            "text": "Unsere Fluktuationsrate / der Verlust von Schlüsseltalenten und die damit verbundenen Kosten sind:"
+          },
+          {
+            "id": "A4",
+            "text": "Die Inkonsistenz zwischen Stellenbeschreibungen, Interviews und Mitarbeitererlebnis ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Readiness der Talentdaten",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben ein einziges ATS / Unternehmens-Recruiting-System mit 12+ Monaten Historie:"
+          },
+          {
+            "id": "B2",
+            "text": "Wir haben ein HRIS/Gehaltssystem mit aktuellen und nachvollziehbaren Mitarbeiterdaten:"
+          },
+          {
+            "id": "B3",
+            "text": "HR-Richtlinien, Handbücher und Prozesse sind digitalisiert, zugänglich und aktuell:"
+          },
+          {
+            "id": "B4",
+            "text": "Leistungs-, Klima- und Umfragedaten sind digitalisiert und auf Person/Team rückführbar:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Readiness des HR-Teams",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Die HR-Leitung ist offen für KI und sponsert die Initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt natürliche Verbündete (Technologie-Champions / Superuser) im HR-Team:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Kultur toleriert KI mit Human-in-the-Loop, besonders bei Entscheidungen, die Menschen betreffen:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat frühere Technologie-Transformations- oder Adoptionsprojekte mit vernünftigen Ergebnissen durchlaufen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung und Arbeitsrecht-Compliance",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele: Time-to-Hire, Cost-to-Hire, Retention, Mitarbeiter-NPS, interne Mobilität:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für KI im HR-Bereich in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Der rechtliche Rahmen für Arbeitsrecht und Datenschutz (DSGVO, EU AI Act, Diskriminierungsverbot) ist identifiziert und wird gemanagt:"
+          },
+          {
+            "id": "D4",
+            "text": "Es besteht Abstimmung mit den Fachbereichsleitern über Talentbedarf und HR-Prioritäten:"
+          }
+        ]
+      }
+    ],
+    "operaciones": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Operativer Pain im Werk",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Das Volumen ungeplanter (korrektiver) Stillstände an kritischen Maschinen, das wir erleben, ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Die Rate an Abweichungen, Ausschuss oder Nacharbeit, die wir heute haben, ist:"
+          },
+          {
+            "id": "A3",
+            "text": "Der Fehler der Bedarfsprognose und die Schwierigkeit der Produktionsplanung ist:"
+          },
+          {
+            "id": "A4",
+            "text": "Die Fluktuation/Lernkurve der Bediener und die Abhängigkeit von erfahrenen Bedienern ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Readiness der Betriebsdaten",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Kritische Maschinen verfügen über Basissensorik (Vibration, Temperatur, Strom, Druck):"
+          },
+          {
+            "id": "B2",
+            "text": "Wir haben eine digitale Historie von mindestens 12 Monaten zu Betrieb, Qualität und Wartung:"
+          },
+          {
+            "id": "B3",
+            "text": "Rezepte, Verfahren und Schichtaufzeichnungen sind digitalisiert und zugänglich:"
+          },
+          {
+            "id": "B4",
+            "text": "Gibt es eine Verbindung/Datenauslesung zwischen SPS/SCADA und IT-Systemen?"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Readiness des Werksteams",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Der Werksleiter / Betriebsleiter ist offen für KI und sponsert:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt Champions der digitalen Transformation in Wartung, Qualität oder Planung:"
+          },
+          {
+            "id": "C3",
+            "text": "Das Team hat eine Kultur der kontinuierlichen Verbesserung / Lean / TPM im Betrieb:"
+          },
+          {
+            "id": "C4",
+            "text": "Die Bediener sind offen für neue Werkzeuge (Tablets, Apps, Sensoren):"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele für OEE, Ausschuss, Produktivität oder Senkung der Betriebskosten:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für Industrie 4.0 / KI im Werk in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Es gibt Unterstützung der Geschäftsleitung/des Lenkungsausschusses für Smart-Factory-Initiativen:"
+          },
+          {
+            "id": "D4",
+            "text": "Es gibt einen klaren Business Case für Wirkung auf Betriebskosten oder Produktivität:"
+          }
+        ]
+      }
+    ],
+    "legal": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Operativer Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Das Volumen an Verträgen/Rechtsdokumenten, das das Team monatlich manuell prüft, ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Die Zeit, die wir in Compliance-Handbücher und regulatorische Dokumentation investieren, ist:"
+          },
+          {
+            "id": "A3",
+            "text": "Der aktuelle Regulierungsdruck (Audits, Inspektionen, jüngste Sanktionen) auf unseren Sektor ist:"
+          },
+          {
+            "id": "A4",
+            "text": "Unsere Fehler- oder Auslassungsquote in Rechts-/Compliance-Dokumentation ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Daten-Readiness",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben ein aktuelles digitales Repository für Verträge, Richtlinien und Rechtsdokumentation:"
+          },
+          {
+            "id": "B2",
+            "text": "Die Taxonomie/Klassifizierung von Rechtsdokumenten ist definiert und wird angewendet:"
+          },
+          {
+            "id": "B3",
+            "text": "Es gibt ein Dokumentenmanagementsystem (DMS) mit Suche und Nachvollziehbarkeit:"
+          },
+          {
+            "id": "B4",
+            "text": "Die Daten sind mit Geschäftssystemen integriert (CRM, ERP, Ticketing):"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Team-Readiness",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Der General Counsel / die Rechtsleitung ist offen für KI und sponsert:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt Legaltech-Profile oder natürliche Verbündete im Team:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Kultur toleriert Experimente, bei denen die KI anfangs Fehler machen darf:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat frühere Transformationsprojekte erfolgreich abgeschlossen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische Ausrichtung",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele für Rechts-Effizienz, Risikominderung oder Prüfgeschwindigkeit:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für Legaltech/KI-Investitionen in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Die anwendbare Regulierung erlaubt uns, KI in rechtlichen Prüfungen und Verfahren zu nutzen:"
+          },
+          {
+            "id": "D4",
+            "text": "Es gibt einen klaren Business Case für Wirkung auf Kosten, Risiken oder Zeit:"
+          }
+        ]
+      }
+    ],
+    "marketing": [
+      {
+        "id": "A",
+        "title": "BLOCK A — Marketing- & Demand-Gen-Pain",
+        "questions": [
+          {
+            "id": "A1",
+            "text": "Der Prozentsatz verschwendeter Inbound-Leads (kein Kontakt, schlecht qualifiziert, kein Nurturing) ist:"
+          },
+          {
+            "id": "A2",
+            "text": "Zeit und Aufwand des Teams für manuelle Content-Produktion sind:"
+          },
+          {
+            "id": "A3",
+            "text": "Der Druck, mehr qualifizierte Leads (MQL/SQL) schneller zu generieren, ist:"
+          },
+          {
+            "id": "A4",
+            "text": "Die Inkonsistenz von Messaging, Branding und Personalisierung über Kanäle hinweg ist:"
+          }
+        ]
+      },
+      {
+        "id": "B",
+        "title": "BLOCK B — Readiness der Marketingdaten",
+        "questions": [
+          {
+            "id": "B1",
+            "text": "Wir haben ein einziges Unternehmens-CRM mit 12+ Monaten Leads, Accounts und Ergebnissen:"
+          },
+          {
+            "id": "B2",
+            "text": "Die Website ist ordentlich instrumentiert (Events, Formulare, Tracking) und die digitalen Daten sind sauber:"
+          },
+          {
+            "id": "B3",
+            "text": "Marketing-Automation, Paid Media und CRM-Plattformen sind integriert (keine Silos):"
+          },
+          {
+            "id": "B4",
+            "text": "Es gibt ein dokumentiertes und operatives ICP (Ideal Customer Profile) und Segmentierungsmodell:"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "title": "BLOCK C — Readiness des Marketingteams",
+        "questions": [
+          {
+            "id": "C1",
+            "text": "Die Marketingleitung ist offen für KI und sponsert die Initiative:"
+          },
+          {
+            "id": "C2",
+            "text": "Es gibt natürliche Verbündete (Technologie-Champions / Superuser) im Team:"
+          },
+          {
+            "id": "C3",
+            "text": "Die Teamkultur toleriert KI-generierten Content mit Human-in-the-Loop:"
+          },
+          {
+            "id": "C4",
+            "text": "Das Team hat frühere Transformations- oder Technologie-Adoptionsprojekte mit vernünftigem Erfolg durchlaufen:"
+          }
+        ]
+      },
+      {
+        "id": "D",
+        "title": "BLOCK D — Strategische & kommerzielle Ausrichtung",
+        "questions": [
+          {
+            "id": "D1",
+            "text": "Wir haben explizite Ziele: Pipeline wachsen lassen / CAC senken / Verkaufszyklus verkürzen usw.:"
+          },
+          {
+            "id": "D2",
+            "text": "Es gibt ein angemessenes Budget für KI im Marketing in den nächsten 12 Monaten:"
+          },
+          {
+            "id": "D3",
+            "text": "Die anwendbare Regulierung erlaubt uns KI in Lead-/Kundenkommunikation (DSGVO/UK GDPR/EU AI Act):"
+          },
+          {
+            "id": "D4",
+            "text": "Es gibt eine Abstimmung mit dem Vertrieb (SLAs, MQL/SQL-Definitionen, Handoff), die einen KI-gestützten Funnel trägt:"
+          }
+        ]
+      }
+    ]
+  }
+}

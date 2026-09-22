@@ -1,0 +1,1580 @@
+{
+  "appName": "YourBrand",
+  "appSub": "AI Assessment",
+  "poweredBy": "Baseado na metodologia YourBrand de 7 módulos",
+  "dataResidency": "Dados no Reino Unido · Conforme UK GDPR",
+  "nav": {
+    "group_main": "Diagnóstico",
+    "group_collab": "Colaboração",
+    "group_outputs": "Resultados",
+    "home": "Início",
+    "estimator": "Estimador estratégico",
+    "maturity": "Diagnóstico de maturidade",
+    "areas": "Áreas funcionais",
+    "documents": "Documentos",
+    "team": "Equipe",
+    "results": "Resultados",
+    "review": "Revisão humana",
+    "settings": "Configurações",
+    "group_consultant": "Consultoria",
+    "consultant": "Painel do consultor"
+  },
+  "login": {
+    "title": "Diagnostique sua IA com método.",
+    "sub": "Um assessment guiado, opcionalmente supervisionado por consultores YourBrand, baseado em uma metodologia de 7 módulos.",
+    "email": "Seu e-mail corporativo",
+    "send": "Enviar magic link",
+    "orInvite": "Recebeu um link de convite do seu consultor?",
+    "paste": "Colar link de convite",
+    "ctaDemo": "Ver demo do produto",
+    "legal": "Ao continuar, você aceita os Termos e a Política de Privacidade. Seus dados nunca são usados para treinar modelos de terceiros."
+  },
+  "onboarding": {
+    "stepLabels": [
+      "Empresa",
+      "Configurações",
+      "Estimador",
+      "Pagamento",
+      "Compliance"
+    ],
+    "title": "Vamos configurar sua organização",
+    "sub": "Cinco minutos para que o assessment se ajuste à sua realidade: setor, regulação, áreas e líderes.",
+    "step1Title": "Dados básicos da empresa",
+    "step1Sub": "Isto calibra benchmarks e recomendações por setor e tamanho.",
+    "step2Title": "Marco regulatório aplicável",
+    "step2Sub": "Escolha os marcos relevantes. Mostraremos alertas de compliance em cada decisão.",
+    "step3Title": "Áreas funcionais a avaliar",
+    "step3Sub": "Ative apenas as áreas aplicáveis. Você pode ativar mais depois.",
+    "step4Title": "Convide o líder de cada área",
+    "step4Sub": "Cada líder tem acesso apenas à sua área. Pode responder pela web ou via WhatsApp.",
+    "cName": "Nome da empresa",
+    "cSector": "Setor / indústria",
+    "cSize": "Tamanho",
+    "cCountry": "País principal",
+    "cCurrency": "Moeda de reporte",
+    "back": "Voltar",
+    "next": "Continuar",
+    "start": "Iniciar assessment",
+    "skip": "Pular esta etapa",
+    "etaCalculated": "Tempo total estimado com sua configuração: ~3,5 horas distribuídas",
+    "stepOf": "Passo {{current}} de {{total}}",
+    "finish": "Ir para o dashboard",
+    "savedOffline": "Guardado localmente (backend indisponível).",
+    "frameworksTitle": "Frameworks de conformidade",
+    "areasTitle": "Áreas funcionais a avaliar",
+    "leadersTitle": "Convide os líderes de cada área",
+    "leadersSub": "Opcional nesta fase — poderá convidá-los mais tarde em Equipa.",
+    "inviteName": "Nome",
+    "inviteEmail": "Email",
+    "inviteAdd": "Adicionar convite"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo de volta",
+    "yourOrg": "Sua organização",
+    "pickUp": "Continue de onde parou",
+    "kpis": {
+      "coverage": "Cobertura do assessment",
+      "team": "Equipe ativa",
+      "evidence": "Evidências enviadas",
+      "days": "Dias desde o início"
+    },
+    "modules": "Módulos do assessment",
+    "assistantTitle": "Precisa de ajuda?",
+    "assistantSub": "Descreva sua dúvida e nós orientamos. Quer um olhar humano? Agende um consultor.",
+    "askAI": "Perguntar ao assistente",
+    "bookHuman": "Agendar revisão humana",
+    "resume": "Retomar diagnóstico",
+    "planFree": "Free",
+    "planPro": "Pro",
+    "noAssessmentTitle": "Ainda sem assessment",
+    "noAssessmentCta": "Concluir onboarding",
+    "maturityProgress": "Maturidade",
+    "areasProgress": "Áreas ativas",
+    "upgradeCta": "Fazer upgrade para Pro",
+    "daysUnit": "dias"
+  },
+  "landing": {
+    "navLogin": "Entrar",
+    "eyebrow": "Metodologia YourBrand · 7 módulos · agnóstica de setor",
+    "h1Pre": "O momento da IA é agora.",
+    "h1Em": "Fazer bem não é óbvio.",
+    "sub": "Entre 70% e 85% dos projetos de IA empresarial não entregam o valor esperado. A causa raramente é a tecnologia — é o método. Esta plataforma traduz a metodologia usada pelos consultores YourBrand em um assessment guiado, opcionalmente supervisionado, que sua organização pode percorrer em semanas em vez de meses.",
+    "ctaPrimary": "Comece grátis",
+    "ctaSecondary": "Ver a metodologia",
+    "trustLabel": "Compatível com",
+    "stats": [
+      {
+        "v": "70-85%",
+        "l": "dos projetos de IA empresarial falham por método, não por tecnologia"
+      },
+      {
+        "v": "12-18 meses",
+        "l": "horizonte típico do primeiro caso em produção sem método"
+      },
+      {
+        "v": "3-5×",
+        "l": "diferença de ROI entre organizações com e sem método"
+      }
+    ],
+    "modulesTitle": "Uma metodologia de sete módulos",
+    "modulesSub": "Do alinhamento estratégico à captura sustentada de valor. End-to-end, agnóstica de fornecedor, pronta para regulação e projetada em torno dos pontos onde a maioria das iniciativas realmente falha.",
+    "modules": [
+      {
+        "n": "M1",
+        "t": "Fundamentos estratégicos e alinhamento",
+        "d": "Diagnóstico de maturidade em 5 dimensões, priorização de vetores de valor, apetite de risco."
+      },
+      {
+        "n": "M2",
+        "t": "Diagnóstico e mapa de oportunidades",
+        "d": "Questionário de AI-readiness por área, heatmap, matriz ponderada de valor/esforço."
+      },
+      {
+        "n": "M3",
+        "t": "Portfólio de inovação",
+        "d": "Portfólio de dois horizontes (Quick Wins + transformacional), Comitê de IA, dashboard de 12 métricas."
+      },
+      {
+        "n": "M4",
+        "t": "Marco de decisão de IA",
+        "d": "Regras vs. ML clássico vs. GenAI: árvore de decisão, scoring multicritério, questionário estruturado."
+      },
+      {
+        "n": "M5",
+        "t": "Receitas por área funcional",
+        "d": "Vendas, marketing, atendimento ao cliente, finanças, RH, operações, supply chain, jurídico/compliance."
+      },
+      {
+        "n": "M6",
+        "t": "Implementação e gestão da mudança",
+        "d": "Ciclo de vida técnico (5 fases com gates) + adoção (medo de substituição, XAI, Shadow AI)."
+      },
+      {
+        "n": "M7",
+        "t": "Sustentabilidade e Centro de Excelência",
+        "d": "Modelo operacional, governança, talento, melhoria contínua do portfólio."
+      }
+    ],
+    "diffTitle": "Por que este método é diferente",
+    "diffSub": "Não é teoria de slides. Cada módulo entrega templates, gates, dashboards e questionários que você usa em workshop, não na vitrine.",
+    "diff": [
+      {
+        "t": "Agnóstico de fornecedor",
+        "d": "As decisões são guiadas por critérios, não pelo stack preferido de um parceiro. A ferramenta certa para o problema certo."
+      },
+      {
+        "t": "Quantitativo do início ao fim",
+        "d": "Questionários, matrizes de scoring e critérios ponderados substituem intuição e negociação política."
+      },
+      {
+        "t": "Cobre o que outros ignoram",
+        "d": "Medo de substituição, Shadow AI, design visual de XAI, padrões de workflow humano-IA, calibração de confiança."
+      },
+      {
+        "t": "Compliance-ready por design",
+        "d": "Alinhado com UK GDPR, EU AI Act, NIST AI RMF, ISO 42001 e princípios da OCDE desde o primeiro dia."
+      },
+      {
+        "t": "Execução em duas trilhas",
+        "d": "Implementação técnica e adoção humana correm em paralelo desde o primeiro dia. Nunca sequencialmente."
+      },
+      {
+        "t": "Operacional, não teórico",
+        "d": "Cada módulo entrega templates, gates, dashboards e questionários prontos para uso em workshop."
+      }
+    ],
+    "pricingTitle": "Três formas de começar",
+    "pricingSub": "De um assessment self-service a um engagement completo de 6 meses com consultor sênior. O investimento escala com o nível de acompanhamento humano desejado.",
+    "tiers": [
+      {
+        "name": "Self-service",
+        "price": "A partir de US$ 500",
+        "priceNote": "pagamento único",
+        "meta": "M1 + M2 + M5 · 3-5 horas distribuídas",
+        "features": [
+          "Diagnóstico de maturidade (M1) em 5 dimensões",
+          "Questionários de AI-readiness por área (M2/M5)",
+          "Dashboard interativo + relatório executivo em PDF",
+          "Assistente de IA no contexto do assessment",
+          "Add-ons: revisão de área por consultor (US$ 200) e sessões de suporte (US$ 150)"
+        ],
+        "cta": "Contratar agora",
+        "ctaAct": "goto-login"
+      },
+      {
+        "name": "Diagnóstico estratégico",
+        "price": "A partir de US$ 19.400",
+        "priceNote": "4 semanas",
+        "meta": "M1 + M2 + M3 com a equipe YourBrand",
+        "features": [
+          "Diagnóstico de maturidade com consultor sênior",
+          "Mapa de oportunidades documentado e priorizado",
+          "Portfólio de iniciativas com recomendação de financiamento",
+          "Sessões executivas com o comitê diretivo",
+          "Workshops por área com os líderes de negócio"
+        ],
+        "featured": true,
+        "cta": "Falar com um consultor",
+        "ctaAct": "goto-login"
+      },
+      {
+        "name": "Engagement completo",
+        "price": "Cotação personalizada",
+        "priceNote": "3-6 meses",
+        "meta": "Aplicação end-to-end dos 7 módulos",
+        "features": [
+          "Implementação completa dos 7 módulos, do discovery ao CoE",
+          "Governança de IA + comitê + dashboard de 12 métricas",
+          "Até 5 iniciativas em produção no encerramento",
+          "Execução em duas trilhas: técnica + adoção humana",
+          "Plano de sustentabilidade e Centro de Excelência"
+        ],
+        "cta": "Falar com um consultor",
+        "ctaAct": "goto-login"
+      }
+    ],
+    "finalTitle": "O investimento que sua organização fizer em IA nos próximos 18 meses definirá em grande parte sua posição competitiva pelos próximos cinco anos.",
+    "finalSub": "Assim como a forma de fazê-lo. Comece com um assessment guiado e descubra onde sua organização está no mapa.",
+    "finalCta": "Comece grátis",
+    "footer": "© 2026 YourBrand · Metodologia proprietária · Dados no Reino Unido",
+    "footerLinks": {
+      "terms": "Termos e Condições",
+      "privacy": "Privacidade",
+      "contact": "Contato"
+    },
+    "ctaNote": "Sem cartão de crédito · E-mail corporativo obrigatório"
+  },
+  "terms": {
+    "title": "Termos e Condições de Uso",
+    "lastUpdated": "Última atualização: 5 de maio de 2026",
+    "intro": "Estes Termos e Condições (os \"Termos\") regulam o uso do serviço YourBrand AI Assessment (o \"Serviço\") fornecido pela YourBrand Ltd. (\"YourBrand\"). Ao criar uma conta, contratar o Serviço ou efetuar o pagamento, o cliente (\"Cliente\") declara ter lido, compreendido e aceitado estes Termos em sua totalidade.",
+    "sections": [
+      {
+        "h": "1. Natureza do Serviço",
+        "p": "O Serviço é uma plataforma web que aplica a metodologia YourBrand de implementação de IA em sete módulos. Inclui questionários estruturados, geração automatizada de diagnósticos, dashboard de resultados, relatório executivo e, opcionalmente, sessões de revisão e acompanhamento com consultores YourBrand. O Serviço é fornecido \"TAL COMO ESTÁ\" (AS IS) sob o modelo de Software como Serviço (SaaS)."
+      },
+      {
+        "h": "2. Licença de uso da metodologia e propriedade intelectual",
+        "p": "A metodologia, os questionários, as matrizes de scoring, os templates, os catálogos de casos de uso, os textos do whitepaper e todo material derivado são propriedade intelectual exclusiva da YourBrand e/ou de seus licenciantes. Ao contratar o Serviço, a YourBrand concede ao Cliente uma licença não exclusiva, intransferível, revogável e limitada à duração do contrato, exclusivamente para uso interno do Cliente. É proibido reproduzir, copiar, redistribuir, vender, sublicenciar, traduzir ou criar obras derivadas de qualquer elemento da metodologia, bem como usar a metodologia para prestar serviços de consultoria a terceiros. A marca \"YourBrand\" e a metodologia YourBrand estão protegidas por direitos autorais."
+      },
+      {
+        "h": "3. Política de não reembolso",
+        "p": "O Serviço é um produto de entrega digital com cumprimento imediato. Após a confirmação do pagamento, o Cliente obtém acesso imediato à plataforma, aos questionários, ao conteúdo metodológico e, quando aplicável, às sessões contratadas. Devido à natureza do Serviço, não são concedidos reembolsos, devoluções parciais ou proporcionais por capacidade não utilizada. Esta política aplica-se ao pagamento base, às revisões documentais por área, às sessões de suporte e à validação do relatório final, independentemente do nível de uso efetivo que o Cliente faça do Serviço."
+      },
+      {
+        "h": "4. Confidencialidade",
+        "p": "Cada parte compromete-se a manter confidencial toda informação não pública recebida da outra parte, seja oral, escrita, eletrônica ou em qualquer outro suporte, incluindo respostas ao questionário, documentos de evidência, planos estratégicos, dados financeiros e resultados do diagnóstico. A obrigação de confidencialidade permanece vigente durante a relação contratual e por cinco (5) anos após seu término. A YourBrand implementa controles administrativos, físicos e técnicos para proteger as informações do Cliente, incluindo criptografia em trânsito e em repouso, segregação lógica de dados e acesso pelo princípio do menor privilégio."
+      },
+      {
+        "h": "5. Tratamento de dados pessoais",
+        "p": "Quando o Serviço envolver o tratamento de dados pessoais, o Cliente atua como Controlador (Controller) e a YourBrand como Operadora (Processor). O tratamento é realizado conforme o UK GDPR, o Data Protection Act 2018 e, quando aplicável, o GDPR da UE. Os dados são hospedados em infraestrutura localizada no Reino Unido. O Cliente é responsável por obter todos os consentimentos necessários das pessoas cujos dados sejam carregados na plataforma. Um Acordo de Tratamento de Dados (DPA) está disponível mediante solicitação."
+      },
+      {
+        "h": "6. Ausência de garantia de adequação ou resultados",
+        "p": "O Serviço é fornecido sem garantias de qualquer natureza, expressas ou implícitas, incluindo, sem limitação, garantias de comercialização, adequação a um propósito específico, não violação, exatidão, integridade, ausência de erros ou continuidade. A YourBrand não garante que o Serviço satisfaça necessidades específicas do Cliente, nem que a aplicação da metodologia produza resultados financeiros, operacionais, regulatórios ou estratégicos determinados. O Serviço é de natureza consultiva e indicativa; toda decisão de negócio e toda implementação prática derivada de seu uso são responsabilidade exclusiva do Cliente. As faixas de retorno mencionadas em materiais comerciais são indicativas e não constituem promessa de desempenho."
+      },
+      {
+        "h": "7. Limitação de responsabilidade",
+        "p": "Na máxima medida permitida pela lei aplicável, a responsabilidade acumulada total da YourBrand por qualquer reclamação decorrente ou relacionada a estes Termos ou ao Serviço ficará limitada ao valor efetivamente pago pelo Cliente à YourBrand nos doze (12) meses anteriores ao evento que originou a reclamação. Em nenhum caso a YourBrand será responsável por danos indiretos, incidentais, consequenciais, especiais, exemplares ou punitivos, lucros cessantes, perda de receitas, perda de oportunidade de negócio, perda de dados ou custos de substituição, ainda que tenha sido advertida da possibilidade de tais danos."
+      },
+      {
+        "h": "8. Disponibilidade do Serviço",
+        "p": "A YourBrand fará esforços razoáveis para manter o Serviço disponível, mas não garante disponibilidade ininterrupta. Podem ocorrer interrupções programadas para manutenção, atualizações ou eventos de força maior. O Serviço pode ser modificado, suspenso ou descontinuado, total ou parcialmente, a qualquer momento, com aviso razoável quando viável."
+      },
+      {
+        "h": "9. Suspensão e rescisão",
+        "p": "A YourBrand poderá suspender ou encerrar o acesso do Cliente ao Serviço em caso de violação material destes Termos, uso indevido, tentativa de engenharia reversa, violação dos direitos de propriedade intelectual ou inadimplência. Qualquer das partes poderá rescindir a relação por violação material da outra, mediante notificação prévia de trinta (30) dias, durante os quais a causa da rescisão poderá ser sanada. A rescisão não gera obrigação de reembolso conforme a cláusula 3."
+      },
+      {
+        "h": "10. Modificação dos Termos",
+        "p": "A YourBrand poderá atualizar estes Termos a qualquer momento. As modificações materiais serão notificadas com pelo menos trinta (30) dias de antecedência através da plataforma ou por e-mail ao Cliente. O uso continuado do Serviço após a data efetiva da modificação constitui aceitação dos novos Termos."
+      },
+      {
+        "h": "11. Lei aplicável e jurisdição",
+        "p": "Estes Termos são regidos pelas leis da Inglaterra e do País de Gales. Qualquer disputa decorrente ou relacionada a estes Termos ou ao Serviço estará sujeita à jurisdição exclusiva dos tribunais competentes da Inglaterra e do País de Gales, sem prejuízo dos direitos do consumidor obrigatoriamente concedidos ao Cliente quando este for pessoa física."
+      },
+      {
+        "h": "12. Disposições gerais",
+        "p": "Se alguma disposição destes Termos for considerada inválida ou inexequível, as demais disposições permanecerão em pleno vigor. O não exercício de um direito pela YourBrand não implica renúncia ao mesmo. O Cliente não poderá ceder estes Termos sem consentimento prévio e por escrito da YourBrand. Estes Termos, juntamente com a Política de Privacidade e, quando aplicável, o DPA, constituem o acordo integral entre as partes com respeito ao objeto do Serviço."
+      },
+      {
+        "h": "13. Contato",
+        "p": "Para qualquer dúvida sobre estes Termos, entre em contato com a equipe jurídica da YourBrand em legal@yourbrand.example ou no endereço registrado do responsável pelo tratamento."
+      }
+    ],
+    "back": "Voltar",
+    "iAccept": "Li e aceito os Termos"
+  },
+  "settings": {
+    "title": "Configuração inicial",
+    "sub": "Defina sua equipe, preferências visuais e logotipo. Tudo pode ser ajustado depois em Configurações.",
+    "legalTitle": "Dados legais e de faturamento",
+    "legalSub": "Estes dados aparecerão na fatura do Estimador e em qualquer documento formal gerado.",
+    "legalName": "Razão social",
+    "legalNamePh": "Acme Industrial Ltd.",
+    "address": "Endereço registrado",
+    "addressPh": "12 King Street, Londres EC2V 8EE, Reino Unido",
+    "taxId": "Número de identificação fiscal",
+    "taxIdPh": "GB123456789",
+    "taxIdHelp": "CNPJ, VAT, EIN, NIF, RFC, RUT, CUIT… conforme sua jurisdição fiscal.",
+    "teamTitle": "Equipe do assessment",
+    "teamSub": "Cada membro recebe um convite após a confirmação do pagamento. Os líderes de área podem responder via web ou WhatsApp.",
+    "cName": "Nome",
+    "cEmail": "E-mail",
+    "cPhone": "Telefone / WhatsApp",
+    "cArea": "Área",
+    "selectArea": "Atribuir área…",
+    "addMember": "Adicionar membro",
+    "removeMember": "Remover",
+    "noTeam": "Ainda sem membros. Você pode convidá-los depois.",
+    "prefsTitle": "Preferências visuais",
+    "appLang": "Idioma do app",
+    "appLangDesc": "Idioma para questionários, dashboard, assistente e e-mails.",
+    "theme": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "docTitle": "Documentos gerados",
+    "docLang": "Idioma dos documentos finais",
+    "docLangDesc": "Idioma do relatório executivo em PDF e demais entregáveis. Pode diferir do idioma do app.",
+    "logoTitle": "Logotipo da empresa",
+    "logoSub": "Aparece no dashboard e nos relatórios gerados.",
+    "logoUpload": "Arraste seu logotipo ou clique para enviar",
+    "logoFormats": "PNG, JPG ou SVG · máx. 2 MB · fundo transparente recomendado",
+    "logoChange": "Trocar logotipo",
+    "logoRemove": "Remover"
+  },
+  "estimator2": {
+    "title": "Configure seu pacote e solicite uma cotação",
+    "sub": "Escolha quais áreas avaliar e quanto acompanhamento humano deseja. Sua cotação atualiza ao vivo.",
+    "baseTitle": "Assessment self-service",
+    "baseDesc": "Acesso completo: M1 + M2 + M5, questionários, dashboard, assistente de IA, relatório em PDF.",
+    "baseIncluded": "Sempre incluído",
+    "finalReportTitle": "Validação do relatório final por consultor",
+    "finalReportDesc": "Um consultor YourBrand revisa, calibra e enriquece seu relatório executivo antes da entrega.",
+    "areasTitle": "Áreas funcionais do assessment",
+    "areasSub": "Ative as áreas que deseja avaliar e escolha quanto suporte humano adicionar.",
+    "activate": "Ativar área",
+    "areaReview": "Revisão documental por consultor",
+    "areaReviewDesc": "Um consultor revisa suas respostas e evidências anexadas.",
+    "sessionsLabel": "Sessões remotas de suporte",
+    "sessionsDesc": "Chamadas de 60 min com um consultor para esclarecer e validar respostas. Até 3 por área.",
+    "cartTitle": "Sua cotação",
+    "cartBase": "Assessment self-service",
+    "cartReviews": "{{n}} revisão documental",
+    "cartReviewsPlural": "{{n}} revisões documentais",
+    "cartSessions": "{{n}} sessão de suporte",
+    "cartSessionsPlural": "{{n}} sessões de suporte",
+    "cartFinal": "Validação do relatório final",
+    "cartSubtotal": "Subtotal",
+    "cartDiscount": "Desconto de distribuidor (10%)",
+    "cartTotal": "Total a pagar",
+    "currency": "USD",
+    "activeCount": "{{n}} de 7 áreas ativas",
+    "approveCta": "Aprovar e continuar para o pagamento",
+    "cartNote": "Pagamento único. Sem renovação automática. Fatura emitida na confirmação do pagamento.",
+    "profileSelf": "Perfil self-service",
+    "profileGuided": "Perfil com consultor",
+    "distLabel": "Código de distribuidor",
+    "distApply": "Aplicar",
+    "distChecking": "Validando…",
+    "distApplied": "Código aplicado · -{{pct}}% de desconto",
+    "distInvalid": "Código inválido ou inativo.",
+    "distRemove": "Remover",
+    "checkoutError": "Não foi possível iniciar o pagamento. Tente novamente.",
+    "needAssessment": "Você precisa de uma avaliação ativa para configurar seu pacote.",
+    "sessionsShort": "{{n}} sessões"
+  },
+  "payment": {
+    "title": "Pagamento seguro",
+    "sub": "Seu pacote é ativado na confirmação do pagamento. Processado pela Stripe.",
+    "orderSummary": "Resumo do pacote",
+    "cardSection": "Dados do cartão",
+    "cardHolder": "Nome do titular",
+    "cardHolderPh": "Margaret Carter",
+    "cardNumber": "Número do cartão",
+    "cardExp": "Validade",
+    "cardCvc": "CVC",
+    "billingEmail": "E-mail de faturamento",
+    "distributorTitle": "Código de distribuidor",
+    "distributorDesc": "Chegou através de um parceiro YourBrand? Aplique seu código e ganhe 10% de desconto.",
+    "distributorPh": "ex.: ALLX-PARTNER-2026",
+    "apply": "Aplicar",
+    "remove": "Remover",
+    "applied": "Código {{code}} aplicado · -10% no total",
+    "invalidCode": "Código inválido",
+    "payCta": "Pagar US$ {{amount}}",
+    "securedBy": "Processado pela Stripe · 100% seguro · conforme PCI-DSS",
+    "successTitle": "Pagamento confirmado",
+    "successSub": "Bem-vindo ao YourBrand AI Assessment! Enviamos a fatura para seu e-mail. Seu pacote já está ativo.",
+    "goHome": "Ir para o início",
+    "stripeNote": "Demo: qualquer dado funciona. Em produção, este é um Stripe Element seguro.",
+    "simBadge": "Simulação",
+    "simTitle": "Checkout simulado (modo dev)",
+    "simDesc": "O Stripe é simulado neste ambiente: nenhuma cobrança real é feita. Confirme para marcar o pagamento como concluído.",
+    "simPayCta": "Pagar {{amount}} (simulado)",
+    "simCancel": "Cancelar pagamento",
+    "processing": "Processando pagamento…",
+    "processingDesc": "Confirmando a transação com o provedor de pagamento.",
+    "successChecking": "Verificando seu pagamento…",
+    "successUpgraded": "Seu plano agora é Pro: áreas, resultados e relatório PDF desbloqueados.",
+    "goResults": "Ver resultados",
+    "cancelTitle": "Pagamento cancelado",
+    "cancelDesc": "Nenhuma cobrança foi feita. Sua cotação continua disponível no estimador.",
+    "backToEstimator": "Voltar ao estimador",
+    "failedTitle": "O pagamento não foi concluído",
+    "failedDesc": "O provedor recusou ou cancelou a transação. Você pode tentar novamente.",
+    "missingPayment": "Não encontramos o pagamento desta sessão."
+  },
+  "assistant": {
+    "title": "Assistente YourBrand",
+    "sub": "IA no contexto do seu assessment · respostas indicativas",
+    "welcome": "Olá Max 👋 Sou seu assistente de IA do assessment. Posso ajudar a entender perguntas, priorizar áreas, comparar sua readiness com benchmarks ou resumir seu progresso. Por onde começamos?",
+    "placeholder": "Digite sua pergunta...",
+    "send": "Enviar",
+    "suggestedLabel": "Prompts sugeridos",
+    "suggested": [
+      "Em que ponto estou do assessment?",
+      "Quais áreas devo priorizar?",
+      "O que significa \"catálogo de dados acessível\"?",
+      "Compare minha readiness com o setor de manufatura"
+    ],
+    "tipTitle": "Como me usar",
+    "tip": "Sou mais útil enquanto você responde ao questionário e está em dúvida sobre como pontuar. Pergunte sobre uma questão específica e eu explico o espírito da métrica com exemplos.",
+    "escalate": "Encaminhar a um consultor humano",
+    "replies": {
+      "progress": "Você está em {{pct}}% do assessment geral. Até agora respondeu {{answered}} de 132 perguntas do Diagnóstico de maturidade (M1) e dos kits de área. As áreas mais avançadas são **Atendimento ao Cliente (100%)** e **Vendas B2B (78%)**. Sugiro concluir o M1 antes de abrir novas áreas — o score de maturidade calibra todas as recomendações seguintes.",
+      "prioritize": "Com base no que você respondeu até agora e no seu perfil (manufatura média do Reino Unido, foco em eficiência), eu priorizaria nesta ordem: **1) Atendimento ao Cliente** — já completo, alto pain × alta readiness, Quick Win claro com RAG de tickets. **2) Vendas B2B** — readiness sólida, lead scoring preditivo é um Quick Win óbvio. **3) Operações** — alto impacto mas baixa readiness, invista primeiro em sensores. RH e Jurídico podem esperar.",
+      "catalog": "Um \"catálogo de dados acessível\" mede se um novo analista encontra as fontes de dados essenciais **em minutos, não em semanas**, sem permissões especiais e sem precisar perguntar aos colegas. **Nível 5**: catálogo ativo com lineage, donos, definições e busca. **Nível 3**: documentação dispersa que exige contexto. **Nível 1**: ninguém sabe onde estão os dados até perguntar. Se sua organização está entre 1 e 2, esse provavelmente é seu primeiro trabalho antes de IA séria.",
+      "benchmark": "Manufatureiras médias do Reino Unido (250-2.000 funcionários) costumam ficar no **Nível 2-3 em média** (Repetível→Definido), com as maiores lacunas em **Cultura (1,8/5)** e **Processo de IA (2,1/5)**. Seu score atual de 2,9 está um pouco acima da média. As empresas que passam de 3,5 invariavelmente compartilham: (1) um Centro de Excelência formal, (2) 3+ casos em produção, (3) 12+ meses de execução formal de portfólio. É uma conversa de 18-24 meses, não de um trimestre.",
+      "default": "Boa pergunta. Deixe-me verificar o contexto do seu assessment… Com base no que você tem até agora, eu sugeriria: (1) concluir o bloco de Dados no M1 antes de julgar sua readiness geral, (2) anexar pelo menos uma evidência por bloco para que o diagnóstico seja defensável, e (3) se for sobre uma resposta específica, marque-a com \"Não sei\" para que um consultor a revise com você."
+    }
+  },
+  "moduleCards": {
+    "estimator": {
+      "title": "Estimador estratégico",
+      "sub": "Um one-pager em 10 minutos. Identifique seu perfil A/B/C e a faixa de retorno esperada.",
+      "cta": "Começar",
+      "meta": "10 min · 10 perguntas"
+    },
+    "maturity": {
+      "title": "Diagnóstico de maturidade",
+      "sub": "Pontue sua organização em 5 dimensões (dados, tecnologia, talento, processo, cultura).",
+      "cta": "Continuar",
+      "meta": "~30 min · 20 perguntas"
+    },
+    "areas": {
+      "title": "Áreas funcionais",
+      "sub": "7 áreas com questionário de AI-readiness, catálogo de casos de uso e canvas de oportunidades.",
+      "cta": "Abrir áreas",
+      "meta": "~25 min por área"
+    },
+    "documents": {
+      "title": "Documentos de evidência",
+      "sub": "Anexe evidências por pergunta para que o diagnóstico seja defensável.",
+      "cta": "Enviar",
+      "meta": "PDF · Word · Excel · PNG"
+    },
+    "team": {
+      "title": "Equipe e colaboração",
+      "sub": "Convide líderes por área, acompanhe o progresso e reatribua perguntas.",
+      "cta": "Gerenciar",
+      "meta": "7 áreas · 1 admin + N líderes"
+    },
+    "results": {
+      "title": "Resultados e relatório",
+      "sub": "Dashboard com scores, heatmap, matriz Pain×Readiness e PDF para download.",
+      "cta": "Ver",
+      "meta": "Disponível com 70% do assessment"
+    }
+  },
+  "maturity": {
+    "title": "Diagnóstico de maturidade em 5 dimensões",
+    "sub": "Questionário autoaplicado baseado no Módulo 1 da metodologia.",
+    "dims": [
+      {
+        "id": "datos",
+        "label": "Dados",
+        "desc": "Disponibilidade, qualidade, governança"
+      },
+      {
+        "id": "tech",
+        "label": "Tecnologia",
+        "desc": "Plataforma, integração, MLOps"
+      },
+      {
+        "id": "talento",
+        "label": "Talento",
+        "desc": "Capacidades internas de IA"
+      },
+      {
+        "id": "procesos",
+        "label": "Processo",
+        "desc": "Portfólio, gates, monitoramento"
+      },
+      {
+        "id": "cultura",
+        "label": "Cultura",
+        "desc": "Apetite de risco, adoção"
+      }
+    ],
+    "radarTitle": "Maturidade por dimensão",
+    "overall": "Média geral",
+    "viewSummary": "Ver resumo"
+  },
+  "areas": {
+    "title": "Áreas funcionais",
+    "sub": "Ative, atribua um líder e complete o questionário de AI-readiness de cada área.",
+    "addArea": "Ativar outra área",
+    "filterAll": "Todas",
+    "filterActive": "Ativas",
+    "filterDone": "Concluídas",
+    "filterPending": "Pendentes",
+    "tabs": {
+      "questionnaire": "Questionário",
+      "cases": "Casos do kit",
+      "canvas": "Canvas",
+      "enablers": "Habilitadores"
+    },
+    "activate": "Ativar",
+    "deactivate": "Desativar",
+    "stateActive": "Ativa",
+    "stateInactive": "Inativa",
+    "stateLocked": "Bloqueada",
+    "progressLabel": "Progresso",
+    "questions": "{{n}} perguntas",
+    "activateFirst": "Ative esta área para iniciar o questionário.",
+    "lockedUpgrade": "Disponível no plano Pro. Faça upgrade para ativar áreas.",
+    "casesNote": "Catálogo de referência do kit (somente leitura)."
+  },
+  "areaList": {
+    "ventas": {
+      "name": "Vendas B2B",
+      "icon": "💼",
+      "n": 16
+    },
+    "marketing": {
+      "name": "Marketing & Demand Gen",
+      "icon": "📈",
+      "n": 16
+    },
+    "servicio": {
+      "name": "Atendimento ao Cliente",
+      "icon": "🎧",
+      "n": 16
+    },
+    "finanzas": {
+      "name": "Finanças & Administração",
+      "icon": "🧮",
+      "n": 16
+    },
+    "rrhh": {
+      "name": "RH & Talento",
+      "icon": "👥",
+      "n": 16
+    },
+    "operaciones": {
+      "name": "Operações de Planta",
+      "icon": "🏭",
+      "n": 16
+    },
+    "legal": {
+      "name": "Jurídico & Compliance",
+      "icon": "⚖️",
+      "n": 16
+    }
+  },
+  "blocks": {
+    "A": "Bloco A · Dados",
+    "B": "Bloco B · Processo",
+    "C": "Bloco C · Equipe e cultura",
+    "D": "Bloco D · Estratégia"
+  },
+  "questionnaire": {
+    "back": "Anterior",
+    "next": "Próxima",
+    "saveExit": "Salvar e sair",
+    "skip": "Não tenho certeza",
+    "attach": "Anexar evidência",
+    "whatsapp": "Responder via WhatsApp",
+    "delegate": "Delegar a alguém",
+    "assistant": "Assistente de IA",
+    "assistantBody": "Esta pergunta avalia quão acessíveis e limpos são os dados da sua área para suportar analytics. Pense na última análise que você pediu: quanto tempo levou para ficar disponível?",
+    "example": "Exemplo: em uma organização de nível 4, um novo analista encontra os dados essenciais em menos de 30 minutos sem permissões especiais.",
+    "idk": "Não sei",
+    "progress": "Pergunta {{n}} de {{t}}",
+    "timeLeft": "~{{m}} min restantes",
+    "scale": [
+      "Inexistente",
+      "Baixo",
+      "Médio",
+      "Alto",
+      "Sistemático"
+    ],
+    "scaleHelp": "Escala 1-5: 1 = inexistente / muito baixo · 5 = sistemático / muito alto.",
+    "idkMarked": "Marcado como \"Não sei\" — para revisão humana",
+    "blockComplete": "Bloco concluído",
+    "prelimLevel": "Nível preliminar",
+    "editAnswers": "Editar respostas",
+    "continueBlock": "Continuar para o próximo bloco",
+    "seeModuleSummary": "Ver resumo do módulo",
+    "moduleComplete": "Módulo concluído",
+    "answeredCount": "{{answered}}/{{total}} perguntas respondidas",
+    "continueAreas": "Continuar com áreas",
+    "seeResults": "Ver resultados",
+    "backAreas": "Voltar às áreas",
+    "saving": "Salvando…",
+    "saved": "Salvo",
+    "saveError": "Não foi possível salvar. Tentaremos novamente automaticamente.",
+    "idkShort": "Não sei",
+    "delegatedTo": "Delegada a {{name}}",
+    "levels": [
+      "Sem dados",
+      "Inicial",
+      "Repetível",
+      "Definido",
+      "Gerenciado",
+      "Otimizado"
+    ]
+  },
+  "estimator": {
+    "title": "Estimador estratégico",
+    "sub": "Um one-pager em 10 minutos para perfilar sua organização e estimar o retorno.",
+    "result": "Seu perfil estimado",
+    "profileA": "Perfil A · Média empresa em digitalização",
+    "profileADesc": "200-2.000 funcionários. Foco recomendado: eficiência operacional e experiência do cliente.",
+    "roi": "ROI esperado com método: 3,2× a 4,1× em 18 meses (faixa indicativa).",
+    "next": "Continuar para o diagnóstico de maturidade"
+  },
+  "results": {
+    "title": "Resultados do assessment",
+    "sub": "Seu diagnóstico atualizado ao vivo. Baixe o relatório executivo quando estiver pronto.",
+    "maturityRadar": "Maturidade por dimensão",
+    "heatmap": "Heatmap · áreas × vetores de valor",
+    "matrix": "Matriz Pain × Readiness",
+    "priorities": "Iniciativas priorizadas",
+    "downloadPdf": "Baixar relatório em PDF",
+    "bookReview": "Agendar revisão humana",
+    "vectors": [
+      "Eficiência",
+      "Receita",
+      "Experiência",
+      "Risco",
+      "Talento"
+    ],
+    "overall": "Média geral",
+    "levelLabel": "Nível de maturidade",
+    "dimScores": "Score por dimensão",
+    "notReadyTitle": "Ainda não há resultados",
+    "notReadyDesc": "Responda ao diagnóstico de maturidade para calcular seus resultados. Complete também as áreas pendentes para o panorama completo.",
+    "goMaturity": "Ir ao diagnóstico de maturidade",
+    "goAreas": "Completar áreas pendentes",
+    "pdfPreview": "Pré-visualização do relatório",
+    "pdfNote": "O relatório é gerado no seu navegador, com os dados ao vivo da sua avaliação."
+  },
+  "review": {
+    "title": "Revisão humana",
+    "sub": "Um consultor YourBrand revisa seu assessment, calibra os scores e deixa recomendações por escrito.",
+    "status": "Status atual",
+    "stages": [
+      "Self-service",
+      "Em revisão",
+      "Validado"
+    ],
+    "schedule": "Agendar sessão de validação",
+    "modes": {
+      "sync": "Reunião de 60 min",
+      "async": "Revisão assíncrona (48 h)"
+    },
+    "modesDesc": {
+      "sync": "Videochamada com seu consultor para revisar os resultados.",
+      "async": "O consultor revisa e deixa notas no seu dashboard. Recomendado."
+    },
+    "simulate": "Simular validação completa",
+    "simulateHint": "Demo · marca todos os capítulos como validados",
+    "validatedTitle": "Capítulos validados pelo consultor",
+    "validatedSub": "Revise as notas do consultor por capítulo e avalie o trabalho dele. Seu feedback nos ajuda a manter a qualidade do serviço.",
+    "validatedOn": "Validado em",
+    "validatedBy": "Validado por",
+    "evaluateConsultant": "Avaliar o consultor",
+    "evaluated": "Avaliado",
+    "rerate": "Alterar avaliação",
+    "avgRating": "★ {{n}}/5",
+    "backToReview": "Voltar para \"Em revisão\"",
+    "requestTitle": "Solicitar revisão humana",
+    "requestCta": "Solicitar revisão",
+    "modeLabel": "Modalidade",
+    "requestedInfo": "Você já tem uma revisão em andamento. Avisaremos quando o consultor concluí-la.",
+    "chapters": "Capítulos",
+    "noChapters": "O consultor ainda não validou capítulos.",
+    "consultantLabel": "Consultor designado",
+    "pendingAssign": "Atribuição pendente",
+    "validatedChip": "Validado",
+    "pendingChip": "Pendente",
+    "rateCta": "Avaliar o consultor",
+    "needPro": "A revisão humana está disponível no plano Pro."
+  },
+  "evaluation": {
+    "title": "Avaliar o consultor",
+    "ofChapter": "na validação de",
+    "sub": "Seu feedback é anônimo e ajuda a calibrar a qualidade do serviço. Leva menos de um minuto.",
+    "q1Title": "Conhecimento do problema",
+    "q1Desc": "Quão bem ele/ela entendeu o contexto e os desafios específicos da sua organização?",
+    "q2Title": "Cordialidade e trato",
+    "q2Desc": "Quão respeitoso, acessível e empático foi o consultor durante a revisão?",
+    "q3Title": "Domínio da metodologia",
+    "q3Desc": "Quanto domínio demonstrou da metodologia YourBrand de 7 módulos?",
+    "q4Title": "Comentários (opcional)",
+    "q4Ph": "Algo a destacar, uma sugestão ou um comentário livre…",
+    "labels": [
+      "Muito baixo",
+      "Baixo",
+      "Médio",
+      "Alto",
+      "Excelente"
+    ],
+    "cancel": "Cancelar",
+    "save": "Enviar avaliação",
+    "missing": "Avalie as três dimensões para enviar.",
+    "successTitle": "Obrigado pela sua avaliação!",
+    "successSub": "Nós a compartilhamos com o consultor e com a equipe de qualidade da YourBrand.",
+    "done": "Fechar"
+  },
+  "cases": {
+    "title": "Catálogo de casos de uso do kit",
+    "filterEffort": "Esforço",
+    "filterFamily": "Família de IA",
+    "filterMaturity": "Maturidade",
+    "addToCanvas": "Adicionar ao canvas",
+    "useCase": "Caso de uso",
+    "family": "Família de IA",
+    "effort": "Esforço",
+    "maturity": "Maturidade",
+    "stage": "Estágio"
+  },
+  "documents": {
+    "title": "Documentos de evidência",
+    "sub": "Cada documento está vinculado à pergunta ou área de onde foi enviado.",
+    "drop": "Arraste arquivos ou clique para enviar",
+    "formats": "PDF, DOCX, XLSX, PNG, JPG · máx. 25 MB",
+    "uploadCta": "Enviar arquivos",
+    "selectArea": "Vincular a uma área (opcional)",
+    "noArea": "Sem área",
+    "colName": "Arquivo",
+    "colSize": "Tamanho",
+    "colArea": "Área",
+    "colBy": "Enviado por",
+    "colDate": "Data",
+    "colActions": "Ações",
+    "download": "Baixar",
+    "preview": "Pré-visualizar",
+    "del": "Excluir",
+    "deleteTitle": "Excluir este documento?",
+    "deleteBody": "\"{{name}}\" será excluído permanentemente. Esta ação não pode ser desfeita.",
+    "deleteConfirm": "Sim, excluir",
+    "empty": "Ainda não há documentos de evidência.",
+    "emptySub": "Envie políticas, organogramas ou capturas que sustentem suas respostas.",
+    "uploading": "Enviando {{name}}…",
+    "uploadDone": "\"{{name}}\" enviado.",
+    "uploadFailed": "Não foi possível enviar \"{{name}}\".",
+    "errTooLarge": "\"{{name}}\" excede o limite de 1 GB.",
+    "errType": "Tipo de arquivo não permitido: {{name}}. Formatos: PDF, DOCX, XLSX, PNG, JPG.",
+    "errBackendCap": "O servidor de desenvolvimento aceita até 25 MB por arquivo (erro 413).",
+    "errDownload": "Não foi possível baixar o arquivo. O link pode ter expirado.",
+    "devNote": "Nota: o limite do app é 1 GB por arquivo, mas o backend de desenvolvimento atual processa apenas até 25 MB (fotos e documentos típicos funcionam bem).",
+    "needAssessment": "Você precisa de uma avaliação ativa para enviar evidências."
+  },
+  "team": {
+    "title": "Equipe e colaboração",
+    "sub": "Um líder por área. Cada um responde apenas à sua parte, via web ou WhatsApp.",
+    "invite": "Convidar pessoa",
+    "remind": "Lembrete",
+    "switchWa": "Mover para WhatsApp",
+    "members": "Membros",
+    "invitationsSec": "Convites",
+    "colName": "Nome",
+    "colEmail": "E-mail",
+    "colArea": "Área",
+    "colRole": "Função",
+    "colStatus": "Status",
+    "colActions": "Ações",
+    "roles": {
+      "admin": "Administrador",
+      "leader": "Líder de área"
+    },
+    "memberStatus": {
+      "active": "Ativo",
+      "invited": "Convidado",
+      "pending": "Pendente",
+      "disabled": "Desativado"
+    },
+    "invStatus": {
+      "sent": "Enviado",
+      "accepted": "Aceito",
+      "expired": "Expirado"
+    },
+    "resend": "Reenviar",
+    "resent": "Convite reenviado para {{email}}.",
+    "revoke": "Revogar",
+    "revokeTitle": "Revogar este convite?",
+    "revokeBody": "O link enviado para {{email}} deixará de funcionar.",
+    "revokeConfirm": "Sim, revogar",
+    "empty": "Ainda não há membros na equipe.",
+    "emptyInv": "Nenhum convite enviado.",
+    "errAlready": "Já existe um convite ativo para este e-mail e área.",
+    "errEmail": "O e-mail não parece válido.",
+    "delegationTitle": "Delegação por link externo",
+    "delegationBody": "Você pode delegar perguntas específicas nos questionários (botão “Delegar”). A pessoa recebe um e-mail com um link público e responde apenas essa pergunta; a resposta aparece automaticamente na sua avaliação.",
+    "areaGeneral": "Geral (todas as áreas)"
+  },
+  "inviteModal": {
+    "title": "Convidar uma pessoa para o assessment",
+    "sub": "Ela receberá um e-mail com o link de acesso. Pode responder via web ou WhatsApp.",
+    "name": "Nome",
+    "email": "E-mail corporativo",
+    "whatsapp": "WhatsApp",
+    "phone": "Telefone fixo",
+    "area": "Área atribuída",
+    "selectArea": "Selecione uma área…",
+    "required": "Obrigatório",
+    "optional": "Opcional",
+    "back": "Voltar",
+    "save": "Salvar e convidar",
+    "validationError": "Preencha os campos obrigatórios: nome, e-mail e área.",
+    "emailInvalid": "O e-mail não parece válido.",
+    "successTitle": "Convite enviado",
+    "successSub": "Acabamos de enviar o link de acesso. A pessoa já aparece na sua lista de equipe.",
+    "addAnother": "Convidar outra pessoa",
+    "done": "Concluído"
+  },
+  "waModal": {
+    "title": "Continuar no WhatsApp",
+    "sub": "Enviamos esta pergunta ao WhatsApp do líder responsável e avisamos você aqui quando ele responder.",
+    "preview": "Prévia da mensagem",
+    "send": "Enviar ao WhatsApp do líder",
+    "cancel": "Cancelar",
+    "sample": "Olá Margaret 👋 aqui é o agente YourBrand. Pergunta 1 de 4 do Bloco A · Dados comerciais. Em uma escala de 1 a 5, onde você está? \"Temos um CRM corporativo único com adoção acima de 80%...\""
+  },
+  "examples": {
+    "org": {
+      "name": "Acme Industrial Ltd.",
+      "sector": "Manufatura",
+      "size": "Média (250-2.000)",
+      "country": "Reino Unido"
+    },
+    "sectors": [
+      "Manufatura",
+      "Varejo",
+      "Serviços financeiros",
+      "Saúde",
+      "Serviços profissionais"
+    ],
+    "sizes": [
+      "PME (< 250)",
+      "Média (250-2.000)",
+      "Grande (2.000-10.000)",
+      "Enterprise (10k+)"
+    ],
+    "countries": [
+      "Reino Unido",
+      "Irlanda",
+      "Espanha",
+      "França",
+      "Alemanha"
+    ],
+    "currencies": [
+      "GBP",
+      "EUR",
+      "USD"
+    ],
+    "etaEnd": "Previsão de término: 12/mai",
+    "pickedUpDelta": "+2 esta semana",
+    "evidenceMeta": "PDFs · capturas de tela · planilhas",
+    "teamRole": "Líder",
+    "teamRoleUnassigned": "Não atribuído",
+    "consultant": "P. Holloway",
+    "consultantOrg": "P. Holloway · YourBrand",
+    "sessionDate": "12 mai 2026 · 15:00 BST",
+    "sessionMeta": "P. Holloway · 60 min · Google Meet",
+    "residencyCity": "Reino Unido (Londres · AWS eu-west-2)",
+    "activeFrameworks": [
+      "UK GDPR",
+      "Data Protection Act 2018",
+      "ISO 42001"
+    ],
+    "keyAnswers": [
+      [
+        "Tamanho",
+        "Média (250-2.000)"
+      ],
+      [
+        "Setor",
+        "Manufatura"
+      ],
+      [
+        "Maturidade digital percebida",
+        "Média"
+      ],
+      [
+        "Apetite de risco",
+        "Cauteloso"
+      ],
+      [
+        "Vetor mais urgente",
+        "Eficiência operacional"
+      ]
+    ],
+    "nextSteps": [
+      "Diagnóstico de maturidade (M1)",
+      "Ativar 2-3 áreas centrais",
+      "Enviar evidências essenciais",
+      "Agendar revisão humana"
+    ],
+    "estimatorMeta": {
+      "vector": "Eficiência",
+      "sectorSize": "Manufatura · 250-2.000",
+      "horizonNote": "Primeiro caso em produção"
+    },
+    "docs": [
+      [
+        "data-policy-2025.pdf",
+        "M1 · Dados · P A3",
+        "2,4 MB",
+        "04 mai 2026"
+      ],
+      [
+        "org-chart.pdf",
+        "Onboarding · empresa",
+        "380 KB",
+        "02 mai 2026"
+      ],
+      [
+        "ico-audit-Q1.xlsx",
+        "M1 · Dados · P A2",
+        "1,1 MB",
+        "03 mai 2026"
+      ],
+      [
+        "sales-stack.png",
+        "Vendas · Habilitadores",
+        "780 KB",
+        "04 mai 2026"
+      ],
+      [
+        "crm-screen.png",
+        "Vendas · P A1",
+        "420 KB",
+        "04 mai 2026"
+      ],
+      [
+        "strategic-plan-2026.docx",
+        "Estratégia · M1",
+        "3,8 MB",
+        "01 mai 2026"
+      ]
+    ],
+    "team": [
+      [
+        "M. Carter",
+        "margaret.carter@acme.co.uk",
+        "Vendas B2B",
+        "leader",
+        "in-progress",
+        "78%",
+        "há 2 h"
+      ],
+      [
+        "C. Walsh",
+        "caitlin.walsh@acme.co.uk",
+        "Marketing",
+        "leader",
+        "in-progress",
+        "40%",
+        "ontem"
+      ],
+      [
+        "A. Bennett",
+        "a.bennett@acme.co.uk",
+        "Atendimento",
+        "leader",
+        "done",
+        "100%",
+        "03 mai"
+      ],
+      [
+        "—",
+        "—",
+        "Finanças",
+        "unassigned",
+        "pending",
+        "25%",
+        "—"
+      ],
+      [
+        "—",
+        "—",
+        "RH",
+        "unassigned",
+        "pending",
+        "0%",
+        "—"
+      ],
+      [
+        "J. Hughes",
+        "j.hughes@acme.co.uk",
+        "Operações",
+        "leader",
+        "in-progress",
+        "12%",
+        "há 5 d"
+      ]
+    ],
+    "reviewNotes": [
+      {
+        "title": "Calibração M1 · Cultura",
+        "when": "há 1 dia",
+        "body": "Sugiro que E2 caia de 4 para 3: a organização tolera falha técnica mas penaliza falha de projeto."
+      },
+      {
+        "title": "Validação · Vendas · Habilitadores",
+        "when": "há 3 horas",
+        "body": "ICP marcado como lacuna. Recomendo fechá-la antes de iniciar o caso de lead scoring."
+      }
+    ],
+    "priorities": [
+      [
+        "Lead scoring preditivo",
+        "Vendas",
+        "Receita",
+        4.4,
+        3.7,
+        "qw"
+      ],
+      [
+        "Conversational intelligence",
+        "Vendas",
+        "Experiência",
+        4.1,
+        3.9,
+        "qw"
+      ],
+      [
+        "Assistente de tickets (RAG)",
+        "Atendimento",
+        "Experiência",
+        4.6,
+        4.2,
+        "qw"
+      ],
+      [
+        "Detecção de anomalias de pagamento",
+        "Finanças",
+        "Risco",
+        3.9,
+        2.8,
+        "inv"
+      ],
+      [
+        "Triagem preditiva de RH",
+        "RH",
+        "Talento",
+        3.4,
+        2.1,
+        "wait"
+      ],
+      [
+        "Manutenção preditiva (planta)",
+        "Operações",
+        "Risco",
+        4,
+        2.4,
+        "inv"
+      ]
+    ],
+    "heatmapAreas": [
+      [
+        "Vendas",
+        [
+          3,
+          4,
+          3,
+          1,
+          2
+        ]
+      ],
+      [
+        "Marketing",
+        [
+          2,
+          4,
+          4,
+          1,
+          2
+        ]
+      ],
+      [
+        "Atendimento",
+        [
+          4,
+          2,
+          4,
+          2,
+          3
+        ]
+      ],
+      [
+        "Finanças",
+        [
+          4,
+          2,
+          1,
+          4,
+          2
+        ]
+      ],
+      [
+        "RH",
+        [
+          3,
+          1,
+          2,
+          2,
+          4
+        ]
+      ],
+      [
+        "Operações",
+        [
+          4,
+          2,
+          2,
+          3,
+          3
+        ]
+      ],
+      [
+        "Jurídico",
+        [
+          3,
+          1,
+          1,
+          4,
+          2
+        ]
+      ]
+    ],
+    "areaProgress": {
+      "ventas": {
+        "pct": 78,
+        "leader": "M. Carter",
+        "status": "in-progress"
+      },
+      "marketing": {
+        "pct": 40,
+        "leader": "C. Walsh",
+        "status": "in-progress"
+      },
+      "servicio": {
+        "pct": 100,
+        "leader": "A. Bennett",
+        "status": "done"
+      },
+      "finanzas": {
+        "pct": 25,
+        "leader": "Não atribuído",
+        "status": "pending"
+      },
+      "rrhh": {
+        "pct": 0,
+        "leader": "Não atribuído",
+        "status": "pending"
+      },
+      "operaciones": {
+        "pct": 12,
+        "leader": "J. Hughes",
+        "status": "in-progress"
+      },
+      "legal": {
+        "pct": 0,
+        "leader": "—",
+        "status": "inactive"
+      }
+    },
+    "validatedChapters": [
+      {
+        "id": "m1",
+        "title": "M1 · Diagnóstico de maturidade",
+        "date": "04 mai 2026",
+        "validator": "P. Holloway",
+        "avatar": "PH",
+        "note": "Calibração geral OK. Reduzi Cultura de 2,4 para 2,0 — a organização tolera falha técnica mas penaliza falha de projeto, o que restringe a experimentação. Score global ajustado de 2,9 para 2,7. Recomendo investir em quality gates e em um plano de capacitação por função antes de iniciativas maiores."
+      },
+      {
+        "id": "ventas",
+        "title": "M2/M5 · Vendas B2B",
+        "date": "04 mai 2026",
+        "validator": "P. Holloway",
+        "avatar": "PH",
+        "note": "Lead scoring permanece como Quick Win prioritário, validado. O ICP deve ser fechado antes de iniciar o caso — marquei como pré-requisito. Conversational intelligence também parte, mas só depois que o jurídico aprovar a gravação com consentimento."
+      },
+      {
+        "id": "servicio",
+        "title": "M2/M5 · Atendimento ao Cliente",
+        "date": "03 mai 2026",
+        "validator": "P. Holloway",
+        "avatar": "PH",
+        "note": "O RAG de tickets é o caso com maior ROI esperado de todo o portfólio. Dados em bom estado, equipe motivada, KB atualizada. Recomendo lançar um piloto em 4 semanas com 30% do volume e métricas claras de FCR e CSAT."
+      },
+      {
+        "id": "finanzas",
+        "title": "M2/M5 · Finanças & Administração",
+        "date": "03 mai 2026",
+        "validator": "M. Spencer",
+        "avatar": "MS",
+        "note": "A detecção de anomalias de pagamento exige primeiro limpar o cadastro mestre de fornecedores (12% de duplicatas). Deixei como pré-requisito antes do piloto. O fechamento mensal é um Quick Win de menor risco — recomendo começar por aí."
+      },
+      {
+        "id": "final",
+        "title": "Relatório final consolidado",
+        "date": "05 mai 2026",
+        "validator": "P. Holloway",
+        "avatar": "PH",
+        "note": "Relatório executivo pronto e validado. Os 6 Quick Wins identificados poderiam gerar um retorno estimado de 3,4× em 18 meses se executados na ordem proposta. O próximo passo é apresentar ao comitê diretivo em uma sessão de 90 min para validar prioridades e financiamento."
+      }
+    ],
+    "cases": [
+      {
+        "n": "Lead scoring preditivo",
+        "fam": "ML clássico",
+        "kpi": "MQL→SQL, qualidade do pipeline",
+        "effort": "Quick Win",
+        "mat": 5,
+        "stage": "Geração e qualificação"
+      },
+      {
+        "n": "Enriquecimento automático de leads",
+        "fam": "ML + GenAI",
+        "kpi": "Qualidade do CRM, produtividade SDR",
+        "effort": "Quick Win",
+        "mat": 5,
+        "stage": "Geração e qualificação"
+      },
+      {
+        "n": "Account-based intelligence",
+        "fam": "ML + dados de intenção",
+        "kpi": "Taxa de acerto por conta",
+        "effort": "Médio",
+        "mat": 4,
+        "stage": "Geração e qualificação"
+      },
+      {
+        "n": "Conversational intelligence",
+        "fam": "GenAI + ML",
+        "kpi": "Tempo administrativo do vendedor",
+        "effort": "Quick Win",
+        "mat": 5,
+        "stage": "Inteligência de contas"
+      },
+      {
+        "n": "Previsão de probabilidade de fechamento",
+        "fam": "ML clássico",
+        "kpi": "Precisão do forecast",
+        "effort": "Médio",
+        "mat": 5,
+        "stage": "Inteligência de contas"
+      },
+      {
+        "n": "Detecção de pipeline em risco",
+        "fam": "ML + regras",
+        "kpi": "Taxa de recuperação",
+        "effort": "Médio",
+        "mat": 4,
+        "stage": "Inteligência de contas"
+      },
+      {
+        "n": "Copiloto do vendedor em tempo real",
+        "fam": "GenAI / RAG",
+        "kpi": "AHT, FCR de objeções",
+        "effort": "Médio",
+        "mat": 4,
+        "stage": "Engajamento do comprador"
+      },
+      {
+        "n": "Geração de e-mails personalizados",
+        "fam": "GenAI",
+        "kpi": "Volume de outreach, taxa de resposta",
+        "effort": "Quick Win",
+        "mat": 5,
+        "stage": "Engajamento do comprador"
+      }
+    ]
+  },
+  "leadgate": {
+    "title": "Comece seu diagnóstico grátis",
+    "sub": "Responda às primeiras perguntas do diagnóstico de maturidade sem custo. Só precisamos de alguns dados da sua empresa.",
+    "perks": "Grátis · Sem cartão · Resultado parcial imediato",
+    "name": "Nome completo",
+    "role": "Cargo",
+    "email": "E-mail corporativo",
+    "emailHint": "Use seu e-mail de empresa. Não aceitamos provedores gratuitos (Gmail, Yahoo, Outlook…).",
+    "emailErr": "Insira um e-mail corporativo válido — provedores gratuitos não são permitidos.",
+    "requiredErr": "Preencha todos os campos obrigatórios e aceite os termos.",
+    "company": "Empresa",
+    "size": "Tamanho da empresa",
+    "industry": "Indústria",
+    "country": "País",
+    "sizes": [
+      "1–50",
+      "51–250",
+      "251–1.000",
+      "1.001–2.000",
+      "2.000+"
+    ],
+    "industries": [
+      "Manufatura",
+      "Serviços financeiros",
+      "Varejo",
+      "Saúde",
+      "Logística",
+      "Tecnologia",
+      "Outro"
+    ],
+    "countries": [
+      "Reino Unido",
+      "Brasil",
+      "Portugal",
+      "Espanha",
+      "Chile",
+      "México",
+      "Outro"
+    ],
+    "terms": "Aceito os",
+    "cta": "Começar diagnóstico grátis",
+    "back": "← Voltar",
+    "goLogin": "Ir para entrar",
+    "submitting": "Criando sua conta…",
+    "errors": {
+      "required": "Campo obrigatório.",
+      "emailInvalid": "Insira um e-mail válido.",
+      "alreadyExists": "Já existe uma conta com este e-mail.",
+      "terms": "Você deve aceitar os termos e condições."
+    }
+  },
+  "paywall": {
+    "eyebrow": "Prévia gratuita concluída",
+    "title": "Desbloqueie seu diagnóstico completo",
+    "sub": "Você respondeu às perguntas gratuitas. O diagnóstico completo revela seu score por dimensão, o relatório executivo e as áreas de aplicação priorizadas.",
+    "teaser": "Seu resultado parcial",
+    "partial": "Score parcial (prévia gratuita)",
+    "includesTitle": "O diagnóstico completo inclui",
+    "includes": [
+      "20 perguntas · 5 dimensões de maturidade",
+      "Questionários por área (vendas, finanças, RH, operações…)",
+      "Radar de maturidade e heatmap de oportunidades",
+      "Relatório executivo para download",
+      "Revisão opcional por um consultor"
+    ],
+    "from": "A partir de US$ 500",
+    "note": "Pagamento único · Garantia de 14 dias",
+    "cta": "Desbloquear diagnóstico completo",
+    "cta2": "Falar com um consultor",
+    "backFree": "Continuar com a prévia gratuita"
+  },
+  "freemium": {
+    "chip": "Prévia gratuita",
+    "counter": "perguntas gratuitas usadas",
+    "locked": "Bloqueado no plano gratuito",
+    "upgrade": "Desbloquear",
+    "pro": "Pro",
+    "limitReached": "Você atingiu o limite da prévia gratuita ({{limit}} perguntas)."
+  },
+  "consultant": {
+    "loginLink": "Sou consultor — acessar o painel",
+    "title": "Painel do consultor",
+    "sub": "Leads, clientes e progresso dos engagements",
+    "logout": "Sair",
+    "kpis": {
+      "leads": "Leads (free)",
+      "active": "Engagements ativos",
+      "avg": "Maturidade média",
+      "conv": "Conversão free → pago"
+    },
+    "th": {
+      "client": "Cliente",
+      "plan": "Plano",
+      "progress": "Progresso",
+      "score": "Maturidade",
+      "status": "Status",
+      "last": "Últ. atividade"
+    },
+    "plans": {
+      "free": "Free",
+      "diag": "Diagnóstico",
+      "full": "Full"
+    },
+    "statuses": {
+      "lead": "Lead novo",
+      "inprog": "Em andamento",
+      "review": "Em revisão",
+      "done": "Validado",
+      "stalled": "Parado"
+    },
+    "back": "← Voltar aos clientes",
+    "detail": "Detalhe do cliente",
+    "dims": "Dimensões de maturidade",
+    "actions": "Ações",
+    "report": "Ver relatório",
+    "contact": "Contatar",
+    "note": "Adicionar nota",
+    "empty": "—",
+    "searchPh": "Buscar cliente…",
+    "allPlans": "Todos os planos",
+    "allStatuses": "Todos os status",
+    "noClients": "Nenhum cliente com estes filtros.",
+    "viewDetail": "Ver detalhe",
+    "notesTitle": "Notas do consultor",
+    "notePh": "Escreva uma nota sobre este cliente…",
+    "noteSend": "Salvar nota",
+    "noteSaved": "Nota salva.",
+    "notesLocalNote": "O histórico de notas não é exposto pela API; aqui aparecem as notas criadas nesta sessão.",
+    "progressLabel": "Progresso",
+    "maturityLabel": "Maturidade"
+  },
+  "delegateModal": {
+    "title": "Delegar esta pergunta",
+    "sub": "A pessoa receberá um e-mail com um link direto, apenas para esta pergunta. A resposta dela aparece automaticamente no seu assessment.",
+    "name": "Nome",
+    "email": "E-mail corporativo",
+    "required": "Obrigatório",
+    "cancel": "Cancelar",
+    "send": "Enviar pergunta",
+    "validationError": "Informe o nome e um e-mail válido.",
+    "successTitle": "Pergunta enviada",
+    "successSub": "Enviamos a pergunta para {{name}}. Avisaremos você quando houver resposta.",
+    "continue": "Continuar para a próxima pergunta"
+  },
+  "resultsUI": {
+    "radarTitle": "Média: 2,9 · Nível 2-3 (Repetível → Definido)",
+    "heatTitle": "Concentração de oportunidades",
+    "matrixTitle": "Iniciativas posicionadas na matriz",
+    "prioTitle": "12 iniciativas detectadas — top 6",
+    "thInitiative": "Iniciativa",
+    "thArea": "Área",
+    "thVector": "Vetor",
+    "thReco": "Recomendação",
+    "reco": {
+      "qw": "Quick Win prioritário",
+      "inv": "Investir em habilitadores",
+      "wait": "Ainda não é o momento",
+      "opp": "Oportunidade sem urgência"
+    },
+    "legend": {
+      "low": "Marginal",
+      "mid": "Média",
+      "high": "Alta"
+    },
+    "quad": {
+      "hpLr": "Alto pain · baixa readiness",
+      "hpHr": "Alto pain · alta readiness",
+      "lpLr": "Baixo pain · baixa readiness",
+      "lpHr": "Baixo pain · alta readiness"
+    },
+    "quadEx": {
+      "hpLr": "Manutenção preditiva · Anomalias de pagamento",
+      "hpHr": "Lead scoring · RAG de tickets · Conversational intelligence",
+      "lpLr": "Triagem de RH · Forecast complexo",
+      "lpHr": "Geração de e-mails · Busca semântica"
+    },
+    "axisPain": "PAIN ↑",
+    "axisReadiness": "READINESS →"
+  },
+  "testmode": {
+    "badge": "Modo de teste",
+    "title": "Acesso de teste (Pro)",
+    "desc": "Entre como usuário demo no plano Pro com dados de exemplo pré-carregados: percorra as 132 perguntas, áreas, resultados, equipe e revisão sem restrições.",
+    "cta": "Explorar o wireframe completo",
+    "user": "Usuário de teste"
+  },
+  "common": {
+    "appTagline": "Bridge the AI Gap",
+    "loading": "A carregar…",
+    "errorGeneric": "Algo correu mal. Tente novamente.",
+    "retry": "Tentar novamente",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "logout": "Terminar sessão",
+    "myAccount": "A minha conta",
+    "language": "Idioma",
+    "theme": "Tema",
+    "themeLight": "Claro",
+    "themeDark": "Escuro",
+    "toggleTheme": "Alternar tema",
+    "toggleMenu": "Alternar menu",
+    "todo": "TODO (fase 2)",
+    "backendOffline": "Não foi possível contactar o backend. Pode continuar; os dados serão sincronizados mais tarde.",
+    "noAssessment": "Não encontramos uma avaliação para sua organização.",
+    "startDiagnostic": "Começar diagnóstico",
+    "upgrade": "Desbloquear",
+    "next": "Seguinte",
+    "back": "Anterior",
+    "confirm": "Confirmar",
+    "del": "Excluir",
+    "download": "Baixar",
+    "close": "Fechar",
+    "prev": "Anterior",
+    "nextPage": "Próxima",
+    "pageInfo": "Página {{page}} de {{pages}}",
+    "status": "Status"
+  },
+  "auth": {
+    "checkInboxTitle": "Verifique a sua caixa de entrada",
+    "checkInboxSub": "Se o email existir, enviámos um link mágico para {{email}}. Expira em 15 minutos.",
+    "resend": "Reenviar link",
+    "useAnotherEmail": "Usar outro email",
+    "devHint": "DEV: o backend não envia email real localmente — copie o magic link impresso na consola do uvicorn e abra-o aqui.",
+    "verifying": "A verificar o seu link…",
+    "verifyError": "Este link é inválido ou expirou.",
+    "backToLogin": "Voltar ao login",
+    "missingToken": "Token em falta na URL.",
+    "invalidEmail": "Introduza um email válido."
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "sub": "A rota que procura não existe ou foi movida.",
+    "cta": "Ir para o dashboard"
+  },
+  "delegatePage": {
+    "greeting": "Olá, {{name}}",
+    "intro": "Pediram que você respondesse a uma pergunta de um diagnóstico de maturidade em IA. Você vê apenas esta pergunta; sua resposta é registrada diretamente.",
+    "questionFallback": "Pergunta {{code}}",
+    "submit": "Enviar resposta",
+    "successTitle": "Resposta registrada!",
+    "successSub": "Obrigado pelo seu tempo. Sua resposta já está na avaliação. Você pode fechar esta aba.",
+    "answeredTitle": "Esta pergunta já foi respondida",
+    "answeredSub": "O link é de uso único. Se acha que é um erro, contate quem o enviou.",
+    "expiredTitle": "Este link expirou",
+    "expiredSub": "Peça a quem enviou que crie uma nova delegação.",
+    "invalidTitle": "Link inválido",
+    "invalidSub": "Não encontramos esta delegação. Verifique se o link está completo.",
+    "errValue": "Selecione um valor entre 1 e 5."
+  },
+  "resultsPdf": {
+    "coverTitle": "Relatório executivo de maturidade em IA",
+    "coverSub": "Diagnóstico TryAIGap · Metodologia de 7 módulos",
+    "generatedOn": "Gerado em {{date}}",
+    "overallScore": "Média geral: {{avg}} / 5 · Nível: {{level}}",
+    "methodology": "Metodologia",
+    "methodologyBody": "Este diagnóstico avalia a maturidade em IA da organização em 5 dimensões (dados, tecnologia, talento, processos e cultura) numa escala de 1 a 5, e prioriza iniciativas por área funcional segundo dor e readiness.",
+    "dimTitle": "Maturidade por dimensão",
+    "dimName": "Dimensão",
+    "dimScore": "Score (0-5)",
+    "heatTitle": "Mapa de calor · áreas × vetores de valor",
+    "prioTitle": "Iniciativas priorizadas",
+    "recoTitle": "Recomendações e próximos passos",
+    "nextSteps": [
+      "Complete os questionários das áreas prioritárias e anexe evidências documentais.",
+      "Ataque primeiro os quick wins de alta dor e alta prontidão.",
+      "Solicite uma revisão humana para calibrar os scores e enriquecer o relatório."
+    ],
+    "footer": "TryAIGap · Bridge the AI Gap"
+  }
+}
