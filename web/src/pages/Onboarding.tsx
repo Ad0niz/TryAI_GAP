@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { useAuthStore } from '@/store/authStore';
 import { cn } from '@/lib/utils';
+import { toast} from "sonner";
 
 const DRAFT_KEY = 'tryaigap.onboarding_draft';
 
@@ -138,7 +139,12 @@ export default function Onboarding() {
 
   async function saveProfile(): Promise<void> {
     const orgId = user?.organization_id;
-    if (!orgId) return; // nothing to PATCH yet (org created by backend flow)
+    if (!orgId) {
+        toast.error("error de sesión", {
+        description: "No se encontró tu organización. Por favor, recarga la página."
+        });
+        return; // nothing to PATCH yet (org created by backend flow)
+    }
     try {
       await updateOrganization(orgId, {
         name: draft.profile.name || undefined,
@@ -147,7 +153,7 @@ export default function Onboarding() {
         country: draft.profile.country || undefined,
         currency: draft.profile.currency || undefined,
       });
-    } catch (e) {
+    } catch (e: any) {
       if (e instanceof ApiError && e.status > 0 && e.status < 500) throw e; // real validation error
       setOfflineNote(true); // backend offline: draft is already in localStorage
     }
