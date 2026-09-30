@@ -138,26 +138,26 @@ export default function Onboarding() {
   }
 
   async function saveProfile(): Promise<void> {
-    const orgId = user?.organization_id;
-    if (!orgId) {
-        toast.error("error de sesión", {
-        description: "No se encontró tu organización. Por favor, recarga la página."
+      const orgId = user?.organization_id;
+      if (!orgId) {
+        toast.error("Error de sesión", {
+          description: "No se encontró tu organización. Por favor, recarga la página."
         });
-        return; // nothing to PATCH yet (org created by backend flow)
+        return;
+      }
+      try {
+        await updateOrganization(orgId, {
+          name: draft.profile.name || undefined,
+          sector: draft.profile.sector || undefined,
+          size: draft.profile.size || undefined,
+          country: draft.profile.country || undefined,
+          currency: draft.profile.currency || undefined,
+        });
+      } catch (e: unknown) {
+        if (e instanceof ApiError && e.status > 0 && e.status < 500) throw e;
+        setOfflineNote(true);
+      }
     }
-    try {
-      await updateOrganization(orgId, {
-        name: draft.profile.name || undefined,
-        sector: draft.profile.sector || undefined,
-        size: draft.profile.size || undefined,
-        country: draft.profile.country || undefined,
-        currency: draft.profile.currency || undefined,
-      });
-    } catch (e: any) {
-      if (e instanceof ApiError && e.status > 0 && e.status < 500) throw e; // real validation error
-      setOfflineNote(true); // backend offline: draft is already in localStorage
-    }
-  }
 
   async function sendInvites(): Promise<void> {
     for (const leader of draft.leaders) {
