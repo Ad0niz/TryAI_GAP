@@ -67,10 +67,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     persistUser(user);
     set({ user, status: 'authenticated' });
     // Hydrate the full profile (organization_id etc.) in the background.
-    void get()
-      .hydrate()
-      .catch(() => undefined);
-    return user;
+    await get()
+    .hydrate()
+    .catch(() => undefined);
+
+    return get().user ?? user;
   },
 
   async logout() {
