@@ -1496,6 +1496,7 @@
   },
   "common": {
     "appTagline": "Bridge the AI Gap",
+    "solutionTagline": "Eine Lösung von Klertech",
     "loading": "Wird geladen…",
     "errorGeneric": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
     "retry": "Erneut versuchen",

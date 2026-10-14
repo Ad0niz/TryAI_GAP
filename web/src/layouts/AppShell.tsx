@@ -136,7 +136,7 @@ export function AppShell() {
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar lg:flex">
         <div className="px-4 py-4">
-          <BrandLogo compact />
+          <BrandLogo size="sm" />
         </div>
         <NavSection />
       </aside>
@@ -151,7 +151,7 @@ export function AppShell() {
           />
           <aside className="absolute left-0 top-0 flex h-full w-64 flex-col bg-sidebar shadow-xl">
             <div className="flex items-center justify-between px-4 py-4">
-              <BrandLogo compact />
+              <BrandLogo size="sm" />
               <Button
                 variant="ghost"
                 size="icon"
@@ -167,7 +167,7 @@ export function AppShell() {
       )}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur">
+        <header className="sticky top-0 z-35 flex h-16 items-center gap-2 border-b border-[#DCE3EE] dark:border-sidebar-border bg-background/80 px-6 backdrop-blur">
           <Button
             variant="ghost"
             size="icon"
@@ -178,7 +178,7 @@ export function AppShell() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="lg:hidden">
-            <BrandLogo compact />
+            <BrandLogo size="sm" />
           </div>
           <div className="ml-auto flex items-center gap-1">
             <LanguageSwitcher />
