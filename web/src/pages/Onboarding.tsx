@@ -189,7 +189,7 @@ export default function Onboarding() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex h-16 items-center justify-between px-4 md:px-8">
-        <BrandLogo compact />
+        <BrandLogo />
         <div className="flex items-center gap-1">
           <LanguageSwitcher />
           <ThemeToggle />
