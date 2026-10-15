@@ -306,6 +306,24 @@
     "iAccept": "Li e aceito os Termos"
   },
   "settings": {
+    "organization": {
+      "title": "Dados da empresa",
+      "description": "Consulte e atualize as informações da sua organização.",
+      "loadingSession": "Carregando sessão…",
+      "noSession": "Entre para consultar sua organização.",
+      "noOrganization": "Nenhuma organização está associada ao seu usuário. Se você acabou de entrar, recarregue a página.",
+      "loading": "Carregando dados da organização…",
+      "loadError": "Não foi possível carregar os dados da organização.",
+      "retry": "Tentar novamente",
+      "plan": "Plano (somente leitura)",
+      "metadataError": "Não foi possível carregar os catálogos. Você pode editar os campos de texto ou tentar novamente.",
+      "loadingCatalogs": "Carregando catálogos…",
+      "clear": "Remover",
+      "saveError": "Não foi possível salvar as alterações. Suas alterações continuam no formulário; tente novamente.",
+      "saved": "Dados da organização salvos.",
+      "save": "Salvar alterações",
+      "saving": "Salvando…"
+    },
     "title": "Configuração inicial",
     "sub": "Defina sua equipe, preferências visuais e logotipo. Tudo pode ser ajustado depois em Configurações.",
     "legalTitle": "Dados legais e de faturamento",

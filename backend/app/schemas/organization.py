@@ -18,6 +18,11 @@ class OrgOut(BaseModel):
     size: Optional[str] = None
     country: Optional[str] = None
     currency: str
+
+    legal_name: Optional[str] = None
+    address: Optional[str] = None
+    tax_id: Optional[str] = None
+
     plan: str
     settings: OrgSettings
 
