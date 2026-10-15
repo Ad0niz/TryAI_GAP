@@ -86,19 +86,24 @@ export interface Organization {
   size?: string | null;
   country?: string | null;
   currency: string;
+
+  legal_name?: string | null;
+  address?: string | null;
+  tax_id?: string | null;
+
   plan: string;
   settings: OrgSettings;
 }
 
 export interface OrgUpdate {
   name?: string;
-  sector?: string;
-  size?: string;
-  country?: string;
+  sector?: string | null;
+  size?: string | null;
+  country?: string | null;
   currency?: string;
-  legal_name?: string;
-  address?: string;
-  tax_id?: string;
+  legal_name?: string | null;
+  address?: string | null;
+  tax_id?: string | null;
   doc_locale?: string;
   theme?: string;
 }

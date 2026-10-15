@@ -306,6 +306,24 @@
     "iAccept": "Ich habe die Bedingungen gelesen und akzeptiere sie"
   },
   "settings": {
+    "organization": {
+      "title": "Unternehmensdaten",
+      "description": "Informationen Ihrer Organisation anzeigen und aktualisieren.",
+      "loadingSession": "Sitzung wird geladen…",
+      "noSession": "Melden Sie sich an, um Ihre Organisation anzuzeigen.",
+      "noOrganization": "Ihrem Benutzer ist keine Organisation zugeordnet. Wenn Sie sich gerade angemeldet haben, laden Sie die Seite neu.",
+      "loading": "Organisationsdaten werden geladen…",
+      "loadError": "Die Organisationsdaten konnten nicht geladen werden.",
+      "retry": "Erneut versuchen",
+      "plan": "Tarif (schreibgeschützt)",
+      "metadataError": "Die Kataloge konnten nicht geladen werden. Sie können Textfelder bearbeiten oder es erneut versuchen.",
+      "loadingCatalogs": "Kataloge werden geladen…",
+      "clear": "Entfernen",
+      "saveError": "Die Änderungen konnten nicht gespeichert werden. Ihre Änderungen bleiben im Formular; versuchen Sie es erneut.",
+      "saved": "Organisationsdaten gespeichert.",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert…"
+    },
     "title": "Ersteinrichtung",
     "sub": "Definieren Sie Ihr Team, visuelle Präferenzen und Logo. Alles kann später in den Einstellungen angepasst werden.",
     "legalTitle": "Rechts- & Rechnungsdaten",
