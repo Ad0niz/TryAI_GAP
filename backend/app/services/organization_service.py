@@ -26,6 +26,9 @@ def serialize_org(org: Organization) -> dict:
         "size": org.size,
         "country": org.country,
         "currency": org.currency,
+        "legal_name": org.legal_name,
+        "address": org.address,
+        "tax_id": org.tax_id,
         "plan": org.plan,
         "settings": {
             "doc_locale": org.doc_locale,

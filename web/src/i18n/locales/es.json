@@ -306,6 +306,24 @@
     "iAccept": "He leído y acepto los Términos"
   },
   "settings": {
+    "organization": {
+      "title": "Datos de la empresa",
+      "description": "Consulta y actualiza la información de tu organización.",
+      "loadingSession": "Cargando sesión…",
+      "noSession": "Inicia sesión para consultar tu organización.",
+      "noOrganization": "No se encontró una organización asociada a tu usuario. Si acabas de iniciar sesión, vuelve a cargar la página.",
+      "loading": "Cargando datos de la organización…",
+      "loadError": "No se pudieron cargar los datos de la organización.",
+      "retry": "Reintentar",
+      "plan": "Plan (solo lectura)",
+      "metadataError": "No se pudieron cargar los catálogos. Puedes editar los datos de texto o reintentar.",
+      "loadingCatalogs": "Cargando catálogos…",
+      "clear": "Quitar",
+      "saveError": "No se pudieron guardar los cambios. Tus cambios siguen en el formulario; vuelve a intentarlo.",
+      "saved": "Datos de la organización guardados.",
+      "save": "Guardar cambios",
+      "saving": "Guardando…"
+    },
     "title": "Configuración inicial",
     "sub": "Define tu equipo, preferencias visuales y logo. Todo se puede ajustar después desde Configuración.",
     "legalTitle": "Datos legales y de facturación",
@@ -1495,6 +1513,7 @@
   },
   "common": {
     "appTagline": "Bridge the AI Gap",
+    "solutionTagline": "Una solución de Klertech",
     "loading": "Cargando…",
     "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
     "retry": "Reintentar",

@@ -306,6 +306,24 @@
     "iAccept": "I have read and accept the Terms"
   },
   "settings": {
+    "organization": {
+      "title": "Company details",
+      "description": "View and update your organization's information.",
+      "loadingSession": "Loading session…",
+      "noSession": "Sign in to view your organization.",
+      "noOrganization": "No organization is linked to your user. If you just signed in, reload the page.",
+      "loading": "Loading organization details…",
+      "loadError": "Could not load organization details.",
+      "retry": "Retry",
+      "plan": "Plan (read only)",
+      "metadataError": "Could not load the catalogs. You can edit text fields or retry.",
+      "loadingCatalogs": "Loading catalogs…",
+      "clear": "Clear",
+      "saveError": "Could not save changes. Your changes are still in the form; please try again.",
+      "saved": "Organization details saved.",
+      "save": "Save changes",
+      "saving": "Saving…"
+    },
     "title": "Initial settings",
     "sub": "Define your team, visual preferences and logo. Everything can be adjusted later from Settings.",
     "legalTitle": "Legal & billing details",
@@ -1495,6 +1513,7 @@
   },
   "common": {
     "appTagline": "Bridge the AI Gap",
+    "solutionTagline": "A Klertech solution",
     "loading": "Loading…",
     "errorGeneric": "Something went wrong. Please try again.",
     "retry": "Retry",
