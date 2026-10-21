@@ -407,7 +407,7 @@ export interface MaturityBlock {
 
 export interface HeatmapArea {
   name: string;
-  row: number[];
+  row: (number | null)[];
 }
 
 export interface HeatmapBlock {

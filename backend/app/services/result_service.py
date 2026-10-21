@@ -15,6 +15,7 @@ from app.core.errors import APIError
 from app.core.security import now_utc
 from app.integrations.storage import signed_url
 from app.models import Answer, Assessment, Question, ReportJob
+from app.services.questionnaire_service import AREA_KEYS, area_name
 
 # ------------------------------------------------------------------ i18n tables
 LOCALES = ("es", "en", "de", "pt")
@@ -46,54 +47,11 @@ _VECTORS: List[Dict[str, str]] = [
     {"es": "Talento", "en": "Talent", "de": "Talent", "pt": "Talento"},
 ]
 
-# Representative sample data (localized) for parts that are out of scope.
-_AREA_NAMES: Dict[str, List[str]] = {
-    "es": ["Operaciones", "Ventas", "Finanzas", "Marketing"],
-    "en": ["Operations", "Sales", "Finance", "Marketing"],
-    "de": ["Betrieb", "Vertrieb", "Finanzen", "Marketing"],
-    "pt": ["Operações", "Vendas", "Finanças", "Marketing"],
-}
-
-_SAMPLE_ROWS: List[List[int]] = [
-    [4, 3, 2, 3, 2],
-    [3, 4, 3, 2, 3],
-    [2, 2, 3, 4, 2],
-    [3, 3, 4, 2, 3],
-]
-
-_PRIORITIES: Dict[str, List[dict]] = {
-    "es": [
-        {"initiative": "Automatización de reportes", "area": "Operaciones", "vector": "Eficiencia",
-         "pain": 4, "readiness": 3, "recommendation": "qw"},
-        {"initiative": "Segmentación de clientes con IA", "area": "Ventas", "vector": "Ingresos",
-         "pain": 3, "readiness": 2, "recommendation": "inv"},
-        {"initiative": "Gobierno de datos", "area": "Finanzas", "vector": "Riesgo",
-         "pain": 5, "readiness": 1, "recommendation": "wait"},
-    ],
-    "en": [
-        {"initiative": "Reporting automation", "area": "Operations", "vector": "Efficiency",
-         "pain": 4, "readiness": 3, "recommendation": "qw"},
-        {"initiative": "AI customer segmentation", "area": "Sales", "vector": "Revenue",
-         "pain": 3, "readiness": 2, "recommendation": "inv"},
-        {"initiative": "Data governance", "area": "Finance", "vector": "Risk",
-         "pain": 5, "readiness": 1, "recommendation": "wait"},
-    ],
-    "de": [
-        {"initiative": "Automatisierung des Berichtswesens", "area": "Betrieb", "vector": "Effizienz",
-         "pain": 4, "readiness": 3, "recommendation": "qw"},
-        {"initiative": "KI-Kundensegmentierung", "area": "Vertrieb", "vector": "Umsatz",
-         "pain": 3, "readiness": 2, "recommendation": "inv"},
-        {"initiative": "Data Governance", "area": "Finanzen", "vector": "Risiko",
-         "pain": 5, "readiness": 1, "recommendation": "wait"},
-    ],
-    "pt": [
-        {"initiative": "Automação de relatórios", "area": "Operações", "vector": "Eficiência",
-         "pain": 4, "readiness": 3, "recommendation": "qw"},
-        {"initiative": "Segmentação de clientes com IA", "area": "Vendas", "vector": "Receita",
-         "pain": 3, "readiness": 2, "recommendation": "inv"},
-        {"initiative": "Governança de dados", "area": "Finanças", "vector": "Risco",
-         "pain": 5, "readiness": 1, "recommendation": "wait"},
-    ],
+# These labels correspond to actual questionnaire blocks, not value vectors.
+# A block-to-business-value-vector mapping has NOT been agreed or stored.
+AREA_BLOCKS = ("A", "B", "C", "D")
+BLOCK_LABELS = {
+    "es": "Bloque", "en": "Block", "de": "Block", "pt": "Bloco",
 }
 
 
@@ -173,6 +131,47 @@ async def compute_dimension_scores(
     return scores, len(rows)
 
 
+async def compute_area_scores(
+    db: AsyncSession, assessment_id: uuid.UUID
+) -> Dict[str, dict]:
+    """Return real per-area averages and per-block averages (A-D).
+
+    A missing answer is not equivalent to a zero. Only numeric 'answered'
+    responses belong to the score; unknown or delegated responses are excluded.
+    No derived score is persisted: the next request reflects answer changes.
+    """
+    stmt = (
+        select(Question.area_key, Question.block_id, Answer.value)
+        .join(Question, Question.id == Answer.question_id)
+        .where(
+            Answer.assessment_id == assessment_id,
+            Question.module == "area",
+            Answer.state == "answered",
+            Answer.value.isnot(None),
+        )
+    )
+    rows = (await db.execute(stmt)).all()
+
+    grouped: Dict[str, Dict[str, List[int]]] = {}
+    for area, block, value in rows:
+        if area not in AREA_KEYS or block not in AREA_BLOCKS or value is None:
+            continue
+        grouped.setdefault(area, {}).setdefault(block, []).append(value)
+
+    result: Dict[str, dict] = {}
+    for area, per_block in grouped.items():
+        all_values = [v for values in per_block.values() for v in values]
+        result[area] = {
+            "overall": round(sum(all_values) / len(all_values), 1),
+            "blocks": {
+                block: round(sum(per_block[block]) / len(per_block[block]), 1)
+                if per_block.get(block) else None
+                for block in AREA_BLOCKS
+            },
+        }
+    return result
+
+
 # --------------------------------------------------------------- tenancy helper
 async def _owned_assessment(
     db: AsyncSession, current: CurrentUser, assessment_id: uuid.UUID
@@ -204,16 +203,26 @@ async def build_result(
     average = round(sum(present) / len(present), 1) if present else 0.0
     level = level_for(average, locale)
 
-    area_names = _AREA_NAMES[locale]
+    area_scores = await compute_area_scores(db, assessment_id)
     areas = [
-        {"name": name, "row": list(_SAMPLE_ROWS[i % len(_SAMPLE_ROWS)])}
-        for i, name in enumerate(area_names)
+        {
+            "name": area_name(key, locale),
+            "row": [area_scores[key]["blocks"][block] for block in AREA_BLOCKS],
+        }
+        for key in AREA_KEYS if key in area_scores
     ]
 
     return {
         "maturity": {"average": average, "level": level, "dimensions": dimensions},
-        "heatmap": {"vectors": vectors_for(locale), "areas": areas},
-        "priorities": [dict(p) for p in _PRIORITIES[locale]],
+        # Compatibility: schema still names this field 'vectors', but these
+        # are explicitly questionnaire blocks, not unsupported value vectors.
+        "heatmap": {
+            "vectors": [f"{BLOCK_LABELS[locale]} {block}" for block in AREA_BLOCKS],
+            "areas": areas,
+        },
+        # Pain is not collected in the current questionnaire/DB. Never return
+        # fixed example recommendations as if they belonged to this company.
+        "priorities": [],
     }
 
 

@@ -3,7 +3,7 @@
  * debounced autosave via POST /assessments/{id}/answers:batch.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchAnswers, saveAnswersBatch } from '@/api';
 import { isPaywallError } from '@/lib/planGate';
 import {
@@ -26,6 +26,7 @@ export function useQuestionnaireAnswers(
   assessmentId: string | undefined,
   filter: AnswersFilter,
 ) {
+  const queryClient = useQueryClient();
   const query = useQuery({
     queryKey: ['answers', assessmentId, filter.module, filter.areaKey ?? null],
     queryFn: () => fetchAnswers(assessmentId as string, filter),
@@ -65,15 +66,24 @@ export function useQuestionnaireAnswers(
     for (const id of sent) dirtyRef.current.delete(id);
     setSaveStatus('saving');
     try {
-      await saveAnswersBatch(assessmentId, items);
-      setSaveStatus('saved');
+      const result = await saveAnswersBatch(assessmentId, items);
+      if (result.failed.length > 0) {
+        for (const failed of result.failed) dirtyRef.current.add(failed.question_id);
+        setSaveStatus('error');
+      } else {
+        setSaveStatus('saved');
+      }
+      if (result.saved > 0) {
+        await queryClient.invalidateQueries({ queryKey: ['results', assessmentId] });
+        await queryClient.invalidateQueries({ queryKey: ['areas', assessmentId] });
+      }
     } catch (e) {
       // Re-queue on failure so the next change retries.
       for (const id of sent) dirtyRef.current.add(id);
       setSaveStatus('error');
       if (isPaywallError(e)) setPaywallHit(true);
     }
-  }, [assessmentId]);
+  }, [assessmentId, queryClient]);
 
   const flushRef = useRef(flush);
   useEffect(() => {

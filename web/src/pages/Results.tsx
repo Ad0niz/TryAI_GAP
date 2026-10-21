@@ -27,10 +27,11 @@ import {
 import { useAssessment } from '@/store/assessmentStore';
 
 /** Heat cell color by 1-5 intensity. */
-function heatClass(v: number): string {
+function heatClass(v: number | null): string {
+  if (v === null) return 'bg-muted text-muted-foreground';
   if (v >= 4) return 'bg-primary text-primary-foreground';
-  if (v === 3) return 'bg-primary/60 text-primary-foreground';
-  if (v === 2) return 'bg-primary/25';
+  if (v >= 3) return 'bg-primary/60 text-primary-foreground';
+  if (v >= 2) return 'bg-primary/25';
   return 'bg-muted';
 }
 
@@ -154,7 +155,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-base">{t('results.heatmap')}</CardTitle>
-          <CardDescription>{t('resultsUI.heatTitle')}</CardDescription>
+          <CardDescription>{i18n.language.startsWith('es') ? 'Promedios reales de los bloques A–D por área (aún no son vectores de valor).' : i18n.language.startsWith('pt') ? 'Médias reais dos blocos A–D por área (ainda não são vetores de valor).' : i18n.language.startsWith('de') ? 'Tatsächliche Durchschnittswerte der Blöcke A–D pro Bereich (noch keine Wertvektoren).' : 'Actual A–D questionnaire block scores by area (not value vectors yet).'}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -177,7 +178,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
                       <span
                         className={`inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-semibold ${heatClass(v)}`}
                       >
-                        {v}
+                        {v === null ? "—" : v.toFixed(1)}
                       </span>
                     </TableCell>
                   ))}
@@ -204,6 +205,19 @@ function ResultsBody({ results }: { results: ResultOut }) {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {results.priorities.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                    {i18n.language.startsWith('es')
+                      ? 'Priorización pendiente: el cuestionario aún no recoge Pain.'
+                      : i18n.language.startsWith('pt')
+                        ? 'Priorização pendente: o questionário ainda não coleta Pain.'
+                        : i18n.language.startsWith('de')
+                          ? 'Priorisierung ausstehend: Der Fragebogen erfasst Pain noch nicht.'
+                          : 'Prioritization pending: the questionnaire does not yet collect Pain.'}
+                  </TableCell>
+                </TableRow>
+              )}
               {results.priorities.map((p) => (
                 <TableRow key={p.initiative}>
                   <TableCell className="font-medium">{p.initiative}</TableCell>

@@ -19,7 +19,7 @@ class MaturityBlock(BaseModel):
 
 class HeatmapArea(BaseModel):
     name: str
-    row: List[int]
+    row: List[Optional[float]]
 
 
 class HeatmapBlock(BaseModel):

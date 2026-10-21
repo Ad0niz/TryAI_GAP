@@ -222,13 +222,16 @@ export function ReportDocument({ data, labels }: { data: ReportData; labels: Rep
             <Text style={styles.cell}>{area.name}</Text>
             {area.row.map((v, i) => (
               <Text style={styles.cellNarrow} key={i}>
-                {v}
+                {v === null ? "—" : v.toFixed(1)}
               </Text>
             ))}
           </View>
         ))}
 
         <Text style={styles.h2}>{labels.prioTitle}</Text>
+        {priorities.length === 0 && (
+          <Text style={styles.sub}>No initiatives ranked: Pain is not yet collected.</Text>
+        )}
         <View style={styles.tableHeader}>
           <Text style={{ flex: 2 }}>{labels.prioritiesHeaders.initiative}</Text>
           <Text style={styles.cell}>{labels.prioritiesHeaders.area}</Text>
