@@ -1582,18 +1582,40 @@
     "generatedOn": "Gerado em {{date}}",
     "overallScore": "Média geral: {{avg}} / 5 · Nível: {{level}}",
     "methodology": "Metodologia",
-    "methodologyBody": "Este diagnóstico avalia a maturidade em IA da organização em 5 dimensões (dados, tecnologia, talento, processos e cultura) numa escala de 1 a 5, e prioriza iniciativas por área funcional segundo dor e readiness.",
+    "methodologyBody": "Este diagnóstico avalia a maturidade em IA da organização em cinco dimensões (dados, tecnologia, talento, processos e cultura) numa escala de 1 a 5. Os resultados por área mostram as médias reais das respostas registradas nos blocos A-D do questionário.",
     "dimTitle": "Maturidade por dimensão",
     "dimName": "Dimensão",
-    "dimScore": "Score (0-5)",
-    "heatTitle": "Mapa de calor · áreas × vetores de valor",
+    "dimScore": "Pontuação (0-5)",
+    "heatTitle": "Mapa de calor · áreas × blocos A-D",
     "prioTitle": "Iniciativas priorizadas",
     "recoTitle": "Recomendações e próximos passos",
     "nextSteps": [
-      "Complete os questionários das áreas prioritárias e anexe evidências documentais.",
-      "Ataque primeiro os quick wins de alta dor e alta prontidão.",
-      "Solicite uma revisão humana para calibrar os scores e enriquecer o relatório."
+      "Complete os questionários das áreas pendentes e anexe evidências documentais.",
+      "Revise os resultados por dimensão e os blocos de cada área com os responsáveis.",
+      "Solicite uma revisão humana para validar as pontuações e enriquecer o relatório."
     ],
-    "footer": "TryAIGap · Bridge the AI Gap"
+    "footer": "TryAIGap · Bridge the AI Gap",
+    "heatNote": "Os blocos A-D do questionário ainda não correspondem aos cinco vetores de valor. Um traço indica que não há respostas numéricas disponíveis.",
+    "noPriorities": "Priorização pendente: o questionário ainda não coleta Pain. Não há resultados de Pain × Readiness disponíveis.",
+    "noData": "Não há respostas numéricas disponíveis para as áreas funcionais.",
+    "unavailable": "Não disponível",
+    "block": "Bloco {{block}}",
+    "levels": {
+      "optimized": "Otimizado",
+      "managed": "Gerenciado",
+      "defined": "Definido",
+      "repeatable": "Repetível",
+      "initial": "Inicial",
+      "nodata": "Sem dados"
+    },
+    "areaAliases": {
+      "ventas": "Vendas B2B",
+      "marketing": "Marketing",
+      "servicio": "Atendimento ao Cliente",
+      "finanzas": "Finanças",
+      "rrhh": "RH",
+      "operaciones": "Operações",
+      "legal": "Jurídico"
+    }
   }
 }

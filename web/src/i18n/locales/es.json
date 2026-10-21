@@ -1581,18 +1581,40 @@
     "generatedOn": "Generado el {{date}}",
     "overallScore": "Promedio general: {{avg}} / 5 · Nivel: {{level}}",
     "methodology": "Metodología",
-    "methodologyBody": "Este diagnóstico evalúa la madurez en IA de la organización en 5 dimensiones (datos, tecnología, talento, procesos y cultura) sobre una escala de 1 a 5, y prioriza iniciativas por área funcional según dolor y readiness.",
+    "methodologyBody": "Este diagnóstico evalúa la madurez en IA de la organización en cinco dimensiones (datos, tecnología, talento, procesos y cultura) en una escala de 1 a 5. Los resultados por área muestran los promedios reales de las respuestas registradas en los bloques A-D.",
     "dimTitle": "Madurez por dimensión",
     "dimName": "Dimensión",
-    "dimScore": "Score (0-5)",
-    "heatTitle": "Mapa de calor · áreas × vectores de valor",
+    "dimScore": "Puntuación (0-5)",
+    "heatTitle": "Mapa de calor · áreas × bloques A-D",
     "prioTitle": "Iniciativas priorizadas",
     "recoTitle": "Recomendaciones y próximos pasos",
     "nextSteps": [
-      "Completa los cuestionarios de las áreas prioritarias y adjunta evidencia documental.",
-      "Aborda primero los quick wins de alto pain y alta readiness.",
-      "Solicita una revisión humana para calibrar scores y enriquecer el informe."
+      "Completa los cuestionarios de las áreas pendientes y adjunta evidencia documental.",
+      "Revisa los resultados por dimensión y los bloques de cada área con sus responsables.",
+      "Solicita una revisión humana para validar las puntuaciones y enriquecer el informe."
     ],
-    "footer": "TryAIGap · Bridge the AI Gap"
+    "footer": "TryAIGap · Bridge the AI Gap",
+    "heatNote": "Los bloques A-D del cuestionario aún no corresponden a los cinco vectores de valor. El guion indica que no hay respuestas numéricas disponibles.",
+    "noPriorities": "Priorización pendiente: el cuestionario aún no recoge Pain. No hay resultados de Pain × Readiness disponibles.",
+    "noData": "No hay respuestas numéricas disponibles para las áreas funcionales.",
+    "unavailable": "No disponible",
+    "block": "Bloque {{block}}",
+    "levels": {
+      "optimized": "Optimizado",
+      "managed": "Gestionado",
+      "defined": "Definido",
+      "repeatable": "Repetible",
+      "initial": "Inicial",
+      "nodata": "Sin datos"
+    },
+    "areaAliases": {
+      "ventas": "Ventas B2B",
+      "marketing": "Marketing",
+      "servicio": "Atención al Cliente",
+      "finanzas": "Finanzas",
+      "rrhh": "RR.HH.",
+      "operaciones": "Operaciones",
+      "legal": "Legal"
+    }
   }
 }

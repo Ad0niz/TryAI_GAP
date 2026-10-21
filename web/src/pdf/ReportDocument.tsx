@@ -96,6 +96,11 @@ const styles = StyleSheet.create({
 });
 
 export interface ReportLabels {
+  locale: string;
+  heatNote: string;
+  noPriorities: string;
+  noData: string;
+  unavailable: string;
   coverTitle: string;
   coverSub: string;
   generatedOn: string;
@@ -116,7 +121,6 @@ export interface ReportLabels {
 
 export interface ReportData {
   orgName: string;
-  date: string;
   results: ResultOut;
 }
 
@@ -154,11 +158,11 @@ function RadarSvg({ scores }: { scores: number[] }) {
   );
 }
 
-function Footer({ footer, pageLabel }: { footer: string; pageLabel: string }) {
+function Footer({ footer }: { footer: string }) {
   return (
     <View style={styles.footer} fixed>
       <Text>{footer}</Text>
-      <Text>{pageLabel}</Text>
+      <Text render={({ pageNumber }) => String(pageNumber)} />
     </View>
   );
 }
@@ -166,9 +170,10 @@ function Footer({ footer, pageLabel }: { footer: string; pageLabel: string }) {
 export function ReportDocument({ data, labels }: { data: ReportData; labels: ReportLabels }) {
   const { results } = data;
   const { maturity, heatmap, priorities } = results;
+  const number = new Intl.NumberFormat(labels.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
   return (
-    <Document title={labels.coverTitle} author="TryAIGap">
+    <Document title={labels.coverTitle} author="TryAIGap" language={labels.locale}>
       {/* Cover */}
       <Page size="A4" style={styles.page}>
         <View style={styles.brandBar} />
@@ -180,15 +185,15 @@ export function ReportDocument({ data, labels }: { data: ReportData; labels: Rep
         <View style={styles.coverBox}>
           <Text style={styles.coverScore}>{labels.overallScore}</Text>
         </View>
-        <Text style={styles.h2}>{labels.methodology}</Text>
+        <Text style={styles.h2} minPresenceAhead={40}>{labels.methodology}</Text>
         <Text style={styles.body}>{labels.methodologyBody}</Text>
-        <Footer footer={labels.footer} pageLabel="1" />
+        <Footer footer={labels.footer} />
       </Page>
 
       {/* Dimensions */}
       <Page size="A4" style={styles.page}>
         <View style={styles.brandBar} />
-        <Text style={styles.h2}>{labels.dimTitle}</Text>
+        <Text style={styles.h2} minPresenceAhead={40}>{labels.dimTitle}</Text>
         <View style={styles.radarWrap}>
           <RadarSvg scores={maturity.dimensions.map((d) => d.score)} />
         </View>
@@ -197,18 +202,20 @@ export function ReportDocument({ data, labels }: { data: ReportData; labels: Rep
           <Text style={styles.cellNarrow}>{labels.dimScore}</Text>
         </View>
         {maturity.dimensions.map((d) => (
-          <View style={styles.tableRow} key={d.key}>
+          <View wrap={false} style={styles.tableRow} key={d.key}>
             <Text style={styles.cell}>{d.label}</Text>
-            <Text style={styles.cellNarrow}>{d.score.toFixed(1)}</Text>
+            <Text style={styles.cellNarrow}>{number.format(d.score)}</Text>
           </View>
         ))}
-        <Footer footer={labels.footer} pageLabel="2" />
+        <Footer footer={labels.footer} />
       </Page>
 
       {/* Heatmap + priorities + recommendations */}
       <Page size="A4" style={styles.page}>
         <View style={styles.brandBar} />
-        <Text style={styles.h2}>{labels.heatTitle}</Text>
+        <Text style={styles.h2} minPresenceAhead={40}>{labels.heatTitle}</Text>
+        <Text style={styles.sub}>{labels.heatNote}</Text>
+        {heatmap.areas.length === 0 && <Text style={styles.sub}>{labels.noData}</Text>}
         <View style={styles.tableHeader}>
           <Text style={styles.cell}>{labels.prioritiesHeaders.area}</Text>
           {heatmap.vectors.map((v) => (
@@ -218,19 +225,19 @@ export function ReportDocument({ data, labels }: { data: ReportData; labels: Rep
           ))}
         </View>
         {heatmap.areas.map((area) => (
-          <View style={styles.tableRow} key={area.name}>
+          <View wrap={false} style={styles.tableRow} key={area.name}>
             <Text style={styles.cell}>{area.name}</Text>
             {area.row.map((v, i) => (
               <Text style={styles.cellNarrow} key={i}>
-                {v === null ? "—" : v.toFixed(1)}
+                {v === null ? "—" : number.format(v)}
               </Text>
             ))}
           </View>
         ))}
 
-        <Text style={styles.h2}>{labels.prioTitle}</Text>
+        <Text style={styles.h2} minPresenceAhead={40}>{labels.prioTitle}</Text>
         {priorities.length === 0 && (
-          <Text style={styles.sub}>No initiatives ranked: Pain is not yet collected.</Text>
+          <Text style={styles.sub}>{labels.noPriorities}</Text>
         )}
         <View style={styles.tableHeader}>
           <Text style={{ flex: 2 }}>{labels.prioritiesHeaders.initiative}</Text>
@@ -239,24 +246,24 @@ export function ReportDocument({ data, labels }: { data: ReportData; labels: Rep
           <Text style={styles.cellNarrow}>{labels.prioritiesHeaders.recommendation}</Text>
         </View>
         {priorities.map((p) => (
-          <View style={styles.tableRow} key={p.initiative}>
+          <View wrap={false} style={styles.tableRow} key={p.initiative}>
             <Text style={{ flex: 2 }}>{p.initiative}</Text>
             <Text style={styles.cell}>{p.area}</Text>
             <Text style={styles.cell}>{p.vector}</Text>
             <Text style={styles.cellNarrow}>
-              {labels.recoLabels[p.recommendation] ?? p.recommendation}
+              {labels.recoLabels[p.recommendation] ?? labels.unavailable}
             </Text>
           </View>
         ))}
 
-        <Text style={styles.h2}>{labels.recoTitle}</Text>
+        <Text style={styles.h2} minPresenceAhead={40}>{labels.recoTitle}</Text>
         {labels.nextSteps.map((step, i) => (
-          <View style={styles.step} key={i}>
+          <View wrap={false} style={styles.step} key={i}>
             <Text style={styles.stepN}>{i + 1}</Text>
             <Text style={[styles.body, { flex: 1 }]}>{step}</Text>
           </View>
         ))}
-        <Footer footer={labels.footer} pageLabel="3" />
+        <Footer footer={labels.footer} />
       </Page>
     </Document>
   );

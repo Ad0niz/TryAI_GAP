@@ -1582,18 +1582,40 @@
     "generatedOn": "Erstellt am {{date}}",
     "overallScore": "Gesamtdurchschnitt: {{avg}} / 5 · Stufe: {{level}}",
     "methodology": "Methodik",
-    "methodologyBody": "Diese Bewertung misst die KI-Reife der Organisation in 5 Dimensionen (Daten, Technologie, Talent, Prozesse und Kultur) auf einer Skala von 1 bis 5 und priorisiert Initiativen pro Funktionsbereich nach Pain und Readiness.",
+    "methodologyBody": "Diese Bewertung misst die KI-Reife der Organisation in fünf Dimensionen (Daten, Technologie, Talent, Prozesse und Kultur) auf einer Skala von 1 bis 5. Die Bereichsergebnisse zeigen die tatsächlichen Durchschnittswerte der erfassten Antworten in den Fragebogenblöcken A-D.",
     "dimTitle": "Reife pro Dimension",
     "dimName": "Dimension",
-    "dimScore": "Score (0-5)",
-    "heatTitle": "Heatmap · Bereiche × Wertvektoren",
+    "dimScore": "Bewertung (0-5)",
+    "heatTitle": "Heatmap · Bereiche × Blöcke A-D",
     "prioTitle": "Priorisierte Initiativen",
     "recoTitle": "Empfehlungen und nächste Schritte",
     "nextSteps": [
-      "Füllen Sie die Fragebögen der priorisierten Bereiche aus und fügen Sie Belege hinzu.",
-      "Gehen Sie zuerst die Quick Wins mit hohem Pain und hoher Readiness an.",
-      "Fordern Sie eine menschliche Prüfung an, um Scores zu kalibrieren und den Bericht anzureichern."
+      "Füllen Sie die Fragebögen der ausstehenden Bereiche aus und fügen Sie Belege hinzu.",
+      "Prüfen Sie die Ergebnisse je Dimension und die Blöcke jedes Bereichs mit den Verantwortlichen.",
+      "Fordern Sie eine menschliche Prüfung an, um die Bewertungen zu validieren und den Bericht zu ergänzen."
     ],
-    "footer": "TryAIGap · Bridge the AI Gap"
+    "footer": "TryAIGap · Bridge the AI Gap",
+    "heatNote": "Die Fragebogenblöcke A-D entsprechen noch nicht den fünf Wertvektoren. Ein Strich zeigt an, dass keine numerischen Antworten vorliegen.",
+    "noPriorities": "Priorisierung ausstehend: Der Fragebogen erfasst Pain noch nicht. Es liegen keine Ergebnisse für Pain × Readiness vor.",
+    "noData": "Für die Funktionsbereiche liegen keine numerischen Antworten vor.",
+    "unavailable": "Nicht verfügbar",
+    "block": "Block {{block}}",
+    "levels": {
+      "optimized": "Optimiert",
+      "managed": "Gesteuert",
+      "defined": "Definiert",
+      "repeatable": "Wiederholbar",
+      "initial": "Initial",
+      "nodata": "Keine Daten"
+    },
+    "areaAliases": {
+      "ventas": "Vertrieb B2B",
+      "marketing": "Marketing",
+      "servicio": "Kundenservice",
+      "finanzas": "Finanzen",
+      "rrhh": "Personal",
+      "operaciones": "Betrieb",
+      "legal": "Recht"
+    }
   }
 }

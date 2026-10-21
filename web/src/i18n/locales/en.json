@@ -1581,18 +1581,40 @@
     "generatedOn": "Generated on {{date}}",
     "overallScore": "Overall average: {{avg}} / 5 · Level: {{level}}",
     "methodology": "Methodology",
-    "methodologyBody": "This assessment evaluates the organization's AI maturity across 5 dimensions (data, technology, talent, processes and culture) on a 1–5 scale, and prioritizes initiatives per functional area by pain and readiness.",
+    "methodologyBody": "This assessment evaluates the organization's AI maturity across five dimensions (data, technology, talent, processes and culture) on a scale of 1 to 5. Area results show actual averages of recorded answers in questionnaire blocks A-D.",
     "dimTitle": "Maturity by dimension",
     "dimName": "Dimension",
     "dimScore": "Score (0-5)",
-    "heatTitle": "Heatmap · areas × value vectors",
+    "heatTitle": "Heatmap · areas × blocks A-D",
     "prioTitle": "Prioritized initiatives",
     "recoTitle": "Recommendations and next steps",
     "nextSteps": [
-      "Complete the questionnaires of the priority areas and attach documentary evidence.",
-      "Tackle high-pain, high-readiness quick wins first.",
-      "Request a human review to calibrate scores and enrich the report."
+      "Complete the questionnaires for pending areas and attach documentary evidence.",
+      "Review dimension results and each area’s blocks with the people responsible.",
+      "Request a human review to validate the scores and enrich the report."
     ],
-    "footer": "TryAIGap · Bridge the AI Gap"
+    "footer": "TryAIGap · Bridge the AI Gap",
+    "heatNote": "Questionnaire blocks A-D do not yet correspond to the five value vectors. A dash indicates that no numeric answers are available.",
+    "noPriorities": "Prioritization pending: the questionnaire does not yet collect Pain. No Pain × Readiness results are available.",
+    "noData": "No numeric answers are available for functional areas.",
+    "unavailable": "Not available",
+    "block": "Block {{block}}",
+    "levels": {
+      "optimized": "Optimized",
+      "managed": "Managed",
+      "defined": "Defined",
+      "repeatable": "Repeatable",
+      "initial": "Initial",
+      "nodata": "No data"
+    },
+    "areaAliases": {
+      "ventas": "Sales B2B",
+      "marketing": "Marketing",
+      "servicio": "Customer Service",
+      "finanzas": "Finance",
+      "rrhh": "HR",
+      "operaciones": "Operations",
+      "legal": "Legal"
+    }
   }
 }

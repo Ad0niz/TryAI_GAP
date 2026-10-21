@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
@@ -7,7 +7,6 @@ import { ApiError } from '@/api/client';
 import { fetchOrganization, fetchResults } from '@/api';
 import type { ResultOut } from '@/api/types';
 import { MaturityRadar } from '@/components/questionnaire/MaturityRadar';
-import type { ReportLabels } from '@/pdf/ReportDocument';
 
 const ReportPdfActions = lazy(() => import('@/pdf/ReportPdf'));
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -46,41 +45,8 @@ function ResultsBody({ results }: { results: ResultOut }) {
     enabled: !!assessment?.organization_id,
   });
 
-  const dateStr = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'long' }).format(new Date());
-
-  const labels: ReportLabels = useMemo(
-    () => ({
-      coverTitle: t('resultsPdf.coverTitle'),
-      coverSub: t('resultsPdf.coverSub'),
-      generatedOn: t('resultsPdf.generatedOn', { date: dateStr }),
-      overallScore: t('resultsPdf.overallScore', {
-        avg: results.maturity.average.toFixed(1),
-        level: results.maturity.level,
-      }),
-      methodology: t('resultsPdf.methodology'),
-      methodologyBody: t('resultsPdf.methodologyBody'),
-      dimTitle: t('resultsPdf.dimTitle'),
-      dimName: t('resultsPdf.dimName'),
-      dimScore: t('resultsPdf.dimScore'),
-      heatTitle: t('resultsPdf.heatTitle'),
-      prioTitle: t('resultsPdf.prioTitle'),
-      recoTitle: t('resultsPdf.recoTitle'),
-      nextSteps: t('resultsPdf.nextSteps', { returnObjects: true }) as string[],
-      footer: t('resultsPdf.footer'),
-      prioritiesHeaders: {
-        initiative: t('resultsUI.thInitiative'),
-        area: t('resultsUI.thArea'),
-        vector: t('resultsUI.thVector'),
-        recommendation: t('resultsUI.thReco'),
-      },
-      recoLabels,
-    }),
-    [t, dateStr, results, recoLabels],
-  );
-
   const reportData = {
     orgName: orgQuery.data?.name ?? '—',
-    date: dateStr,
     results,
   };
 
@@ -101,7 +67,6 @@ function ResultsBody({ results }: { results: ResultOut }) {
           <Suspense fallback={<Skeleton className="h-9 w-72" />}>
             <ReportPdfActions
               data={reportData}
-              labels={labels}
               fileName={`TryAIGap-Report-${new Date().toISOString().slice(0, 10)}.pdf`}
               texts={{
                 preview: t('results.pdfPreview'),
