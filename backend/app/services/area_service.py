@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.errors import APIError
 from app.models import Assessment, AreaState
+from app.services.answer_service import area_progress_by_key
 from app.services.questionnaire_service import AREA_KEYS, area_name
 
 
@@ -19,6 +20,7 @@ async def _states_by_key(db: AsyncSession, assessment_id: uuid.UUID) -> Dict[str
 async def list_areas(db: AsyncSession, assessment: Assessment, locale: str,
                      locked: bool) -> dict:
     states = await _states_by_key(db, assessment.id)
+    progress = await area_progress_by_key(db, assessment.id)
     items = []
     for key in AREA_KEYS:
         state = states.get(key)
@@ -26,7 +28,7 @@ async def list_areas(db: AsyncSession, assessment: Assessment, locale: str,
             "area_key": key,
             "name": area_name(key, locale),
             "active": bool(state.active) if state else False,
-            "progress": int(state.progress) if state else 0,
+            "progress": progress.get(key, 0),
             "leader": None,
             "locked": locked,
         })
@@ -52,7 +54,8 @@ async def activate_area(db: AsyncSession, assessment: Assessment, area_key: str)
     state = await _get_or_create_state(db, assessment.id, area_key)
     state.active = True
     await db.flush()
-    return {"area_key": area_key, "active": True, "progress": int(state.progress)}
+    progress = await area_progress_by_key(db, assessment.id)
+    return {"area_key": area_key, "active": True, "progress": progress.get(area_key, 0)}
 
 
 async def deactivate_area(db: AsyncSession, assessment: Assessment, area_key: str) -> None:

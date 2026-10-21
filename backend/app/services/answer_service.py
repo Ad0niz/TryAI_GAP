@@ -2,7 +2,7 @@
 import uuid
 from typing import List, Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
@@ -53,17 +53,43 @@ async def _existing_maturity_answers(db: AsyncSession, assessment_id: uuid.UUID)
     return int(await db.scalar(stmt) or 0)
 
 
+async def area_progress_by_key(db: AsyncSession, assessment_id: uuid.UUID) -> dict:
+    """Compute progress from registered answers, scoped to one assessment and area."""
+    stmt = (
+        select(
+            Question.area_key,
+            func.count(func.distinct(Question.id)),
+            func.count(func.distinct(Answer.question_id)),
+        )
+        .select_from(Question)
+        .outerjoin(Answer, and_(
+            Answer.question_id == Question.id,
+            Answer.assessment_id == assessment_id,
+            Answer.state.in_(ANSWERED_STATES),
+        ))
+        .where(Question.module == "area")
+        .group_by(Question.area_key)
+    )
+    rows = (await db.execute(stmt)).all()
+    return {key: round(100 * answered / total) if total else 0
+            for key, total, answered in rows}
+
+
 async def assessment_summary(db: AsyncSession, assessment: Assessment) -> dict:
     total_maturity = await _total_maturity_count(db)
     answered_maturity = await _answered_maturity_count(db, assessment.id)
     maturity_progress = round(100 * answered_maturity / total_maturity) if total_maturity else 0
 
-    avg = await db.scalar(
-        select(func.avg(AreaState.progress)).where(
+    area_progress = await area_progress_by_key(db, assessment.id)
+    active_keys = (await db.execute(
+        select(AreaState.area_key).where(
             AreaState.assessment_id == assessment.id, AreaState.active.is_(True)
         )
+    )).scalars().all()
+    areas_overall = (
+        round(sum(area_progress.get(key, 0) for key in active_keys) / len(active_keys))
+        if active_keys else 0
     )
-    areas_overall = round(float(avg)) if avg is not None else 0
 
     free_preview_reached = (
         assessment.plan == "free" and answered_maturity >= settings.free_maturity_limit
