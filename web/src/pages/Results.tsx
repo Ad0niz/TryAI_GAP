@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { CalendarCheck2, Lock } from 'lucide-react';
 import { ApiError } from '@/api/client';
-import { fetchOrganization, fetchResults } from '@/api';
-import type { ResultOut } from '@/api/types';
+import { fetchOrganization, fetchResults, fetchResultsPreview } from '@/api';
+import type { ResultOut, ResultPreviewOut } from '@/api/types';
 import { MaturityRadar } from '@/components/questionnaire/MaturityRadar';
 
 const ReportPdfActions = lazy(() => import('@/pdf/ReportPdf'));
@@ -201,29 +201,72 @@ function ResultsBody({ results }: { results: ResultOut }) {
   );
 }
 
-/** Results: overall score, radar, heatmap, priorities + client-side PDF report. */
+function PartialResults({ preview }: { preview: ResultPreviewOut }) {
+  const { t, i18n } = useTranslation();
+  const score = preview.average === null ? null : new Intl.NumberFormat(
+    i18n.resolvedLanguage ?? i18n.language,
+    { minimumFractionDigits: 1, maximumFractionDigits: 1 },
+  ).format(preview.average);
+  return (
+    <Card>
+      <CardHeader>
+        <Badge variant="secondary" className="w-fit">{t('resultsPreview.provisional')}</Badge>
+        <CardTitle>{t('paywall.teaser')}</CardTitle>
+        <CardDescription>{t('resultsPreview.description')}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">{t('paywall.partial')}</p>
+        {score === null
+          ? <p>{t('resultsPreview.noNumericAnswers')}</p>
+          : <p className="text-3xl font-bold">{score} / 5</p>}
+        <p className="text-sm">{t('resultsPreview.coverage', {
+          count: preview.numeric_answers, total: preview.total_questions,
+        })}</p>
+        <p className="text-sm text-muted-foreground">{t('resultsPreview.limited')}</p>
+        <Button asChild variant="outline">
+          <Link to="/maturity">{t('results.goMaturity')}</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** APP-06: minimal provisional preview for Free; existing full report for Pro. */
 export default function Results() {
   const { t } = useTranslation();
   const { assessment, status: assessmentStatus, reload } = useAssessment();
 
   if (assessmentStatus === 'idle') void reload();
 
+  const previewQuery = useQuery({
+    queryKey: ['results-preview', assessment?.id, assessment?.plan],
+    queryFn: () => fetchResultsPreview(assessment!.id),
+    enabled: !!assessment,
+    retry: 0,
+    staleTime: 0,
+  });
+  // The server's organization plan is authoritative. Do not render cached Pro
+  // details while access is being revalidated or after a failed request.
+  const canViewDetails = previewQuery.isSuccess && !previewQuery.isFetching
+    && previewQuery.data.details_locked === false;
   const resultsQuery = useQuery({
     queryKey: ['results', assessment?.id],
     queryFn: () => fetchResults(assessment!.id),
-    enabled: !!assessment,
+    enabled: !!assessment && canViewDetails,
     retry: 0,
+    staleTime: 0,
   });
 
-  const error = resultsQuery.error;
-  const isPaywall = error instanceof ApiError && error.status === 402;
+  const error = previewQuery.error ?? (canViewDetails ? resultsQuery.error : null);
+  const isPartial = previewQuery.isSuccess && previewQuery.data.details_locked;
+  const isPaywall = isPartial || (error instanceof ApiError && error.status === 402);
   const isNotReady = error instanceof ApiError && error.code === 'RESULTS_NOT_READY';
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t('results.title')}</h1>
-        <p className="text-sm text-muted-foreground">{t('results.sub')}</p>
+        <p className="text-sm text-muted-foreground">{t(isPartial ? 'resultsPreview.description' : 'results.sub')}</p>
       </div>
 
       {!assessment && (
@@ -237,12 +280,14 @@ export default function Results() {
         </Alert>
       )}
 
-      {resultsQuery.isLoading && (
+      {(previewQuery.isLoading || (canViewDetails && resultsQuery.isFetching)) && (
         <div className="space-y-3">
           <Skeleton className="h-24 w-full" />
           <Skeleton className="h-64 w-full" />
         </div>
       )}
+
+      {isPartial && <PartialResults preview={previewQuery.data} />}
 
       {isPaywall && (
         <Card className="border-primary/40">
@@ -251,7 +296,7 @@ export default function Results() {
               <Lock className="h-5 w-5 text-primary" />
               <CardTitle className="text-base">{t('paywall.title')}</CardTitle>
             </div>
-            <CardDescription>{t('paywall.sub')}</CardDescription>
+            <CardDescription>{t('resultsPreview.lockedDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="brand-gradient border-0 text-white">
@@ -278,18 +323,18 @@ export default function Results() {
         </Card>
       )}
 
-      {resultsQuery.isError && !isPaywall && !isNotReady && (
+      {error && !isPaywall && !isNotReady && (
         <Alert variant="destructive">
           <AlertTitle>{t('common.errorGeneric')}</AlertTitle>
           <AlertDescription>
-            <Button variant="outline" size="sm" onClick={() => void resultsQuery.refetch()}>
+            <Button variant="outline" size="sm" onClick={() => void (previewQuery.isError ? previewQuery.refetch() : resultsQuery.refetch())}>
               {t('common.retry')}
             </Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {resultsQuery.data && <ResultsBody results={resultsQuery.data} />}
+      {canViewDetails && resultsQuery.isSuccess && !resultsQuery.isFetching && !isPaywall && <ResultsBody results={resultsQuery.data} />}
     </div>
   );
 }

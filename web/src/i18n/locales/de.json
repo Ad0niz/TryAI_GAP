@@ -1617,5 +1617,13 @@
       "operaciones": "Betrieb",
       "legal": "Recht"
     }
+  },
+  "resultsPreview": {
+    "provisional": "Vorläufige Diagnose",
+    "description": "Teilansicht ausschließlich auf Basis Ihrer erfassten numerischen Antworten.",
+    "noNumericAnswers": "Es liegen noch keine numerischen Antworten für eine Teilbewertung vor.",
+    "coverage": "Verwendete numerische Antworten: {{count}} von {{total}} Reifegradfragen.",
+    "limited": "Dieser Durchschnitt der Dimensionen mit numerischen Antworten stellt keine vollständige Diagnose dar. Unbeantwortete Fragen werden nicht als null gewertet.",
+    "lockedDescription": "Details je Dimension, Radar, Bereichsergebnisse und der PDF-Managementbericht erfordern Pro. Informieren Sie sich über die vollständige Diagnose."
   }
 }

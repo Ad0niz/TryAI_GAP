@@ -75,6 +75,7 @@ export function useQuestionnaireAnswers(
       }
       if (result.saved > 0) {
         await queryClient.invalidateQueries({ queryKey: ['results', assessmentId] });
+        await queryClient.invalidateQueries({ queryKey: ['results-preview', assessmentId] });
         await queryClient.invalidateQueries({ queryKey: ['areas', assessmentId] });
       }
     } catch (e) {

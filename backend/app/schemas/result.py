@@ -42,6 +42,15 @@ class ResultOut(BaseModel):
     priorities: List[PriorityItem]
 
 
+class ResultPreviewOut(BaseModel):
+    """Minimal provisional aggregate; never contains Pro result details."""
+    provisional: bool = True
+    details_locked: bool
+    average: Optional[float] = None
+    numeric_answers: int
+    total_questions: int
+
+
 class ReportRequest(BaseModel):
     locale: Optional[str] = None
 

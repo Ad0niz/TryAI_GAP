@@ -1616,5 +1616,13 @@
       "operaciones": "Operaciones",
       "legal": "Legal"
     }
+  },
+  "resultsPreview": {
+    "provisional": "Diagnóstico provisional",
+    "description": "Vista parcial basada únicamente en tus respuestas numéricas registradas.",
+    "noNumericAnswers": "Todavía no hay respuestas numéricas suficientes para mostrar una puntuación parcial.",
+    "coverage": "Respuestas numéricas utilizadas: {{count}} de {{total}} preguntas de madurez.",
+    "limited": "Este promedio de las dimensiones con respuestas numéricas no representa un diagnóstico completo. Las preguntas sin respuesta no se cuentan como cero.",
+    "lockedDescription": "El detalle por dimensión, el radar, los resultados por área y el PDF ejecutivo requieren Pro. Consulta las opciones del diagnóstico completo."
   }
 }

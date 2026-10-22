@@ -39,6 +39,7 @@ import type {
   RatingCreate,
   RatingOut,
   ResultOut,
+  ResultPreviewOut,
   ReviewCreate,
   ReviewCreateOut,
   ReviewOut,
@@ -283,6 +284,10 @@ export function postMockStripeWebhook(paymentId: string, providerRef: string): P
 }
 
 // ---------- results / reviews ----------
+export function fetchResultsPreview(assessmentId: string): Promise<ResultPreviewOut> {
+  return api<ResultPreviewOut>(`/results/${assessmentId}/preview`);
+}
+
 export function fetchResults(assessmentId: string): Promise<ResultOut> {
   return api<ResultOut>(`/results/${assessmentId}`);
 }

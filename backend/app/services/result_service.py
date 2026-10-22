@@ -182,6 +182,27 @@ async def _owned_assessment(
     return assessment
 
 
+def _maturity_average(scores: Dict[str, float]) -> Optional[float]:
+    """Existing equal-dimension average, excluding dimensions without numeric answers."""
+    present = [scores[k] for k in DIMENSIONS if scores[k] > 0]
+    return round(sum(present) / len(present), 1) if present else None
+
+
+async def build_result_preview(
+    db: AsyncSession, current: CurrentUser, assessment_id: uuid.UUID
+) -> dict:
+    await _owned_assessment(db, current, assessment_id)
+    scores, numeric_count = await compute_dimension_scores(db, assessment_id)
+    total = await db.scalar(select(func.count(Question.id)).where(Question.module == "maturity"))
+    return {
+        "provisional": True,
+        "details_locked": not bool(current.organization and current.organization.plan == "pro"),
+        "average": _maturity_average(scores),
+        "numeric_answers": numeric_count,
+        "total_questions": int(total or 0),
+    }
+
+
 # ----------------------------------------------------------------- result build
 async def build_result(
     db: AsyncSession, current: CurrentUser, assessment_id: uuid.UUID
@@ -199,8 +220,7 @@ async def build_result(
         {"key": k, "label": dimension_label(k, locale), "score": round(scores[k], 1)}
         for k in DIMENSIONS
     ]
-    present = [scores[k] for k in DIMENSIONS if scores[k] > 0]
-    average = round(sum(present) / len(present), 1) if present else 0.0
+    average = _maturity_average(scores) or 0.0
     level = level_for(average, locale)
 
     area_scores = await compute_area_scores(db, assessment_id)

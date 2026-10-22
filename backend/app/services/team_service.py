@@ -17,6 +17,7 @@ from app.models import (
     QuestionTranslation, User,
 )
 from app.schemas.team import DelegateCreate, InvitationCreate
+from app.services.answer_service import enforce_free_maturity_limit
 
 log = logging.getLogger("app.team")
 
@@ -183,6 +184,10 @@ async def delegate_question(
     assessment = await db.get(Assessment, assessment_id)
     if assessment is None or assessment.organization_id != org_id:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró el diagnóstico.")
+
+    question = await db.get(Question, question_id)
+    if question is not None and question.module == "maturity":
+        await enforce_free_maturity_limit(db, assessment, [question_id], current)
 
     raw = generate_opaque_token()
     delegation = Delegation(

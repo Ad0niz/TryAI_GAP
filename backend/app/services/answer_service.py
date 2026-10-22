@@ -2,7 +2,7 @@
 import uuid
 from typing import List, Optional
 
-from sqlalchemy import and_, func, select
+from sqlalchemy import and_, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
@@ -51,6 +51,47 @@ async def _existing_maturity_answers(db: AsyncSession, assessment_id: uuid.UUID)
         .where(Answer.assessment_id == assessment_id, Question.module == "maturity")
     )
     return int(await db.scalar(stmt) or 0)
+
+
+async def enforce_free_maturity_limit(db: AsyncSession, assessment: Assessment,
+                                      question_ids: List[uuid.UUID], current: CurrentUser) -> None:
+    """Reserve distinct maturity-question slots under the existing Free rule.
+
+    Call with validated maturity question IDs before changing any answers.
+    Every persisted state (including pending) reserves a slot, just as in PUT.
+    The transaction lock serializes concurrent saves until commit/rollback.
+    """
+    org = current.organization
+    if org is None or org.plan != "free" or not question_ids:
+        return
+
+    if db.get_bind().dialect.name == "sqlite":
+        # SQLite has no FOR UPDATE. A no-op write obtains its transaction's
+        # writer lock without changing assessment fields or its timestamp.
+        await db.execute(
+            update(Assessment).where(Assessment.id == assessment.id)
+            .values(id=Assessment.id, updated_at=Assessment.updated_at)
+        )
+    else:
+        await db.execute(
+            select(Assessment.id).where(Assessment.id == assessment.id).with_for_update()
+        )
+
+    candidates = set(question_ids)
+    existing = set((await db.execute(
+        select(Answer.question_id).where(
+            Answer.assessment_id == assessment.id, Answer.question_id.in_(candidates)
+        )
+    )).scalars().all())
+    new_count = len(candidates - existing)
+    count = await _existing_maturity_answers(db, assessment.id)
+    # Existing answers remain editable, including legacy assessments already
+    # above the limit. They must not gain additional slots.
+    if new_count and count + new_count > settings.free_maturity_limit:
+        raise APIError(
+            402, "PLAN_UPGRADE_REQUIRED",
+            "Completó la vista gratuita; adquiera el diagnóstico completo para continuar.",
+        )
 
 
 async def area_progress_by_key(db: AsyncSession, assessment_id: uuid.UUID) -> dict:
@@ -128,17 +169,9 @@ async def upsert_answer(db: AsyncSession, assessment: Assessment, question_id: u
 
     _validate_value(state, value)
 
+    if enforce_free_gate and question.module == "maturity":
+        await enforce_free_maturity_limit(db, assessment, [question_id], current)
     existing = await _get_existing(db, assessment.id, question_id)
-
-    org = current.organization
-    if (enforce_free_gate and org is not None and org.plan == "free"
-            and question.module == "maturity" and existing is None):
-        count = await _existing_maturity_answers(db, assessment.id)
-        if count >= settings.free_maturity_limit:
-            raise APIError(
-                402, "PLAN_UPGRADE_REQUIRED",
-                "Completó la vista gratuita; adquiera el diagnóstico completo para continuar.",
-            )
 
     if existing is not None:
         existing.value = value
@@ -162,6 +195,7 @@ async def batch_upsert(db: AsyncSession, assessment: Assessment, items: list,
                        current: CurrentUser) -> dict:
     saved = 0
     failed: List[dict] = []
+    prepared = []
     for item in items:
         state = item.state or "answered"
         value = item.value
@@ -172,19 +206,33 @@ async def batch_upsert(db: AsyncSession, assessment: Assessment, items: list,
         if not question:
             failed.append({"question_id": item.question_id, "reason": "QUESTION_NOT_FOUND"})
             continue
-        existing = await _get_existing(db, assessment.id, item.question_id)
+        prepared.append((question, state, value))
+
+    # Preflight the whole valid batch before applying even an existing-answer
+    # update. An oversized Free batch fails atomically with the same error as PUT.
+    await enforce_free_maturity_limit(
+        db, assessment, [q.id for q, _, _ in prepared if q.module == "maturity"], current
+    )
+    existing_by_id = {}
+    for question, state, value in prepared:
+        if question.id not in existing_by_id:
+            existing_by_id[question.id] = await _get_existing(db, assessment.id, question.id)
+        existing = existing_by_id[question.id]
         if existing is not None:
             existing.value = value
             existing.state = state
             existing.updated_by = current.id
         else:
-            db.add(Answer(
+            answer = Answer(
                 assessment_id=assessment.id,
-                question_id=item.question_id,
+                question_id=question.id,
                 value=value,
                 state=state,
                 updated_by=current.id,
-            ))
+            )
+            db.add(answer)
+            # autoflush is disabled: reuse pending inserts for duplicate IDs.
+            existing_by_id[question.id] = answer
         saved += 1
     await db.flush()
     return {"saved": saved, "failed": failed}

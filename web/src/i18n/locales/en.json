@@ -1616,5 +1616,13 @@
       "operaciones": "Operations",
       "legal": "Legal"
     }
+  },
+  "resultsPreview": {
+    "provisional": "Provisional assessment",
+    "description": "Partial preview based only on your recorded numeric answers.",
+    "noNumericAnswers": "There are no numeric answers available yet to show a partial score.",
+    "coverage": "Numeric answers used: {{count}} out of {{total}} maturity questions.",
+    "limited": "This average of dimensions with numeric answers is not a complete assessment. Unanswered questions are not counted as zero.",
+    "lockedDescription": "Dimension details, the radar, area results and the executive PDF require Pro. Explore the full assessment options."
   }
 }

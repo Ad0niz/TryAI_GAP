@@ -430,6 +430,15 @@ export interface ResultOut {
   priorities: PriorityItem[];
 }
 
+/** APP-06 minimal provisional aggregate; detailed ResultOut remains Pro-only. */
+export interface ResultPreviewOut {
+  provisional: boolean;
+  details_locked: boolean;
+  average: number | null;
+  numeric_answers: number;
+  total_questions: number;
+}
+
 export interface ReportCreateOut {
   report_id: string;
   status: string;
