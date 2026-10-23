@@ -3,7 +3,8 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
+from app.schemas.auth import MeResponse, TokenPair
 
 
 class TeamMemberOut(BaseModel):
@@ -47,6 +48,27 @@ class InvitationResponse(BaseModel):
 class InvitationResendResponse(BaseModel):
     invitation_id: uuid.UUID
     status: str
+
+
+class InvitationPreview(BaseModel):
+    organization_name: str
+    full_name: str
+    email: str
+    area_key: Optional[str] = None
+    expires_at: datetime
+    password_is_set: bool
+
+
+class InvitationAccept(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    token: str = Field(min_length=1, max_length=256)
+    password: SecretStr = Field(min_length=12, max_length=128)
+
+
+class InvitationAccepted(TokenPair):
+    user: MeResponse
+    status: str = "accepted"
+    area_key: Optional[str] = None
 
 
 class DelegateCreate(BaseModel):

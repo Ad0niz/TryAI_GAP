@@ -17,6 +17,7 @@ from app.models import (
     QuestionTranslation, User,
 )
 from app.schemas.team import DelegateCreate, InvitationCreate
+from app.services.invitation_service import invitation_status
 
 log = logging.getLogger("app.team")
 
@@ -73,7 +74,7 @@ async def list_team(db: AsyncSession, current: CurrentUser) -> dict:
                 "full_name": inv.full_name,
                 "email": inv.email,
                 "area_key": inv.area_key,
-                "status": inv.status,
+                "status": invitation_status(inv),
                 "created_at": inv.created_at,
             }
             for inv in invitations
@@ -93,9 +94,10 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
             Invitation.email == email,
             Invitation.area_key == payload.area_key,
             Invitation.status == "sent",
+            Invitation.expires_at > now_utc(),
         )
     )
-    if existing.scalar_one_or_none() is not None:
+    if existing.scalars().first() is not None:
         raise APIError(409, "INVITE_ALREADY_EXISTS", "Ya existe una invitación activa para este correo y área.")
 
     raw = generate_opaque_token()
@@ -107,6 +109,7 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
         phone=payload.phone,
         area_key=payload.area_key,
         token_hash=hash_token(raw),
+        expires_at=now_utc() + timedelta(hours=settings.invitation_ttl_hours),
         status="sent",
     )
     db.add(invitation)
@@ -140,12 +143,17 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
 
 async def resend_invitation(db: AsyncSession, current: CurrentUser, invitation_id: uuid.UUID) -> dict:
     org_id = _require_org(current)
-    invitation = await db.get(Invitation, invitation_id)
+    invitation = (await db.execute(select(Invitation).where(
+        Invitation.id == invitation_id,
+    ).with_for_update())).scalar_one_or_none()
     if invitation is None or invitation.organization_id != org_id:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la invitación.")
 
+    if invitation_status(invitation) == "accepted":
+        raise APIError(409, "INVITE_ALREADY_ACCEPTED", "La invitación ya fue aceptada.")
     raw = generate_opaque_token()
     invitation.token_hash = hash_token(raw)
+    invitation.expires_at = now_utc() + timedelta(hours=settings.invitation_ttl_hours)
     invitation.status = "sent"
     await db.flush()
 

@@ -22,6 +22,8 @@ import type {
   DocumentListItem,
   DistributorCodeValidateResponse,
   InvitationCreate,
+  InvitationPreview,
+  InvitationAccepted,
   InvitationResponse,
   LeadCreate,
   LeadCreateResponse,
@@ -48,6 +50,14 @@ import type {
 } from './types';
 
 // ---------- auth ----------
+export function fetchInvitation(token: string): Promise<InvitationPreview> {
+  return api(`/invitations/${encodeURIComponent(token)}`, { auth: false });
+}
+
+export function acceptInvitation(token: string, password: string): Promise<InvitationAccepted> {
+  return api('/invitations/accept', { method: 'POST', body: { token, password }, auth: false });
+}
+
 export function requestMagicLink(email: string, locale: string): Promise<MagicLinkResponse> {
   return api<MagicLinkResponse>('/auth/magic-link', {
     method: 'POST',

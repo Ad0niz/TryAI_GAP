@@ -533,3 +533,17 @@ export interface DelegationAnswerOut {
   status: string;
   question_code?: string | null;
 }
+export interface InvitationPreview {
+  organization_name: string;
+  full_name: string;
+  email: string;
+  area_key: string | null;
+  expires_at: string;
+  password_is_set: boolean;
+}
+
+export interface InvitationAccepted extends TokenPair {
+  user: MeResponse;
+  status: 'accepted';
+  area_key: string | null;
+}

@@ -1595,5 +1595,35 @@
       "Fordern Sie eine menschliche Prüfung an, um Scores zu kalibrieren und den Bericht anzureichern."
     ],
     "footer": "TryAIGap · Bridge the AI Gap"
+  },
+  "invitePage": {
+    "title": "Einladung annehmen",
+    "loading": "Einladung wird geprüft…",
+    "intro": "Hallo, {{name}}. Du wurdest eingeladen, {{company}} beizutreten.",
+    "email": "E-Mail-Adresse des Kontos",
+    "area": "Zugewiesener Bereich",
+    "expires": "Link gültig bis",
+    "password": "Passwort festlegen",
+    "currentPassword": "Aktuelles Passwort",
+    "keepPassword": "Verwende dein bereits festgelegtes Passwort. Es wird nicht geändert.",
+    "confirm": "Passwort bestätigen",
+    "passwordRule": "Verwende 12 bis 128 Zeichen. Eine lange Passphrase ist möglich.",
+    "mismatch": "Die Passwörter stimmen nicht überein.",
+    "accept": "Annehmen und anmelden",
+    "saving": "Konto wird aktiviert…",
+    "success": "Einladung angenommen",
+    "successBody": "Dein Konto ist aktiv und mit {{company}} verknüpft.",
+    "magicLink": "Verwende für spätere Anmeldungen den E-Mail-Link auf der Anmeldeseite.",
+    "continue": "Zum Dashboard",
+    "login": "Zur Anmeldung",
+    "retry": "Erneut versuchen",
+    "invalid": "Dieser Link ist ungültig. Bitte die Administration um eine neue Einladung.",
+    "expired": "Die Einladung ist abgelaufen. Bitte die Administration, sie erneut zu senden.",
+    "used": "Diese Einladung wurde bereits angenommen. Du kannst dich mit deinem Konto anmelden.",
+    "conflict": "Dein Konto kann dieser Organisation nicht zugeordnet werden. Kontaktiere die Administration.",
+    "disabled": "Dein Konto ist deaktiviert. Kontaktiere die Administration.",
+    "incorrect": "Das aktuelle Passwort ist falsch.",
+    "changed": "Die Einladung oder das Konto wurde geändert. Prüfe den Link erneut.",
+    "generic": "Die Anfrage konnte nicht abgeschlossen werden. Prüfe deine Verbindung und versuche es erneut."
   }
 }

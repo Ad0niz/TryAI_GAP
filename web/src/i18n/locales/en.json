@@ -1594,5 +1594,35 @@
       "Request a human review to calibrate scores and enrich the report."
     ],
     "footer": "TryAIGap · Bridge the AI Gap"
+  },
+  "invitePage": {
+    "title": "Accept invitation",
+    "loading": "Checking invitation…",
+    "intro": "Hello, {{name}}. You were invited to join {{company}}.",
+    "email": "Account email",
+    "area": "Assigned area",
+    "expires": "Link expires",
+    "password": "Set your password",
+    "currentPassword": "Current password",
+    "keepPassword": "Use the password you already set. Accepting will not change it.",
+    "confirm": "Confirm your password",
+    "passwordRule": "Use between 12 and 128 characters. You can use a long passphrase.",
+    "mismatch": "The passwords do not match.",
+    "accept": "Accept and sign in",
+    "saving": "Activating your account…",
+    "success": "Invitation accepted",
+    "successBody": "Your account is active and linked to {{company}}.",
+    "magicLink": "For future visits, use the email link available from Sign in.",
+    "continue": "Go to dashboard",
+    "login": "Go to sign in",
+    "retry": "Retry",
+    "invalid": "This link is invalid. Ask your administrator for a new invitation.",
+    "expired": "The invitation has expired. Ask your administrator to resend it.",
+    "used": "This invitation was already accepted. You can sign in with your account.",
+    "conflict": "Your account cannot join this organization. Contact your administrator.",
+    "disabled": "Your account is disabled. Contact your administrator.",
+    "incorrect": "The current password is incorrect.",
+    "changed": "The invitation or account changed. Check the link again.",
+    "generic": "The request could not be completed. Check your connection and try again."
   }
 }
