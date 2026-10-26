@@ -4,11 +4,12 @@
  */
 import { create } from 'zustand';
 import { ApiError, setSessionExpiredHandler, tokenStorage } from '@/api/client';
-import { fetchMe, logoutRequest, verifyMagicLink } from '@/api';
+import { acceptInvitation, fetchMe, logoutRequest, verifyMagicLink } from '@/api';
 import type { MeResponse, Role } from '@/api/types';
 import { useAssessmentStore } from './assessmentStore';
 
 const USER_KEY = 'tryaigap.user';
+let sessionRevision = 0;
 
 export type AuthStatus = 'idle' | 'hydrating' | 'authenticated' | 'unauthenticated';
 
@@ -17,6 +18,7 @@ interface AuthState {
   status: AuthStatus;
   /** Exchange a magic-link token for a session. */
   verify: (token: string) => Promise<MeResponse>;
+  acceptInvite: (token: string, password: string) => Promise<MeResponse>;
   /** Revoke tokens server-side (best effort) and clear the local session. */
   logout: () => Promise<void>;
   /** Restore the session on reload via GET /auth/me. */
@@ -53,8 +55,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   user: loadCachedUser(),
   status: 'idle',
 
+  async acceptInvite(token, password) {
+    const result = await acceptInvitation(token, password);
+    ++sessionRevision;
+    useAssessmentStore.getState().clear();
+    tokenStorage.set(result.access_token, result.refresh_token);
+    persistUser(result.user);
+    set({ user: result.user, status: 'authenticated' });
+    syncAssessment(result.user);
+    return result.user;
+  },
+
   async verify(token) {
     const res = await verifyMagicLink(token);
+    ++sessionRevision;
     tokenStorage.set(res.access_token, res.refresh_token);
     const user: MeResponse = {
       id: res.user.id,
@@ -80,6 +94,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch {
       // Best effort: even if the backend is unreachable we clear the session.
     } finally {
+      ++sessionRevision;
       tokenStorage.clear();
       persistUser(null);
       set({ user: null, status: 'unauthenticated' });
@@ -88,6 +103,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   async hydrate() {
+    const revision = sessionRevision;
     if (!tokenStorage.getAccess()) {
       persistUser(null);
       set({ user: null, status: 'unauthenticated' });
@@ -96,11 +112,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (get().status !== 'authenticated') set({ status: 'hydrating' });
     try {
       const user = await fetchMe();
+      // A completed invitation may have switched accounts while /me was in flight.
+      if (revision !== sessionRevision) return;
       persistUser(user);
       set({ user, status: 'authenticated' });
       syncAssessment(user);
     } catch (e) {
       // The API client already cleared tokens on an unrecoverable 401.
+      if (revision !== sessionRevision) return;
       if (e instanceof ApiError && e.status === 401) {
         persistUser(null);
         set({ user: null, status: 'unauthenticated' });
@@ -120,6 +139,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
 // When the refresh token also fails, the API client clears tokens — mirror that here.
 setSessionExpiredHandler(() => {
+  ++sessionRevision;
   persistUser(null);
   useAuthStore.setState({ user: null, status: 'unauthenticated' });
   useAssessmentStore.getState().clear();

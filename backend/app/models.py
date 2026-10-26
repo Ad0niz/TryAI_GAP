@@ -22,6 +22,7 @@ class User(Base, UUIDMixin, TimestampMixin):
     __tablename__ = "users"
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
     full_name: Mapped[Optional[str]] = mapped_column(String(160))
+    password_hash: Mapped[Optional[str]] = mapped_column(String(255))
     role: Mapped[str] = mapped_column(String(20), default="client", nullable=False)  # client|consultant|admin
     locale: Mapped[str] = mapped_column(String(2), default="es", nullable=False)
     status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)  # active|invited|disabled
@@ -179,6 +180,9 @@ class Invitation(Base, UUIDMixin, TimestampMixin):
     area_key: Mapped[Optional[str]] = mapped_column(String(20))
     token_hash: Mapped[str] = mapped_column(String(128), index=True, nullable=False)
     status: Mapped[str] = mapped_column(String(12), default="sent", nullable=False)  # sent|accepted|expired
+    # NULL expires_at identifies legacy links, which must be resent.
+    expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
 
 # ---------------------------------------------------------------- estimator / payments

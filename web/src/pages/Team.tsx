@@ -258,7 +258,7 @@ export default function Team() {
                           variant="ghost"
                           size="icon"
                           aria-label={t('team.resend')}
-                          disabled={resendMutation.isPending}
+                          disabled={resendMutation.isPending || inv.status === 'accepted'}
                           onClick={() => resendMutation.mutate(inv.invitation_id)}
                         >
                           <RefreshCw className="h-4 w-4" />

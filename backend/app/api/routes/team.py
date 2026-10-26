@@ -9,13 +9,29 @@ from app.schemas.team import (
     DelegateCreate,
     DelegateResponse,
     InvitationCreate,
+    InvitationAccept,
+    InvitationAccepted,
+    InvitationPreview,
     InvitationResendResponse,
     InvitationResponse,
     TeamListResponse,
 )
-from app.services import team_service
+from app.services import team_service, invitation_service
 
 router = APIRouter(tags=["team"])
+
+
+@router.get("/invitations/{token}", response_model=InvitationPreview)
+async def preview_invitation(token: str, response: Response, db: AsyncSession = Depends(get_db)):
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return await invitation_service.preview_invitation(db, token)
+
+
+@router.post("/invitations/accept", response_model=InvitationAccepted)
+async def accept_invitation(payload: InvitationAccept, response: Response, db: AsyncSession = Depends(get_db)):
+    response.headers["Cache-Control"] = "no-store"
+    return await invitation_service.accept_invitation(db, payload)
 
 
 @router.get("/team", response_model=TeamListResponse)
