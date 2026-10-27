@@ -60,6 +60,8 @@ describe('APP-06 result preview and paywall', () => {
     expect(fetchResults).not.toHaveBeenCalled();
     expect(fetchOrganization).not.toHaveBeenCalled();
     expect(screen.queryByTestId('full-radar')).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.vectorsTitle'))).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.matrixTitle'))).not.toBeInTheDocument();
     expect(screen.queryByTestId('pdf-actions')).not.toBeInTheDocument();
   });
 
@@ -77,6 +79,8 @@ describe('APP-06 result preview and paywall', () => {
     expect(await screen.findByTestId('full-radar')).toBeInTheDocument();
     expect(await screen.findByTestId('pdf-actions')).toBeInTheDocument();
     expect(fetchResults).toHaveBeenCalledWith('assessment-a');
+    expect(screen.getByText(i18n.t('resultsAnalytics.vectorsTitle'))).toBeInTheDocument();
+    expect(screen.getByText(i18n.t('resultsAnalytics.matrixTitle'))).toBeInTheDocument();
     expect(screen.queryByText(i18n.t('resultsPreview.provisional'))).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: i18n.t('paywall.cta') })).not.toBeInTheDocument();
   });
@@ -90,6 +94,8 @@ describe('APP-06 result preview and paywall', () => {
     expect(fetchResults).not.toHaveBeenCalled();
     expect(screen.queryByTestId('pdf-actions')).not.toBeInTheDocument();
     expect(screen.queryByTestId('full-radar')).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.vectorsTitle'))).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.matrixTitle'))).not.toBeInTheDocument();
   });
 
   it('hides cached details if the detailed API rejects access during a plan change', async () => {
@@ -101,6 +107,8 @@ describe('APP-06 result preview and paywall', () => {
     expect(await screen.findByRole('link', { name: i18n.t('paywall.cta') })).toBeInTheDocument();
     expect(screen.queryByTestId('pdf-actions')).not.toBeInTheDocument();
     expect(screen.queryByTestId('full-radar')).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.vectorsTitle'))).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.matrixTitle'))).not.toBeInTheDocument();
   });
 
   it('does not fetch details if preview authorization fails', async () => {
@@ -109,6 +117,8 @@ describe('APP-06 result preview and paywall', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument();
     expect(fetchResults).not.toHaveBeenCalled();
     expect(screen.queryByTestId('full-radar')).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.vectorsTitle'))).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsAnalytics.matrixTitle'))).not.toBeInTheDocument();
   });
 
   it('refreshes access after the existing payment flow updates the assessment plan', async () => {

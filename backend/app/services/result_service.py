@@ -16,6 +16,7 @@ from app.core.security import now_utc
 from app.integrations.storage import signed_url
 from app.models import Answer, Assessment, Question, ReportJob
 from app.services.questionnaire_service import AREA_KEYS, area_name
+from app.services.result_metrics_service import compute_pain_readiness, compute_value_vectors
 
 # ------------------------------------------------------------------ i18n tables
 LOCALES = ("es", "en", "de", "pt")
@@ -240,9 +241,10 @@ async def build_result(
             "vectors": [f"{BLOCK_LABELS[locale]} {block}" for block in AREA_BLOCKS],
             "areas": areas,
         },
-        # Pain is not collected in the current questionnaire/DB. Never return
-        # fixed example recommendations as if they belonged to this company.
+        # Area-level quadrants do not identify or rank individual initiatives.
         "priorities": [],
+        "value_vectors": await compute_value_vectors(db, assessment_id),
+        "pain_readiness": await compute_pain_readiness(db, assessment_id),
     }
 
 

@@ -36,10 +36,46 @@ class PriorityItem(BaseModel):
     recommendation: str
 
 
+class ValueVector(BaseModel):
+    key: str
+    percentage: Optional[float]
+    numeric_answers: int
+
+
+class ValueVectorsBlock(BaseModel):
+    status: str
+    vectors: List[ValueVector]
+    mapped_questions: int
+    total_questions: Optional[int]
+    unmapped_numeric_answers: int
+
+
+class AreaCoverage(BaseModel):
+    area_key: str
+    numeric_answers: int
+    total_questions: int
+
+
+class PainReadinessPoint(AreaCoverage):
+    pain: float
+    readiness: float
+    quadrant: str
+    quick_win: bool
+
+
+class PainReadinessBlock(BaseModel):
+    threshold: float
+    coverage_rule: str
+    points: List[PainReadinessPoint]
+    pending_areas: List[AreaCoverage]
+
+
 class ResultOut(BaseModel):
     maturity: MaturityBlock
     heatmap: HeatmapBlock
     priorities: List[PriorityItem]
+    value_vectors: Optional[ValueVectorsBlock] = None
+    pain_readiness: Optional[PainReadinessBlock] = None
 
 
 class ResultPreviewOut(BaseModel):

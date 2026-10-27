@@ -1596,7 +1596,7 @@
     ],
     "footer": "TryAIGap · Bridge the AI Gap",
     "heatNote": "Die Fragebogenblöcke A-D entsprechen noch nicht den fünf Wertvektoren. Ein Strich zeigt an, dass keine numerischen Antworten vorliegen.",
-    "noPriorities": "Priorisierung ausstehend: Der Fragebogen erfasst Pain noch nicht. Es liegen keine Ergebnisse für Pain × Readiness vor.",
+    "noPriorities": "Keine priorisierten Einzelinitiativen verfügbar. Die Bereichsmatrix ist keine Liste von Initiativen.",
     "noData": "Für die Funktionsbereiche liegen keine numerischen Antworten vor.",
     "unavailable": "Nicht verfügbar",
     "block": "Block {{block}}",
@@ -1655,5 +1655,31 @@
     "incorrect": "Das aktuelle Passwort ist falsch.",
     "changed": "Die Einladung oder das Konto wurde geändert. Prüfe den Link erneut.",
     "generic": "Die Anfrage konnte nicht abgeschlossen werden. Prüfe deine Verbindung und versuche es erneut."
+  },
+  "resultsAnalytics": {
+    "vectorsTitle": "Fünf Wertvektoren",
+    "vectorsDescription": "Einfacher Mittelwert der numerischen Antworten je Vektor, geteilt durch 5 und multipliziert mit 100. Ohne Gewichtung.",
+    "schemaPending": "Ausstehend bei der Administration: Das Feld vector_type und die offizielle Fragenzuordnung müssen integriert werden. Es wurden keine Zuordnungen abgeleitet.",
+    "mappingPending": "Offizielle Zuordnung unvollständig: {{mapped}} von {{total}} Fragen erkannt. Verfügbare Prozentwerte sind vorläufig.",
+    "answerCount": "Numerische Antworten: {{count}}",
+    "unmapped": "Antworten wegen fehlender oder unbekannter Zuordnung ausgeschlossen: {{count}}.",
+    "matrixTitle": "Pain × Readiness-Matrix je Bereich",
+    "matrixDescription": "Pain: Mittelwert aus Block A. Readiness: gemeinsamer Mittelwert aller Antworten aus B, C und D. Originalskala von 1 bis 5, ohne Umkehrung von Pain.",
+    "coverageRule": "Konservatives Kriterium, noch zu bestätigen: Ein Punkt wird angezeigt, wenn jede Frage in jedem Block A–D numerisch beantwortet ist. Für unvollständige Bereiche wird die Abdeckung angezeigt.",
+    "boundaryRule": "Quick Win erfordert Pain > 3,0 und Readiness > 3,0. Genau 3,0 gilt als Grenze. Die Klassifizierung verwendet ungerundete Werte.",
+    "noPoints": "Noch keine Bereiche mit ausreichenden Daten für Punkte vorhanden.",
+    "pendingAreas": "Bereiche ohne Punkt wegen unvollständiger Abdeckung oder fehlender Blöcke:",
+    "pain": "Pain",
+    "readiness": "Readiness",
+    "classification": "Klassifizierung",
+    "legend": "Primärfarbe: Quick-Win-Bereiche. Grau: andere Quadranten oder Grenze. Die Tabelle zeigt die Werte jedes Punktes.",
+    "heatDescription": "Tatsächliche Mittelwerte der Blöcke A–D je Bereich. Diese Blöcke sind nicht die fünf Wertvektoren.",
+    "quadrants": {
+      "high_high": "Quick Win",
+      "high_low": "Hoher Pain · Niedrige Readiness",
+      "low_high": "Niedriger Pain · Hohe Readiness",
+      "low_low": "Niedriger Pain · Niedrige Readiness",
+      "boundary": "Grenze (3,0)"
+    }
   }
 }

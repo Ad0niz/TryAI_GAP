@@ -1595,7 +1595,7 @@
     ],
     "footer": "TryAIGap · Bridge the AI Gap",
     "heatNote": "Questionnaire blocks A-D do not yet correspond to the five value vectors. A dash indicates that no numeric answers are available.",
-    "noPriorities": "Prioritization pending: the questionnaire does not yet collect Pain. No Pain × Readiness results are available.",
+    "noPriorities": "No prioritized individual initiatives are available. The area matrix is not a list of initiatives.",
     "noData": "No numeric answers are available for functional areas.",
     "unavailable": "Not available",
     "block": "Block {{block}}",
@@ -1654,5 +1654,31 @@
     "incorrect": "The current password is incorrect.",
     "changed": "The invitation or account changed. Check the link again.",
     "generic": "The request could not be completed. Check your connection and try again."
+  },
+  "resultsAnalytics": {
+    "vectorsTitle": "Five value vectors",
+    "vectorsDescription": "Simple average of numeric answers for each vector, divided by 5 and multiplied by 100. No weighting.",
+    "schemaPending": "Awaiting Administration: the vector_type field and official question classification must be integrated. No assignments have been inferred.",
+    "mappingPending": "Official classification incomplete: {{mapped}} of {{total}} questions recognized. Available percentages are partial.",
+    "answerCount": "Numeric answers: {{count}}",
+    "unmapped": "Answers excluded because classification is missing or unknown: {{count}}.",
+    "matrixTitle": "Pain × Readiness matrix by area",
+    "matrixDescription": "Pain: average of Block A. Readiness: pooled average of B, C and D answers. Original 1–5 scale, without reversing Pain.",
+    "coverageRule": "Conservative criterion pending validation: a point is published when every question in each A–D block has a numeric answer. Incomplete areas show their coverage.",
+    "boundaryRule": "Quick Win requires Pain > 3.0 and Readiness > 3.0. A value exactly equal to 3.0 is a boundary. Classification uses unrounded values.",
+    "noPoints": "No areas have sufficient data to publish points yet.",
+    "pendingAreas": "Areas without a point due to incomplete coverage or missing blocks:",
+    "pain": "Pain",
+    "readiness": "Readiness",
+    "classification": "Classification",
+    "legend": "Primary color: Quick Win areas. Gray: other quadrants or boundary. The table shows the values of each point.",
+    "heatDescription": "Actual averages of A–D blocks by area. These blocks are not the five value vectors.",
+    "quadrants": {
+      "high_high": "Quick Win",
+      "high_low": "High Pain · Low Readiness",
+      "low_high": "Low Pain · High Readiness",
+      "low_low": "Low Pain · Low Readiness",
+      "boundary": "Boundary (3.0)"
+    }
   }
 }

@@ -1596,7 +1596,7 @@
     ],
     "footer": "TryAIGap · Bridge the AI Gap",
     "heatNote": "Os blocos A-D do questionário ainda não correspondem aos cinco vetores de valor. Um traço indica que não há respostas numéricas disponíveis.",
-    "noPriorities": "Priorização pendente: o questionário ainda não coleta Pain. Não há resultados de Pain × Readiness disponíveis.",
+    "noPriorities": "Não há iniciativas individuais priorizadas disponíveis. A matriz por área não constitui uma lista de iniciativas.",
     "noData": "Não há respostas numéricas disponíveis para as áreas funcionais.",
     "unavailable": "Não disponível",
     "block": "Bloco {{block}}",
@@ -1655,5 +1655,31 @@
     "incorrect": "A senha atual está incorreta.",
     "changed": "O convite ou a conta mudou. Verifique o link novamente.",
     "generic": "Não foi possível concluir a solicitação. Verifique sua conexão e tente novamente."
+  },
+  "resultsAnalytics": {
+    "vectorsTitle": "Cinco vetores de valor",
+    "vectorsDescription": "Média simples das respostas numéricas de cada vetor, dividida por 5 e multiplicada por 100. Sem ponderações.",
+    "schemaPending": "Pendente da Administração: é necessário integrar o campo vector_type e a classificação oficial das perguntas. Nenhuma atribuição foi inferida.",
+    "mappingPending": "Classificação oficial incompleta: {{mapped}} de {{total}} perguntas reconhecidas. As percentagens disponíveis são parciais.",
+    "answerCount": "Respostas numéricas: {{count}}",
+    "unmapped": "Respostas excluídas por classificação ausente ou desconhecida: {{count}}.",
+    "matrixTitle": "Matriz Pain × Readiness por área",
+    "matrixDescription": "Pain: média do Bloco A. Readiness: média conjunta das respostas de B, C e D. Escala original de 1 a 5, sem inverter Pain.",
+    "coverageRule": "Critério conservador pendente de validação: um ponto é publicado quando todas as perguntas de cada bloco A–D têm respostas numéricas. As áreas incompletas mostram a cobertura.",
+    "boundaryRule": "Quick Win exige Pain > 3,0 e Readiness > 3,0. Um valor exatamente igual a 3,0 é fronteira. A classificação usa valores sem arredondamento.",
+    "noPoints": "Ainda não há áreas com dados suficientes para publicar pontos.",
+    "pendingAreas": "Áreas sem ponto por cobertura incompleta ou blocos em falta:",
+    "pain": "Pain",
+    "readiness": "Readiness",
+    "classification": "Classificação",
+    "legend": "Cor principal: áreas Quick Win. Cinzento: outros quadrantes ou fronteira. A tabela mostra os valores de cada ponto.",
+    "heatDescription": "Médias reais dos blocos A–D por área. Estes blocos não são os cinco vetores de valor.",
+    "quadrants": {
+      "high_high": "Quick Win",
+      "high_low": "Pain alto · Readiness baixo",
+      "low_high": "Pain baixo · Readiness alto",
+      "low_low": "Pain baixo · Readiness baixo",
+      "boundary": "Fronteira (3,0)"
+    }
   }
 }

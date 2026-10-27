@@ -7,6 +7,7 @@ import { ApiError } from '@/api/client';
 import { fetchOrganization, fetchResults, fetchResultsPreview } from '@/api';
 import type { ResultOut, ResultPreviewOut } from '@/api/types';
 import { MaturityRadar } from '@/components/questionnaire/MaturityRadar';
+import { ResultMetrics } from '@/components/results/ResultMetrics';
 
 const ReportPdfActions = lazy(() => import('@/pdf/ReportPdf'));
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -35,7 +36,7 @@ function heatClass(v: number | null): string {
 }
 
 function ResultsBody({ results }: { results: ResultOut }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { assessment } = useAssessment();
   const recoLabels = t('resultsUI.reco', { returnObjects: true }) as Record<string, string>;
 
@@ -119,8 +120,8 @@ function ResultsBody({ results }: { results: ResultOut }) {
       {/* Heatmap */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t('results.heatmap')}</CardTitle>
-          <CardDescription>{i18n.language.startsWith('es') ? 'Promedios reales de los bloques A–D por área (aún no son vectores de valor).' : i18n.language.startsWith('pt') ? 'Médias reais dos blocos A–D por área (ainda não são vetores de valor).' : i18n.language.startsWith('de') ? 'Tatsächliche Durchschnittswerte der Blöcke A–D pro Bereich (noch keine Wertvektoren).' : 'Actual A–D questionnaire block scores by area (not value vectors yet).'}</CardDescription>
+          <CardTitle className="text-base">{t('resultsPdf.heatTitle')}</CardTitle>
+          <CardDescription>{t('resultsAnalytics.heatDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -154,6 +155,8 @@ function ResultsBody({ results }: { results: ResultOut }) {
         </CardContent>
       </Card>
 
+      <ResultMetrics results={results} />
+
       {/* Priorities */}
       <Card>
         <CardHeader>
@@ -173,13 +176,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
               {results.priorities.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={4} className="text-center text-muted-foreground">
-                    {i18n.language.startsWith('es')
-                      ? 'Priorización pendiente: el cuestionario aún no recoge Pain.'
-                      : i18n.language.startsWith('pt')
-                        ? 'Priorização pendente: o questionário ainda não coleta Pain.'
-                        : i18n.language.startsWith('de')
-                          ? 'Priorisierung ausstehend: Der Fragebogen erfasst Pain noch nicht.'
-                          : 'Prioritization pending: the questionnaire does not yet collect Pain.'}
+                    {t('resultsPdf.noPriorities')}
                   </TableCell>
                 </TableRow>
               )}
