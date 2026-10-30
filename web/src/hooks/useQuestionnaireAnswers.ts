@@ -1,3 +1,4 @@
+import { ApiError } from '@/api/client';
 /**
  * Questionnaire answers: load existing answers, keep local edits,
  * debounced autosave via POST /assessments/{id}/answers:batch.
@@ -36,6 +37,7 @@ export function useQuestionnaireAnswers(
   const [answers, setAnswers] = useState<AnswersMap>({});
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [paywallHit, setPaywallHit] = useState(false);
+  const [permissionDenied, setPermissionDenied] = useState(false);
 
   const dirtyRef = useRef<Set<string>>(new Set());
   const answersRef = useRef<AnswersMap>(answers);
@@ -79,6 +81,9 @@ export function useQuestionnaireAnswers(
         await queryClient.invalidateQueries({ queryKey: ['areas', assessmentId] });
       }
     } catch (e) {
+      if (e instanceof ApiError && e.status === 403) {
+        setPermissionDenied(true); setSaveStatus('error'); return;
+      }
       // Re-queue on failure so the next change retries.
       for (const id of sent) dirtyRef.current.add(id);
       setSaveStatus('error');
@@ -118,7 +123,8 @@ export function useQuestionnaireAnswers(
       clearPaywall: () => setPaywallHit(false),
       loading: query.isLoading,
       loadError: query.error,
+      permissionDenied: permissionDenied || (query.error instanceof ApiError && query.error.status === 403),
     }),
-    [answers, setAnswer, saveStatus, flush, paywallHit, query.isLoading, query.error],
+    [answers, setAnswer, saveStatus, flush, paywallHit, query.isLoading, query.error, permissionDenied],
   );
 }

@@ -45,6 +45,7 @@ import type {
   ReviewCreate,
   ReviewCreateOut,
   ReviewOut,
+  ReviewListResponse,
   TeamListResponse,
   TokenPair,
   VerifyResponse,
@@ -306,6 +307,10 @@ export function createReview(payload: ReviewCreate): Promise<ReviewCreateOut> {
   return api<ReviewCreateOut>('/reviews', { method: 'POST', body: payload });
 }
 
+export function fetchReviews(assessmentId: string): Promise<ReviewListResponse> {
+  return api<ReviewListResponse>(`/reviews?${new URLSearchParams({ assessment_id: assessmentId })}`);
+}
+
 export function fetchReview(reviewId: string): Promise<ReviewOut> {
   return api<ReviewOut>(`/reviews/${reviewId}`);
 }
@@ -351,4 +356,25 @@ export function answerDelegation(token: string, value: number): Promise<Delegati
     body: { value },
     auth: false,
   });
+}
+
+
+export function passwordLogin(email: string, password: string): Promise<TokenPair & { user: MeResponse }> {
+  return api('/auth/login', { method: 'POST', body: { email, password }, auth: false });
+}
+export function requestRegistration(email: string, locale: string): Promise<MagicLinkResponse> {
+  return api('/auth/register/request', { method: 'POST', body: { email, locale }, auth: false });
+}
+export function previewRegistration(token: string): Promise<{ email: string }> {
+  return api('/auth/register/preview', { method: 'POST', body: { token }, auth: false });
+}
+export function requestPasswordReset(email: string, locale: string): Promise<MagicLinkResponse> {
+  return api('/auth/password/reset/request', { method: 'POST', body: { email, locale }, auth: false });
+}
+export function resetPassword(token: string, password: string, password_confirmation: string): Promise<void> {
+  return api('/auth/password/reset', { method: 'POST', body: { token, password, password_confirmation }, auth: false });
+}
+
+export function fetchOrganizationPermissions(): Promise<{ organization_admin: boolean; area_keys: string[] }> {
+  return api('/auth/permissions');
 }

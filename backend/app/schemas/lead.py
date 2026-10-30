@@ -2,10 +2,13 @@
 import uuid
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 
 class LeadCreate(BaseModel):
+    verification_token: SecretStr = Field(min_length=1, max_length=128)
+    password: SecretStr = Field(min_length=12, max_length=128)
+    password_confirmation: SecretStr = Field(min_length=12, max_length=128)
     full_name: str
     job_title: Optional[str] = None
     company_email: str

@@ -2,20 +2,20 @@
 import os
 import unittest
 from fractions import Fraction
-from unittest.mock import patch
 from uuid import uuid4
 
 os.environ['DATABASE_URL'] = 'sqlite+aiosqlite:///:memory:'
 
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import Column, MetaData, String, literal_column
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.results import router
 from app.core.errors import register_error_handlers
-from app.models import Answer, Assessment, Organization, Question, User
+from app.models import AreaState, Answer, Assessment, Organization, Question, User
 from app.services.result_metrics_service import (
     VECTOR_KEYS, pain_readiness_scores, quadrant, vector_scores,
 )
@@ -52,8 +52,8 @@ class MetricsFormulaTests(unittest.TestCase):
         self.assertEqual(quadrant(Fraction(2999, 1000), 4), 'low_high')
 
     def test_readiness_pools_answers_not_block_averages_and_pain_is_not_reversed(self):
-        catalog = [(i, 'ventas', block) for i, block in enumerate('ABBBCD')]
-        result = pain_readiness_scores(catalog, list(enumerate([5, 1, 1, 1, 5, 5])))
+        catalog = [(i, 'ventas', block) for i, block in enumerate('A'+'B'*9+'C'*3+'D'*3)]
+        result = pain_readiness_scores(catalog, list(enumerate([5]+[1]*9+[5]*6)))
         point = result['points'][0]
         self.assertEqual((point['pain'], point['readiness']), (5, 2.6))
         self.assertEqual(point['quadrant'], 'high_low')
@@ -79,10 +79,8 @@ class MetricsIntegrationTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.engine = create_async_engine('sqlite+aiosqlite:///:memory:')
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False)
-        # Synthetic future column lives only in isolated test metadata. The
-        # application's model, migrations and real database are not modified.
-        self.question_table = Question.__table__.to_metadata(MetaData())
-        self.question_table.append_column(Column('vector_type', String(30)))
+        # Use the real integrated ORM. Every record is synthetic and isolated.
+        self.question_table = Question.__table__
         async with self.engine.begin() as db:
             for model in (Organization, User, Assessment):
                 await db.run_sync(model.__table__.create)
@@ -102,12 +100,15 @@ class MetricsIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 (self.assessment_id, self.org.id), (self.second_id, self.org.id), (self.foreign_id, self.other_org.id))])
             await db.execute(self.question_table.insert(), [
                 {'id': self.maturity_id, 'module': 'maturity', 'area_key': None, 'code': 'M1',
-                 'block_id': 'A', 'dimension': 'datos', 'vector_type': 'eficiencia'},
+                 'block_id': 'A', 'dimension': 'datos', 'vector_type': 'efficiency'},
                 *[{'id': qid, 'module': 'area', 'area_key': 'ventas', 'code': f'V{i}',
                    'block_id': block, 'dimension': None, 'vector_type': vector}
                   for i, (qid, block, vector) in enumerate(zip(self.area_ids, 'ABBBCD',
-                     ('eficiencia', 'ingresos', 'ingresos', 'experiencia', 'riesgo', 'talento')))]])
+                     ('efficiency', 'revenue', 'revenue', 'experience', 'risk', 'talent')))]])
             db.add(Answer(assessment_id=self.assessment_id, question_id=self.maturity_id, state='answered', value=3))
+        await make_admin(self.engine, self.sessions, self.user.id, self.org.id)
+        async with self.sessions.begin() as db:
+            db.add(AreaState(assessment_id=self.assessment_id,area_key='ventas',active=True))
         app = FastAPI()
         app.include_router(router, prefix='/api/v1')
         register_error_handlers(app)
@@ -136,48 +137,58 @@ class MetricsIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.status_code, 200, response.text)
         return response.json()
 
-    async def test_current_model_returns_explicit_pending_vectors_without_querying_missing_column(self):
+    async def test_integrated_model_reads_real_classification_without_fake_area_scores(self):
         data = await self.result()
-        self.assertEqual(data['value_vectors']['status'], 'schema_pending')
-        self.assertTrue(all(item['percentage'] is None for item in data['value_vectors']['vectors']))
+        self.assertEqual(data['value_vectors']['status'], 'ready')
+        self.assertEqual([item['percentage'] for item in data['value_vectors']['vectors']], [60, None, None, None, None])
         self.assertEqual(data['pain_readiness']['points'], [])
         self.assertEqual(data['maturity']['average'], 3)
 
-    async def test_complete_real_area_produces_point_without_changing_heatmap_or_initiatives(self):
+    async def test_maturity_without_official_mapping_stays_pending_and_is_not_inferred(self):
+        async with self.sessions.begin() as db:
+            await db.execute(update(Question).where(Question.id == self.maturity_id).values(vector_type=None))
+        data = await self.result()
+        self.assertEqual(data['value_vectors']['status'], 'mapping_pending')
+        self.assertEqual(data['value_vectors']['mapped_questions'], 6)
+        self.assertEqual(data['value_vectors']['unmapped_numeric_answers'], 1)
+        self.assertTrue(all(item['percentage'] is None for item in data['value_vectors']['vectors']))
+
+    async def test_official_weight_fields_do_not_change_vector_or_matrix_formulas(self):
+        await self.answer_area([5, 1, 3, 2, 4, 5])
+        before = await self.result()
+        async with self.sessions.begin() as db:
+            await db.execute(update(Question).where(Question.id == self.area_ids[0]).values(weight_pain=100, weight_readiness=50))
+        self.assertEqual(await self.result(), before)
+
+    async def test_six_question_catalog_is_not_a_complete_official_area(self):
         await self.answer_area([5, 1, 1, 1, 5, 5])
         data = await self.result()
-        self.assertEqual(data['pain_readiness']['points'][0]['readiness'], 2.6)
-        self.assertEqual(data['pain_readiness']['points'][0]['pain'], 5)
+        self.assertEqual(data['pain_readiness']['points'], [])
         self.assertEqual(data['heatmap']['areas'][0]['row'], [5, 1, 5, 5])
         self.assertEqual(data['priorities'], [])
 
     async def test_only_numeric_answered_states_count_and_incomplete_area_is_not_plotted(self):
         await self.answer_area([5, 5, 5, 5, None, 5], ['answered', 'idk', 'delegated', 'pending', 'answered', 'answered'])
-        with patch.object(Question, 'vector_type', literal_column('questions.vector_type'), create=True):
-            data = await self.result()
+        data = await self.result()
         self.assertEqual(data['pain_readiness']['points'], [])
         self.assertEqual(data['pain_readiness']['pending_areas'][0]['numeric_answers'], 2)
         self.assertEqual([v['numeric_answers'] for v in data['value_vectors']['vectors']], [2, 0, 0, 0, 1])
 
-    async def test_future_explicit_mapping_reads_all_vectors_and_ignores_other_assessments(self):
+    async def test_official_english_mapping_keeps_api_keys_and_ignores_other_assessments(self):
         await self.answer_area([5, 1, 3, 2, 4, 5])
         await self.answer_area([1] * 6, assessment=self.second_id)
         await self.answer_area([1] * 6, assessment=self.foreign_id)
-        with patch.object(Question, 'vector_type', literal_column('questions.vector_type'), create=True):
-            data = await self.result()
+        data = await self.result()
         self.assertEqual(data['value_vectors']['status'], 'ready')
         self.assertEqual([v['percentage'] for v in data['value_vectors']['vectors']], [80, 40, 40, 80, 100])
-        self.assertEqual(data['pain_readiness']['points'][0]['readiness'], 3)
-        self.assertEqual(data['pain_readiness']['points'][0]['quadrant'], 'boundary')
-        self.assertFalse(data['pain_readiness']['points'][0]['quick_win'])
+        self.assertEqual(data['pain_readiness']['points'], [])
 
     async def test_unknown_and_null_vector_types_report_mapping_gap_without_guessing(self):
         await self.answer_area([5, 1, 3, 2, 4, 5])
         async with self.sessions.begin() as db:
             await db.execute(self.question_table.update().where(self.question_table.c.id == self.area_ids[0]).values(vector_type='A'))
             await db.execute(self.question_table.update().where(self.question_table.c.id == self.area_ids[1]).values(vector_type=None))
-        with patch.object(Question, 'vector_type', literal_column('questions.vector_type'), create=True):
-            data = await self.result()
+        data = await self.result()
         self.assertEqual(data['value_vectors']['status'], 'mapping_pending')
         self.assertEqual(data['value_vectors']['mapped_questions'], 5)
         self.assertEqual(data['value_vectors']['unmapped_numeric_answers'], 2)
@@ -200,11 +211,9 @@ class MetricsIntegrationTests(unittest.IsolatedAsyncioTestCase):
         response = await self.client.get(f'/api/v1/results/{self.foreign_id}')
         self.assertEqual(response.status_code, 403)
 
-    async def test_only_strict_high_high_is_quick_win(self):
+    async def test_six_numeric_answers_cannot_publish_even_if_all_high(self):
         await self.answer_area([4] * 6)
-        point = (await self.result())['pain_readiness']['points'][0]
-        self.assertTrue(point['quick_win'])
-        self.assertEqual(point['quadrant'], 'high_high')
+        self.assertEqual((await self.result())['pain_readiness']['points'], [])
 
 
 if __name__ == '__main__':

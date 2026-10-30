@@ -6,6 +6,7 @@ from app.api.deps import CurrentUser
 from app.core.errors import APIError
 from app.models import Assessment
 from app.services.answer_service import assessment_summary
+from app.services.organization_access import require_org_member
 
 
 async def get_current_assessment(db: AsyncSession, current: CurrentUser) -> dict:
@@ -19,6 +20,7 @@ async def get_current_assessment(db: AsyncSession, current: CurrentUser) -> dict
             404, "ASSESSMENT_NOT_FOUND",
             "El usuario no pertenece a ninguna organización con evaluación.",
         )
+    await require_org_member(db, current)
     stmt = (
         select(Assessment)
         .where(Assessment.organization_id == current.organization_id)

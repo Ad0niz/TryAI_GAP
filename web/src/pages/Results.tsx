@@ -1,3 +1,4 @@
+import { OrganizationAccess } from '@/components/OrganizationAccess';
 import { lazy, Suspense } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -157,8 +158,8 @@ function ResultsBody({ results }: { results: ResultOut }) {
 
       <ResultMetrics results={results} />
 
-      {/* Priorities */}
-      <Card>
+      {/* Individual initiatives are shown only when supplied by the backend. */}
+      {results.priorities.length > 0 && <Card>
         <CardHeader>
           <CardTitle className="text-base">{t('results.priorities')}</CardTitle>
         </CardHeader>
@@ -173,13 +174,6 @@ function ResultsBody({ results }: { results: ResultOut }) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {results.priorities.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
-                    {t('resultsPdf.noPriorities')}
-                  </TableCell>
-                </TableRow>
-              )}
               {results.priorities.map((p) => (
                 <TableRow key={p.initiative}>
                   <TableCell className="font-medium">{p.initiative}</TableCell>
@@ -193,7 +187,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
             </TableBody>
           </Table>
         </CardContent>
-      </Card>
+      </Card>}
     </div>
   );
 }
@@ -230,6 +224,10 @@ function PartialResults({ preview }: { preview: ResultPreviewOut }) {
 
 /** APP-06: minimal provisional preview for Free; existing full report for Pro. */
 export default function Results() {
+  return <OrganizationAccess><ResultsContent /></OrganizationAccess>;
+}
+
+function ResultsContent() {
   const { t } = useTranslation();
   const { assessment, status: assessmentStatus, reload } = useAssessment();
 
@@ -322,7 +320,7 @@ export default function Results() {
 
       {error && !isPaywall && !isNotReady && (
         <Alert variant="destructive">
-          <AlertTitle>{t('common.errorGeneric')}</AlertTitle>
+          <AlertTitle>{t(error instanceof ApiError && error.status === 403 ? 'orgPermissions.denied' : 'common.errorGeneric')}</AlertTitle>
           <AlertDescription>
             <Button variant="outline" size="sm" onClick={() => void (previewQuery.isError ? previewQuery.refetch() : resultsQuery.refetch())}>
               {t('common.retry')}

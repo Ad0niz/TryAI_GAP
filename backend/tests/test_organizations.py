@@ -14,6 +14,7 @@ from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.organizations import router
 from app.core.errors import register_error_handlers
@@ -34,6 +35,8 @@ class OrganizationAPITests(unittest.IsolatedAsyncioTestCase):
                              address="Street 123", tax_id="TAX-A", currency="CLP"),
                 Organization(id=self.other_id, name="Company B"),
             ])
+        self.user_id = uuid.uuid4()
+        await make_admin(self.engine,self.sessions,self.user_id,self.org_id)
         app = FastAPI()
         app.include_router(router, prefix="/api/v1")
         register_error_handlers(app)
@@ -44,7 +47,7 @@ class OrganizationAPITests(unittest.IsolatedAsyncioTestCase):
 
         app.dependency_overrides[get_db] = test_db
         app.dependency_overrides[get_current_user] = lambda: CurrentUser(
-            user=User(id=uuid.uuid4(), organization_id=self.org_id, role="client"),
+            user=User(id=self.user_id, organization_id=self.org_id, role="client"),
             organization=None,
         )
         self.client = AsyncClient(transport=ASGITransport(app=app), base_url="http://test")

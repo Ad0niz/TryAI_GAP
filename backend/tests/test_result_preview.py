@@ -10,6 +10,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.results import router
 from app.api.routes.consultant import router as consultant_router
@@ -41,6 +42,7 @@ class ResultPreviewTests(unittest.IsolatedAsyncioTestCase):
                 db.add(Question(id=qid, module="maturity", code=f"M{i}", block_id="ABCDE"[i // 4],
                                 dimension=["datos", "tech", "talento", "procesos", "cultura"][i // 4]))
             db.add(Question(id=self.area_id, module="area", area_key="ventas", code="A1", block_id="A"))
+        await make_admin(self.engine, self.sessions, self.user.id, self.organization.id)
         self.app = FastAPI()
         self.app.include_router(router, prefix="/api/v1")
         self.app.include_router(consultant_router, prefix="/api/v1")

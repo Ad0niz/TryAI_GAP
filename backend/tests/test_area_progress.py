@@ -10,6 +10,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.areas import router as areas_router
 from app.api.routes.assessments import router as assessments_router
@@ -53,6 +54,7 @@ class AreaProgressAPITests(unittest.IsolatedAsyncioTestCase):
             db.add_all([AreaState(assessment_id=self.assessment_id, area_key=key,
                                   active=True, progress=0) for key in self.questions])
 
+        await make_admin(self.engine, self.sessions, self.user_id, self.org_id)
         app = FastAPI()
         app.include_router(areas_router, prefix="/api/v1")
         app.include_router(assessments_router, prefix="/api/v1")
@@ -163,14 +165,21 @@ class AreaProgressAPITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.areas())["legal"]["progress"], 0)
         self.assertEqual(await self.overall(), 0)
 
-    async def test_answers_without_area_state_do_not_activate_area(self):
+    async def test_historical_answers_without_area_state_do_not_activate_area(self):
         async with self.sessions.begin() as db:
             state = (await db.execute(select(AreaState).where(
                 AreaState.assessment_id == self.assessment_id,
                 AreaState.area_key == "ventas",
             ))).scalar_one()
             await db.delete(state)
-        await self.save_answers()
+        # Existing historic answers may lack a state, but new API writes
+        # now require explicit activation under the official APP-11 rule.
+        response = await self.client.post(self.url + "/answers:batch", json={"answers":[
+            {"question_id":str(self.questions["ventas"][0]),"value":4,"state":"answered"}]})
+        self.assertEqual(response.status_code,403)
+        async with self.sessions.begin() as db:
+            db.add_all([Answer(assessment_id=self.assessment_id,question_id=qid,state="answered",value=4)
+                        for qid in self.questions["ventas"]])
         area = (await self.areas())["ventas"]
         self.assertFalse(area["active"])
         self.assertEqual(area["progress"], 100)

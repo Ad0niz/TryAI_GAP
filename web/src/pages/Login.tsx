@@ -1,136 +1,52 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, Info, MailCheck } from 'lucide-react';
 import { requestMagicLink } from '@/api';
-import { ApiError } from '@/api/client';
-import { IS_DEV } from '@/config';
-import { BrandLogo } from '@/components/BrandLogo';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useAuthStore } from '@/store/authStore';
+import { AuthFrame } from '@/components/auth/AuthFrame';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { accountDestination, accountErrorKey } from '@/lib/accountAuth';
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/** Magic-link login: email → POST /auth/magic-link → "check your inbox" state. */
 export default function Login() {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const cache = useQueryClient();
+  const login = useAuthStore(s => s.login);
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [magic, setMagic] = useState(false);
   const [sent, setSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    if (!EMAIL_RE.test(email)) {
-      setError(t('auth.invalidEmail'));
-      return;
-    }
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setError(null);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) { setError('accountAuth.invalidEmail'); return; }
     setLoading(true);
     try {
-      await requestMagicLink(email, (i18n.language ?? 'es').slice(0, 2));
-      setSent(true);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : t('common.errorGeneric'));
-    } finally {
-      setLoading(false);
-    }
+      if (magic) { await requestMagicLink(email.trim(), i18n.language.slice(0, 2)); setSent(true); }
+      else { const user = await login(email.trim(), password); setPassword(''); cache.clear(); navigate(accountDestination(user), { replace: true }); }
+    } catch (err) { setError(accountErrorKey(err)); setPassword(''); }
+    finally { setLoading(false); }
   }
 
-  return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex h-16 items-center justify-between px-4 md:px-8">
-        <Link to="/" aria-label="tryAIGap">
-          <BrandLogo compact />
-        </Link>
-        <div className="flex items-center gap-1">
-          <LanguageSwitcher />
-          <ThemeToggle />
-        </div>
-      </header>
-
-      <main className="flex flex-1 items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          {sent ? (
-            <>
-              <CardHeader className="text-center">
-                <div className="brand-gradient mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full text-white">
-                  <MailCheck className="h-6 w-6" />
-                </div>
-                <CardTitle>{t('auth.checkInboxTitle')}</CardTitle>
-                <CardDescription>{t('auth.checkInboxSub', { email })}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="outline" className="w-full" onClick={() => setSent(false)}>
-                  {t('auth.useAnotherEmail')}
-                </Button>
-                <Button variant="ghost" className="w-full" onClick={handleSubmit} disabled={loading}>
-                  {t('auth.resend')}
-                </Button>
-                {IS_DEV && <DevHint />}
-              </CardContent>
-            </>
-          ) : (
-            <>
-              <CardHeader>
-                <CardTitle className="text-2xl">{t('login.title')}</CardTitle>
-                <CardDescription>{t('login.sub')}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="email">{t('login.email')}</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      autoComplete="email"
-                      autoFocus
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      aria-invalid={!!error}
-                    />
-                  </div>
-                  {error && (
-                    <Alert variant="destructive">
-                      <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                  )}
-                  <Button type="submit" className="brand-gradient w-full border-0 text-white" disabled={loading}>
-                    {loading ? t('common.loading') : t('login.send')}
-                  </Button>
-                  <p className="text-xs text-muted-foreground">{t('login.legal')}</p>
-                </form>
-                {IS_DEV && <DevHint />}
-              </CardContent>
-            </>
-          )}
-        </Card>
-      </main>
-
-      <footer className="p-4 text-center">
-        <Button asChild variant="link" size="sm">
-          <Link to="/">
-            <ArrowLeft className="h-3.5 w-3.5" /> tryAIGap
-          </Link>
-        </Button>
-      </footer>
+  return <AuthFrame title={t('login.title')}>
+    {sent ? <p role="status">{t('accountAuth.emailSent')}</p> : <form onSubmit={submit} className="space-y-4">
+      <div className="space-y-1.5"><Label htmlFor="login-email">{t('login.email')}</Label>
+        <Input id="login-email" type="email" autoComplete="username" required maxLength={254} value={email} onChange={e => setEmail(e.target.value)} /></div>
+      {!magic && <div className="space-y-1.5"><Label htmlFor="login-password">{t('accountAuth.password')}</Label>
+        <Input id="login-password" type="password" autoComplete="current-password" required maxLength={128} value={password} onChange={e => setPassword(e.target.value)} /></div>}
+      {error && <p role="alert" className="text-sm text-destructive">{t(error)}</p>}
+      <Button type="submit" disabled={loading} className="brand-gradient w-full border-0 text-white">{t(loading ? 'common.loading' : magic ? 'login.send' : 'accountAuth.signIn')}</Button>
+    </form>}
+    <Button variant="outline" className="w-full" onClick={() => { setMagic(!magic); setSent(false); setError(null); setPassword(''); }}>
+      {t(magic ? 'accountAuth.usePassword' : 'accountAuth.useMagic')}
+    </Button>
+    <div className="flex flex-wrap justify-between gap-3 text-sm text-primary underline">
+      <Link to="/password/reset">{t('accountAuth.forgot')}</Link><Link to="/start">{t('accountAuth.register')}</Link>
     </div>
-  );
-}
-
-/** Dev-only hint: local backend prints the magic link in the uvicorn console. */
-function DevHint() {
-  const { t } = useTranslation();
-  return (
-    <Alert className="mt-4 border-dashed">
-      <Info className="h-4 w-4" />
-      <AlertDescription className="text-xs">{t('auth.devHint')}</AlertDescription>
-    </Alert>
-  );
+  </AuthFrame>;
 }

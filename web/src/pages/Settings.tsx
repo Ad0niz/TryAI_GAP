@@ -1,3 +1,4 @@
+import { OrganizationAccess } from '@/components/OrganizationAccess';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loader2, Moon, Sun } from 'lucide-react';
@@ -120,7 +121,7 @@ export default function Settings() {
           ) : !user.organization_id ? (
             <p role="alert">{t('settings.organization.noOrganization')}</p>
           ) : (
-            <OrganizationForm key={`${user.id}:${user.organization_id}`} organizationId={user.organization_id} />
+            <OrganizationAccess><OrganizationForm key={`${user.id}:${user.organization_id}`} organizationId={user.organization_id} /></OrganizationAccess>
           )}
         </CardContent>
       </Card>
@@ -161,7 +162,7 @@ function OrganizationForm({ organizationId }: { organizationId: string }) {
       setOrganization(data);
       setProfile(toProfile(data));
     }).catch((error: unknown) => {
-      if (!cancelled) setLoadError(error instanceof ApiError ? error.message : '');
+      if (!cancelled) setLoadError(error instanceof ApiError && error.status === 403 ? 'orgPermissions.denied' : 'common.errorGeneric');
     });
     return () => { cancelled = true; };
   }, [organizationId, loadAttempt]);
@@ -181,7 +182,7 @@ function OrganizationForm({ organizationId }: { organizationId: string }) {
 
   if (loadError !== null) return (
     <div className="space-y-3">
-      <p role="alert" className="text-sm text-destructive">{t('settings.organization.loadError')} {loadError}</p>
+      <p role="alert" className="text-sm text-destructive">{t('settings.organization.loadError')} {t(loadError)}</p>
       <Button variant="outline" onClick={() => { setLoadError(null); setLoadAttempt((n) => n + 1); }}>
         {t('settings.organization.retry')}
       </Button>
@@ -215,7 +216,7 @@ function OrganizationForm({ organizationId }: { organizationId: string }) {
       setProfile(toProfile(updated));
       setSaved(true);
     } catch (error) {
-      setSaveError(error instanceof ApiError ? error.message : '');
+      setSaveError(error instanceof ApiError && error.status === 403 ? t('orgPermissions.denied') : t('common.errorGeneric'));
     } finally {
       setSaving(false);
     }

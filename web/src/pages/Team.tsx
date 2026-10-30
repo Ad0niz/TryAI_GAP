@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/store/authStore';
+import { OrganizationAccess } from '@/components/OrganizationAccess';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -64,9 +66,14 @@ function StatusBadge({ status }: { status: string }) {
 
 /** Team & collaboration: members, invitations (invite/resend/revoke), delegation info. */
 export default function Team() {
+  return <OrganizationAccess><TeamContent /></OrganizationAccess>;
+}
+
+function TeamContent() {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { assessment } = useAssessment();
+  const user = useAuthStore(s => s.user);
 
   const [inviteOpen, setInviteOpen] = useState(false);
   const [toRevoke, setToRevoke] = useState<InvitationOut | null>(null);
@@ -79,7 +86,7 @@ export default function Team() {
   const [phone, setPhone] = useState('');
   const [areaKey, setAreaKey] = useState('');
 
-  const teamQuery = useQuery({ queryKey: ['team'], queryFn: fetchTeam });
+  const teamQuery = useQuery({ queryKey: ['team', user?.id, user?.organization_id], queryFn: fetchTeam });
   const areasQuery = useQuery({
     queryKey: ['areas', assessment?.id],
     queryFn: () => fetchAreas(assessment!.id),
@@ -88,6 +95,19 @@ export default function Team() {
   const areas = areasQuery.data?.items ?? [];
   const areaName = (key?: string | null) =>
     key ? (areas.find((a) => a.area_key === key)?.name ?? key) : t('team.areaGeneral');
+
+  const invitationErrorText = (error: unknown) => {
+    if (error instanceof ApiError) {
+      if (error.status === 403) return t('orgPermissions.denied');
+      switch (error.code) {
+        case 'INVITE_ACCOUNT_CONFLICT': return t('team.errAccountConflict');
+        case 'INVITE_ACCOUNT_DISABLED': return t('team.errAccountDisabled');
+        case 'INVITE_ALREADY_EXISTS': return t('team.errAlready');
+        case 'INVITE_EMAIL_INVALID': return t('team.errEmail');
+      }
+    }
+    return t('common.errorGeneric');
+  };
 
   const inviteMutation = useMutation({
     mutationFn: () =>
@@ -109,13 +129,7 @@ export default function Team() {
       void queryClient.invalidateQueries({ queryKey: ['team'] });
     },
     onError: (e) => {
-      const text =
-        e instanceof ApiError && e.code === 'INVITE_ALREADY_EXISTS'
-          ? t('team.errAlready')
-          : e instanceof ApiError && e.code === 'INVITE_EMAIL_INVALID'
-            ? t('team.errEmail')
-            : t('common.errorGeneric');
-      setNotice({ kind: 'error', text });
+      setNotice({ kind: 'error', text: invitationErrorText(e) });
     },
   });
 
@@ -126,7 +140,7 @@ export default function Team() {
       setNotice({ kind: 'info', text: t('team.resent', { email: inv?.email ?? '' }) });
       void queryClient.invalidateQueries({ queryKey: ['team'] });
     },
-    onError: () => setNotice({ kind: 'error', text: t('common.errorGeneric') }),
+    onError: (e) => setNotice({ kind: 'error', text: invitationErrorText(e) }),
   });
 
   const revokeMutation = useMutation({
@@ -149,12 +163,12 @@ export default function Team() {
           <h1 className="text-2xl font-bold">{t('team.title')}</h1>
           <p className="text-sm text-muted-foreground">{t('team.sub')}</p>
         </div>
-        <Button className="brand-gradient border-0 text-white" onClick={() => setInviteOpen(true)}>
+        <Button className="brand-gradient border-0 text-white" onClick={() => { setNotice(null); setInviteOpen(true); }}>
           <MailPlus className="h-4 w-4" /> {t('team.invite')}
         </Button>
       </div>
 
-      {notice && (
+      {notice && !inviteOpen && (
         <Alert variant={notice.kind === 'error' ? 'destructive' : 'default'}>
           <AlertDescription>{notice.text}</AlertDescription>
         </Alert>
@@ -301,6 +315,11 @@ export default function Team() {
             <DialogTitle>{t('inviteModal.title')}</DialogTitle>
             <DialogDescription>{t('inviteModal.sub')}</DialogDescription>
           </DialogHeader>
+          {notice?.kind === 'error' && (
+            <Alert variant="destructive">
+              <AlertDescription>{notice.text}</AlertDescription>
+            </Alert>
+          )}
           <form
             className="space-y-4"
             onSubmit={(e) => {

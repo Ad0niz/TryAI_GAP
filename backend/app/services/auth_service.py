@@ -22,6 +22,20 @@ from app.models import MagicLinkToken, RefreshToken, User
 log = logging.getLogger("app.auth")
 
 
+async def lock_auth_user(db: AsyncSession, user_id):
+    """Serialize credential changes and session issuance for one user.
+
+    SQLite ignores FOR UPDATE; a no-op write obtains its transaction lock.
+    Explicit updated_at prevents SQLAlchemy's on-update timestamp changing.
+    """
+    if db.get_bind().dialect.name == "sqlite":
+        await db.execute(update(User).where(User.id == user_id).values(
+            id=User.id, updated_at=User.updated_at,
+        ).execution_options(synchronize_session=False))
+    return (await db.execute(select(User).where(User.id == user_id)
+        .with_for_update().execution_options(populate_existing=True))).scalar_one_or_none()
+
+
 async def issue_tokens(db: AsyncSession, user: User) -> dict:
     """Create an access JWT plus a hashed opaque refresh token row."""
     access_token = create_access_token(str(user.id), {"role": user.role})
@@ -69,7 +83,7 @@ async def request_magic_link(db: AsyncSession, email: str, locale: str = "es") -
     try:
         await send_email(email, subject, html)
     except Exception:  # pragma: no cover - never fail on email delivery
-        log.exception("Failed to send magic link email to %s", email)
+        log.warning("Magic link delivery failed; message content omitted")
 
 
 async def verify_magic_link(db: AsyncSession, token: str) -> tuple[User, dict]:
@@ -85,11 +99,17 @@ async def verify_magic_link(db: AsyncSession, token: str) -> tuple[User, dict]:
     if as_utc(mlt.expires_at) <= now_utc():
         raise APIError(410, "TOKEN_EXPIRED", "El enlace expiró.")
 
-    mlt.used_at = now_utc()
-    user = await db.get(User, mlt.user_id)
-    if user is None:
+    user = await lock_auth_user(db, mlt.user_id)
+    await db.refresh(mlt)
+    if user is None or user.status != "active":
         raise APIError(400, "TOKEN_INVALID", "El enlace no es válido.")
 
+    consumed = await db.execute(update(MagicLinkToken).where(
+        MagicLinkToken.id == mlt.id, MagicLinkToken.used_at.is_(None),
+        MagicLinkToken.expires_at > now_utc(),
+    ).values(used_at=now_utc()).execution_options(synchronize_session=False))
+    if consumed.rowcount != 1:
+        raise APIError(400, "TOKEN_INVALID", "El enlace ya no está disponible.")
     tokens = await issue_tokens(db, user)
     return user, tokens
 
@@ -102,14 +122,21 @@ async def rotate_refresh_token(db: AsyncSession, refresh_token: str) -> dict:
     rt = result.scalar_one_or_none()
     if rt is None or rt.revoked_at is not None:
         raise APIError(401, "REFRESH_TOKEN_INVALID", "El refresh token no es válido.")
-    if rt.expires_at <= now_utc():
+    # Token expiry is issued in UTC; SQLite returns it without tzinfo.
+    if as_utc(rt.expires_at) <= now_utc():
         raise APIError(410, "REFRESH_TOKEN_EXPIRED", "El refresh token expiró.")
 
-    rt.revoked_at = now_utc()
-    user = await db.get(User, rt.user_id)
-    if user is None:
+    user = await lock_auth_user(db, rt.user_id)
+    await db.refresh(rt)
+    if user is None or user.status != "active":
         raise APIError(401, "REFRESH_TOKEN_INVALID", "El refresh token no es válido.")
 
+    consumed = await db.execute(update(RefreshToken).where(
+        RefreshToken.id == rt.id, RefreshToken.revoked_at.is_(None),
+        RefreshToken.expires_at > now_utc(),
+    ).values(revoked_at=now_utc()).execution_options(synchronize_session=False))
+    if consumed.rowcount != 1:
+        raise APIError(401, "REFRESH_TOKEN_INVALID", "El refresh token no es válido.")
     return await issue_tokens(db, user)
 
 

@@ -16,6 +16,7 @@ from app.core.security import now_utc
 from app.integrations.storage import signed_url
 from app.models import Answer, Assessment, Question, ReportJob
 from app.services.questionnaire_service import AREA_KEYS, area_name
+from app.services.organization_access import require_org_admin
 from app.services.result_metrics_service import compute_pain_readiness, compute_value_vectors
 
 # ------------------------------------------------------------------ i18n tables
@@ -180,6 +181,7 @@ async def _owned_assessment(
     assessment = await db.get(Assessment, assessment_id)
     if assessment is None or assessment.organization_id != current.organization_id:
         raise APIError(403, "FORBIDDEN", "No tiene acceso a esta evaluación.")
+    await require_org_admin(db, current)
     return assessment
 
 

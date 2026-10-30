@@ -1,3 +1,4 @@
+import { useOrganizationAccess } from '@/hooks/useOrganizationAccess';
 import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -51,6 +52,7 @@ function daysSince(iso?: string | null): number | null {
 export default function Dashboard() {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const access = useOrganizationAccess();
   const { assessment, status, reload } = useAssessment();
   const moduleCards = t('moduleCards', { returnObjects: true }) as Record<string, ModuleCard>;
 
@@ -63,9 +65,9 @@ export default function Dashboard() {
     queryFn: () => fetchAreas(assessment!.id),
     enabled: !!assessment,
   });
-  const teamQuery = useQuery({ queryKey: ['team'], queryFn: fetchTeam });
+  const teamQuery = useQuery({ queryKey: ['team', user?.id, user?.organization_id], queryFn: fetchTeam, enabled: access.admin });
   const docsQuery = useQuery({
-    queryKey: ['documents', 'count'],
+    queryKey: ['documents', user?.id, user?.organization_id, 'count'],
     queryFn: () => fetchDocuments(1),
     retry: 0,
   });
@@ -94,7 +96,7 @@ export default function Dashboard() {
               {assessment.plan === 'pro' ? t('dashboard.planPro') : t('dashboard.planFree')}
             </Badge>
             <Button asChild className="brand-gradient border-0 text-white">
-              <Link to="/maturity">
+              <Link to={access.admin ? '/maturity' : '/areas'}>
                 {t('dashboard.resume')} <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
@@ -201,7 +203,7 @@ export default function Dashboard() {
       <section>
         <h2 className="mb-3 text-lg font-semibold">{t('dashboard.modules')}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Object.entries(moduleCards).map(([key, mod]) => {
+          {Object.entries(moduleCards).filter(([key]) => access.admin || !['maturity','team','results'].includes(key)).map(([key, mod]) => {
             const route = MODULE_ROUTES[key];
             if (!route || !mod?.title) return null;
             const Icon = route.icon;

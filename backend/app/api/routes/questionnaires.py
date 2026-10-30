@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.schemas.questionnaire import QuestionnaireOut
 from app.services.questionnaire_service import get_questionnaire
+from app.services.organization_access import authorize_module
 
 router = APIRouter(prefix="/questionnaires", tags=["questionnaires"])
 
@@ -19,4 +20,5 @@ async def read_questionnaire(
     db: AsyncSession = Depends(get_db),
     current: CurrentUser = Depends(get_current_user),
 ):
+    await authorize_module(db, current, module, area_key)
     return await get_questionnaire(db, module, area_key, locale or "es")

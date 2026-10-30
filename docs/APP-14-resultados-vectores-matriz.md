@@ -27,7 +27,7 @@ Cada respuesta se agrupa exclusivamente por la etiqueta explícita de su pregunt
 
 Los identificadores internos son `eficiencia`, `ingresos`, `experiencia`, `riesgo`, `talento`. Se reconocen esas denominaciones explícitas con normalización de espacios, mayúsculas y acentos. Si Administración utiliza otro vocabulario, se deberá acordar y adaptar expresamente antes de habilitarlo; las etiquetas desconocidas se informan como no mapeadas.
 
-El modelo compartido actual no tiene `Question.vector_type`. En ese caso se devuelve `schema_pending` y cinco valores ausentes, sin consultar una columna inexistente. Agregar solo una columna física no activa esta integración: deben integrarse conjuntamente el modelo oficial y su migración, por Administración. Con el modelo disponible, se lee la clasificación real; si está incompleta o contiene valores desconocidos, el estado es `mapping_pending`. Los porcentajes que sí se pueden calcular se presentan como parciales.
+El modelo oficial integrado dispone de `Question.vector_type` y pesos oficiales; los cálculos mantienen el promedio simple sin ponderaciones. Las 112 preguntas funcionales tienen clasificación oficial. Las 20 de madurez siguen pendientes de clasificación y nunca se infieren por texto o bloque. La respuesta conserva compatibilidad `schema_pending` para integraciones anteriores y `mapping_pending` cuando la clasificación elegible es incompleta.
 
 El estado `ready` indica cobertura del catálogo clasificado, no cuestionario completo. Cada vector muestra la cantidad de respuestas; un vector sin respuestas sigue sin datos incluso con catálogo completo.
 
@@ -40,9 +40,9 @@ Por área funcional conocida, usando el catálogo real del módulo `area`:
 - Clasificación con valores exactos antes del redondeo de presentación; ambos valores > 3: `high_high` y `quick_win: true`; cualquier coordenada == 3: `boundary`; restantes combinaciones: `high_low`, `low_high`, `low_low`.
 - El gráfico usa Readiness en X y Pain en Y, ambos de 1 a 5, con líneas de referencia en 3. La tabla accesible muestra área, coordenadas y clasificación. La clasificación no crea iniciativas ni calcula un ranking entre áreas.
 
-**Decisión conservadora pendiente de validación funcional:** los PDF no definen la cobertura mínima para publicar un punto. Se exige que existan los cuatro bloques y que todas las preguntas actuales de cada bloque tengan respuestas numéricas. Áreas incompletas muestran cobertura, sin coordenadas ni Quick Wins. Esta regla está explicitada en la interfaz; no se presenta como decisión oficial de Administración. Si Administración autoriza un mínimo distinto, deberá ajustarse el guardado de publicación y sus pruebas, sin cambiar las fórmulas.
+**Regla confirmada por Administración:** un área solo publica un punto con exactamente 16 preguntas funcionales de A–D respondidas numéricamente y en estado `answered`. La cobertura parcial se muestra sin coordenadas ni Quick Wins. Esta condición sustituye la decisión conservadora inicial; las fórmulas no cambian.
 
-Para mantener coherencia con el heatmap existente, se consideran las respuestas guardadas por área independientemente del indicador `AreaState.active`. Falta confirmar si desactivar un área debe excluir sus respuestas históricas de ambas visualizaciones.
+**Áreas desactivadas:** se conservan sus respuestas, pero se excluyen de la matriz Pain × Readiness y de los cinco vectores mediante `AreaState.active`. Al reactivarse vuelven a contribuir con los mismos datos. El heatmap histórico por bloques conserva su comportamiento anterior.
 
 La interfaz utiliza i18next y los recursos ES/EN/DE/PT existentes: reutiliza nombres de los cinco vectores, áreas y mensajes compartidos. Las cifras usan el idioma activo de la interfaz. No hay nuevas dependencias.
 
@@ -50,7 +50,7 @@ La interfaz utiliza i18next y los recursos ES/EN/DE/PT existentes: reutiliza nom
 
 1. Entrega e integración del modelo y migración oficial de `vector_type`.
 2. Clasificación real de las 132 preguntas, valores exactos de la etiqueta y confirmación del alcance maturity/area.
-3. Validación del criterio conservador de cobertura y del tratamiento de áreas desactivadas.
+3. Validación manual en integración de la cobertura de 16 respuestas y de desactivación/reactivación, ya confirmadas oficialmente.
 4. El diagrama no representa `answers.state`, `updated_by`, `updated_at` ni `users.organization_id` como el modelo actual. No eliminar esos campos al integrar el esquema: los estados son esenciales para cálculos, delegación y límites Free; la relación con organización interviene en autorización. Resolver las diferencias con Administración, no mediante migraciones locales improvisadas.
 5. Modelo y columna deben llegar sincronizados; una versión de ORM que declare una columna ausente en la base seguirá siendo un despliegue incompatible y requiere la migración oficial.
 
@@ -76,3 +76,22 @@ Los resultados verificables de las ejecuciones actuales se registran en la entre
 - No se hicieron commits, push, cambios de rama, migraciones ni modificaciones de modelos SQLAlchemy o credenciales. `aplicar_app14.py` ya estaba sin seguimiento antes de comenzar y no se modificó.
 
 Evidencia externa: `backend-tests.log`, `frontend-tests.log` y `frontend-build.log` en `C:/Users/andre/Documents/ChatGPT/CAPSTONE/APP14_avance_2026-10-26`. El script `run_backend_tests.py` de ese directorio documenta la exclusión de pruebas que ejecutan migraciones.
+
+
+## Presentación ejecutiva actualizada el 29 de octubre de 2026
+
+Se mantienen las fórmulas y la clasificación previa al redondeo. Administración confirmó posteriormente la cobertura de 16 respuestas numéricas y la exclusión de áreas desactivadas de matriz y vectores. Las áreas activas incompletas muestran cantidad de respuestas y progreso, sin coordenadas inventadas.
+
+La interfaz y el PDF omiten la sección de iniciativas cuando `priorities` está vacío. El contrato se conserva y ambos pueden mostrar iniciativas futuras proporcionadas por el backend. No existe generación automática de iniciativas.
+
+El PDF se genera en el frontend con el mismo `@react-pdf/renderer` y el idioma activo de i18next. Añade páginas de vectores (porcentajes reales, cobertura de clasificación y ausencia de datos) y matriz (SVG con coordenadas reales, umbral recibido, clasificación del servidor, tabla y áreas pendientes). No utiliza los endpoints de trabajos PDF del backend ni recalcula métricas. Las pruebas usan datos sintéticos y renderizan PDFs reales en los cuatro idiomas.
+
++
++### Validación de esta presentación
++
++- Backend: 98 pruebas aprobadas de leads, autenticación, invitaciones, organizaciones, progreso, límites Free y resultados. Solo bases aisladas; se excluyen las suites de migraciones.
++- Frontend: `npm test -- --maxWorkers=1`, 21 archivos y 143 pruebas aprobadas. Incluye estados sin respuestas, parciales, completos, Free/Pro, iniciativas vacías y futuras, clasificación cerca de 3 y orden de dibujo de puntos superpuestos sin alterar datos.
++- Compilación: `npm run build` aprobado. Persisten advertencias de tamaño de chunks y antigüedad de Browserslist; no se cambian dependencias.
++- PDF: 12 muestras (tres estados en cada idioma ES/EN/DE/PT) y una muestra con iniciativa sintética. Se verificaron cinco páginas por muestra de estados, títulos traducidos, caracteres ñ/ü/ã, precisión 3,001, ausencia de secciones vacías de iniciativas y texto dentro de los límites de página. Revisión visual mediante Poppler; las muestras son exclusivamente sintéticas.
++- La primera ejecución paralela de Vitest agotó tiempos de arranque de trabajadores. La ejecución final con un trabajador pasó sin errores; no se cambió la configuración global de Vitest.
++- No se modificaron backend, modelos, migraciones ni bases reales en esta etapa. Administración confirmó posteriormente la cobertura de 16 respuestas numéricas y la exclusión de áreas desactivadas de matriz y vectores; el cierre de esas reglas se documenta en APP-11-APP-14-cierre-funcional.md.

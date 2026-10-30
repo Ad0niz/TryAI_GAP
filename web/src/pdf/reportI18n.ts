@@ -110,6 +110,25 @@ export function createReportContent(data: ReportData, i18n: i18n, date = new Dat
       vector: t('resultsUI.thVector'), recommendation: t('resultsUI.thReco'),
     },
     recoLabels,
+    analytics: {
+      vectorsTitle: t('resultsAnalytics.vectorsTitle'), vectorsDescription: t('resultsAnalytics.vectorsDescription'),
+      vectorsNotice: !results.value_vectors || results.value_vectors.status === 'schema_pending'
+        ? t('resultsAnalytics.schemaPending') : results.value_vectors.status === 'mapping_pending'
+          ? t('resultsAnalytics.mappingPending', { mapped: results.value_vectors.mapped_questions, total: results.value_vectors.total_questions }) : '',
+      unmapped: results.value_vectors?.unmapped_numeric_answers
+        ? t('resultsAnalytics.unmapped', { count: results.value_vectors.unmapped_numeric_answers }) : '',
+      vectorNames: Object.fromEntries(['eficiencia', 'ingresos', 'experiencia', 'riesgo', 'talento'].map((key, index) =>
+        [key, (t('results.vectors', { returnObjects: true }) as string[])[index]])),
+      areaNames: Object.fromEntries(Object.entries(areaNames).map(([key, value]) => [key, value.name])),
+      matrixTitle: t('resultsAnalytics.matrixTitle'), matrixDescription: t('resultsAnalytics.matrixDescription'),
+      coverageRule: t('resultsAnalytics.coverageRule'), boundaryRule: t('resultsAnalytics.boundaryRule'),
+      noPoints: t('resultsAnalytics.noPoints'), pendingAreas: t('resultsAnalytics.pendingAreas'),
+      coverageColumn: t('resultsAnalytics.coverageColumn'), answersLabel: t('resultsAnalytics.answersLabel'),
+      pain: t('resultsAnalytics.pain'), readiness: t('resultsAnalytics.readiness'),
+      classification: t('resultsAnalytics.classification'), legend: t('resultsAnalytics.legend'),
+      noData: t('resultsAnalytics.noData'),
+      quadrants: t('resultsAnalytics.quadrants', { returnObjects: true }) as Record<string, string>,
+    },
   };
   return { data: { ...data, results }, labels };
 }

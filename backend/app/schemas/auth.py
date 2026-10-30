@@ -2,7 +2,7 @@
 import uuid
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 
 class MagicLinkRequest(BaseModel):
@@ -57,3 +57,30 @@ class MeResponse(BaseModel):
     role: str
     locale: str
     organization_id: Optional[uuid.UUID] = None
+
+
+class CredentialEmailRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+    locale: str = Field(default="es", max_length=12)
+
+
+class CredentialTokenRequest(BaseModel):
+    token: SecretStr = Field(min_length=1, max_length=128)
+
+
+class PasswordLoginRequest(BaseModel):
+    email: str = Field(min_length=3, max_length=254)
+    password: SecretStr = Field(min_length=1, max_length=128)
+
+
+class PasswordResetRequest(CredentialTokenRequest):
+    password: SecretStr = Field(min_length=12, max_length=128)
+    password_confirmation: SecretStr = Field(min_length=12, max_length=128)
+
+
+class PasswordLoginResponse(TokenPair):
+    user: MeResponse
+
+
+class RegistrationPreview(BaseModel):
+    email: str

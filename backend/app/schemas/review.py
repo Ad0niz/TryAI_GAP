@@ -31,6 +31,20 @@ class ReviewOut(BaseModel):
     chapters: List[ChapterOut]
 
 
+class ReviewListItem(BaseModel):
+    review_id: uuid.UUID
+    mode: str
+    stage: int
+    created_at: datetime
+    updated_at: datetime
+    consultant: Optional[str] = None
+
+
+class ReviewListResponse(BaseModel):
+    assessment_id: uuid.UUID
+    items: List[ReviewListItem]
+
+
 class RatingCreate(BaseModel):
     chapter_key: str
     knowledge: Optional[int] = None

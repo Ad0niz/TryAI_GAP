@@ -16,6 +16,7 @@ import Estimator from '@/pages/Estimator';
 import Landing from '@/pages/Landing';
 import LeadGate from '@/pages/LeadGate';
 import Login from '@/pages/Login';
+import PasswordReset from '@/pages/PasswordReset';
 import InviteAccept from '@/pages/InviteAccept';
 import Maturity from '@/pages/Maturity';
 import NotFound from '@/pages/NotFound';
@@ -36,6 +37,7 @@ export default function App() {
       <Route path="/start" element={<LeadGate />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/password/reset" element={<PasswordReset />} />
       <Route path="/invite/:token" element={<InviteAccept />} />
       <Route path="/auth/verify" element={<AuthVerify />} />
       <Route path="/delegate/:token" element={<DelegateAnswer />} />

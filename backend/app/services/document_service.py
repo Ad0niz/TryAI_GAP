@@ -3,7 +3,7 @@ import os
 import uuid
 from typing import Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, or_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
@@ -12,7 +12,9 @@ from app.core.errors import APIError
 from app.core.pagination import offset, page_meta
 from app.core.security import now_utc
 from app.integrations.storage import upload_bytes
-from app.models import Assessment, Document, User
+from app.models import Assessment, Document, Question, User
+
+from app.services.organization_access import (authorize_document_scope, require_org_member, require_org_admin)
 
 ALLOWED_TYPES = {
     "application/pdf",
@@ -39,6 +41,7 @@ async def create_document(db: AsyncSession, current: CurrentUser, data: bytes,
     if assessment.organization_id != current.organization_id:
         raise APIError(403, "FORBIDDEN", "No tiene acceso a esta evaluación.")
 
+    area_key = await authorize_document_scope(db, current, assessment_id, question_id, area_key, write=True)
     key = await upload_bytes(data, filename, content_type)
     doc = Document(
         organization_id=current.organization_id,
@@ -59,10 +62,23 @@ async def create_document(db: AsyncSession, current: CurrentUser, data: bytes,
 async def list_documents(db: AsyncSession, current: CurrentUser,
                          assessment_id: Optional[uuid.UUID], area_key: Optional[str],
                          page: int, page_size: int) -> dict:
+    access = await require_org_member(db, current)
+    if assessment_id or area_key:
+        if area_key:
+            await authorize_document_scope(db, current, assessment_id, None, area_key)
+        if assessment_id:
+            assessment = await db.get(Assessment, assessment_id)
+            if assessment is None or assessment.organization_id != current.organization_id:
+                raise APIError(403, 'FORBIDDEN', 'No tiene acceso a esta evaluación.')
     conds = [
         Document.organization_id == current.organization_id,
         Document.deleted_at.is_(None),
     ]
+    if not access.admin:
+        scoped_questions = select(Question.id).where(Question.module == 'area', Question.area_key.in_(access.area_keys))
+        conds.append(or_(and_(Document.area_key.in_(access.area_keys),
+            or_(Document.question_id.is_(None), Document.question_id.in_(scoped_questions))),
+            and_(Document.area_key.is_(None), Document.question_id.in_(scoped_questions))))
     if assessment_id:
         conds.append(Document.assessment_id == assessment_id)
     if area_key:
@@ -100,6 +116,7 @@ async def list_documents(db: AsyncSession, current: CurrentUser,
 async def delete_document(db: AsyncSession, current: CurrentUser,
                           document_id: uuid.UUID) -> None:
     doc = await _owned_document(db, current, document_id)
+    await require_org_admin(db, current)
     doc.deleted_at = now_utc()
     await db.flush()
 
@@ -110,6 +127,7 @@ async def _owned_document(db: AsyncSession, current: CurrentUser,
     if (not doc or doc.deleted_at is not None
             or doc.organization_id != current.organization_id):
         raise APIError(404, "RESOURCE_NOT_FOUND", "Documento no encontrado.")
+    await authorize_document_scope(db, current, doc.assessment_id, doc.question_id, doc.area_key)
     return doc
 
 

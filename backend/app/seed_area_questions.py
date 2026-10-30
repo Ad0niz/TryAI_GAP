@@ -23,6 +23,7 @@ from typing import Dict, List, Optional, Tuple
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.question_vectors import AREA_VECTOR_TYPES
 from app.models import Question, QuestionTranslation
 
 log = logging.getLogger("app.seed.areas")
@@ -133,6 +134,7 @@ async def seed_area_questions(db: AsyncSession) -> None:
                 code=code,
                 position=pos,
                 dimension=None,
+                vector_type=AREA_VECTOR_TYPES[area_key],
             )
             db.add(q)
             await db.flush()

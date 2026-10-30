@@ -8,6 +8,7 @@ from app.core.errors import APIError
 from app.integrations.storage import signed_url, upload_bytes
 from app.models import Organization
 from app.schemas.organization import OrgUpdate
+from app.services.organization_access import require_org_admin, require_org_member
 
 _ALLOWED_LOGO_TYPES = {"image/png", "image/jpeg", "image/svg+xml"}
 _MAX_LOGO_BYTES = 2 * 1024 * 1024
@@ -42,6 +43,7 @@ async def get_organization(
     db: AsyncSession, current: CurrentUser, organization_id: uuid.UUID
 ) -> Organization:
     _ensure_tenant(current, organization_id)
+    await require_org_member(db, current)
     org = await db.get(Organization, organization_id)
     if org is None:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la organización.")
@@ -52,6 +54,7 @@ async def update_organization(
     db: AsyncSession, current: CurrentUser, organization_id: uuid.UUID, payload: OrgUpdate
 ) -> Organization:
     org = await get_organization(db, current, organization_id)
+    await require_org_admin(db, current)
     data = payload.model_dump(exclude_unset=True)
     for field, value in data.items():
         setattr(org, field, value)
@@ -68,6 +71,7 @@ async def set_logo(
     content_type: str,
 ) -> Organization:
     org = await get_organization(db, current, organization_id)
+    await require_org_admin(db, current)
     if content_type not in _ALLOWED_LOGO_TYPES:
         raise APIError(415, "UNSUPPORTED_MEDIA_TYPE", "Formato de imagen no soportado.")
     if len(data) > _MAX_LOGO_BYTES:

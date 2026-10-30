@@ -1,3 +1,5 @@
+import { useOrganizationAccess } from '@/hooks/useOrganizationAccess';
+import { ApiError } from '@/api/client';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -24,9 +26,11 @@ interface AreaEntry {
 export default function Areas() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const access = useOrganizationAccess();
   const queryClient = useQueryClient();
   const { assessment, status, reload } = useAssessment();
   const [upgradeMsg, setUpgradeMsg] = useState(false);
+  const [permissionError, setPermissionError] = useState(false);
 
   useEffect(() => {
     if (status === 'idle') void reload();
@@ -40,15 +44,17 @@ export default function Areas() {
 
   const activate = useMutation({
     mutationFn: (areaKey: string) => activateArea(assessment!.id, areaKey),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['areas', assessment?.id] }),
+    onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ['areas', assessment?.id] }); void queryClient.invalidateQueries({ queryKey: ['results', assessment?.id] }); },
     onError: (e) => {
       if (isPaywallError(e)) setUpgradeMsg(true);
+      if (e instanceof ApiError && e.status === 403) setPermissionError(true);
     },
   });
 
   const deactivate = useMutation({
     mutationFn: (areaKey: string) => deactivateArea(assessment!.id, areaKey),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['areas', assessment?.id] }),
+    onError: (e) => { if (e instanceof ApiError && e.status === 403) setPermissionError(true); },
+    onSuccess: () => { void queryClient.invalidateQueries({ queryKey: ['areas', assessment?.id] }); void queryClient.invalidateQueries({ queryKey: ['results', assessment?.id] }); },
   });
 
   const areaList = t('areaList', { returnObjects: true }) as Record<string, AreaEntry>;
@@ -91,6 +97,7 @@ export default function Areas() {
         <p className="text-sm text-muted-foreground">{t('areas.sub')}</p>
       </div>
 
+      {(permissionError || (areasQuery.error instanceof ApiError && areasQuery.error.status === 403)) && <p role="alert">{t('orgPermissions.denied')}</p>}
       {upgradeMsg && (
         <Alert className="border-primary">
           <AlertDescription className="flex flex-wrap items-center justify-between gap-3">
@@ -103,7 +110,7 @@ export default function Areas() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {(areasQuery.data?.items ?? []).map((area) => {
+        {(areasQuery.data?.items ?? []).filter(area => access.admin || access.areaKeys.includes(area.area_key)).map((area) => {
           const entry = areaList[area.area_key];
           const state = area.locked
             ? t('areas.stateLocked')
@@ -158,16 +165,16 @@ export default function Areas() {
                       >
                         {t('moduleCards.areas.cta')} <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
+                      {access.admin && <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => deactivate.mutate(area.area_key)}
                         disabled={deactivate.isPending}
                       >
                         {t('areas.deactivate')}
-                      </Button>
+                      </Button>}
                     </>
-                  ) : area.locked ? (
+                  ) : !access.admin ? <span className="text-xs text-muted-foreground">{t('orgPermissions.inactive')}</span> : area.locked ? (
                     <Button asChild size="sm" variant="outline" className="flex-1">
                       <Link to="/estimator">
                         <Lock className="h-3.5 w-3.5" /> {t('common.upgrade')}

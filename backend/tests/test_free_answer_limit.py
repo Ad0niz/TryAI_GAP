@@ -17,12 +17,13 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.assessments import router
 from app.api.routes.team import router as team_router
 from app.core.config import settings
 from app.core.errors import APIError, register_error_handlers
-from app.models import Answer, Assessment, Delegation, Organization, Question, User
+from app.models import AreaState, Answer, Assessment, Delegation, Organization, Question, User
 from app.schemas.answer import BatchAnswerItem
 from app.services.answer_service import batch_upsert, upsert_answer
 
@@ -63,6 +64,9 @@ class FreeAnswerLimitTests(unittest.IsolatedAsyncioTestCase):
             db.add_all([Question(id=qid, module="maturity", block_id="M", code=f"M{i}", dimension="datos")
                         for i, qid in enumerate(self.question_ids)])
             db.add(Question(id=self.area_id, module="area", area_key="ventas", block_id="A", code="A1"))
+        await make_admin(self.engine, self.sessions, self.user_id, self.org_id)
+        async with self.sessions.begin() as db:
+            db.add(AreaState(assessment_id=self.assessment_id,area_key='ventas',active=True))
         app = FastAPI()
         app.include_router(router, prefix="/api/v1")
         app.include_router(team_router, prefix="/api/v1")

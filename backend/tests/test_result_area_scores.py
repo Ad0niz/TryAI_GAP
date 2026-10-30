@@ -45,7 +45,7 @@ class AreaResultTests(unittest.IsolatedAsyncioTestCase):
         db = SimpleNamespace(get=AsyncMock(return_value=SimpleNamespace(organization_id=org_id)))
         current = SimpleNamespace(organization_id=org_id, user=SimpleNamespace(locale="es"))
         area_scores = {"ventas": {"overall": 4.0, "blocks": {"A": 3.0, "B": 5.0, "C": None, "D": None}}}
-        with patch('app.services.result_service.compute_value_vectors', new=AsyncMock(return_value=None)), patch('app.services.result_service.compute_pain_readiness', new=AsyncMock(return_value=None)), patch('app.services.result_service.compute_dimension_scores', new=AsyncMock(return_value=({"datos": 3.0, "tech": 0.0, "talento": 0.0, "procesos": 0.0, "cultura": 0.0}, 1))), patch('app.services.result_service.compute_area_scores', new=AsyncMock(return_value=area_scores)):
+        with patch('app.services.result_service.require_org_admin', new=AsyncMock()), patch('app.services.result_service.compute_value_vectors', new=AsyncMock(return_value=None)), patch('app.services.result_service.compute_pain_readiness', new=AsyncMock(return_value=None)), patch('app.services.result_service.compute_dimension_scores', new=AsyncMock(return_value=({"datos": 3.0, "tech": 0.0, "talento": 0.0, "procesos": 0.0, "cultura": 0.0}, 1))), patch('app.services.result_service.compute_area_scores', new=AsyncMock(return_value=area_scores)):
             result = await build_result(db, current, assessment_id)
         self.assertEqual(result["maturity"]["average"], 3.0)
         self.assertEqual(result["heatmap"]["vectors"], ["Bloque A", "Bloque B", "Bloque C", "Bloque D"])

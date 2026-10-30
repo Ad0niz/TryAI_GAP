@@ -132,6 +132,9 @@ export interface AssessmentSummary {
 
 // ---------- leads (public signup) ----------
 export interface LeadCreate {
+  verification_token: string;
+  password: string;
+  password_confirmation: string;
   full_name: string;
   job_title?: string | null;
   company_email: string;
@@ -504,6 +507,20 @@ export interface ReviewOut {
   stage: number;
   consultant?: string | null;
   chapters: ChapterOut[];
+}
+
+export interface ReviewListItem {
+  review_id: string;
+  mode: string;
+  stage: number;
+  created_at: string;
+  updated_at: string;
+  consultant?: string | null;
+}
+
+export interface ReviewListResponse {
+  assessment_id: string;
+  items: ReviewListItem[];
 }
 
 export interface RatingCreate {

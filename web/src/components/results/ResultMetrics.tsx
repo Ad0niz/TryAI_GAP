@@ -13,12 +13,16 @@ export function ResultMetrics({ results }: { results: ResultOut }) {
   const { t, i18n } = useTranslation();
   const format = (value: number) => new Intl.NumberFormat(i18n.resolvedLanguage ?? i18n.language,
     { minimumFractionDigits: 1, maximumFractionDigits: 2 }).format(value);
+  const coordinate = (value: number) => new Intl.NumberFormat(i18n.resolvedLanguage ?? i18n.language,
+    { minimumFractionDigits: 1, maximumFractionDigits: 3 }).format(value);
   const vectors = results.value_vectors;
   const matrix = results.pain_readiness;
   const names = t('results.vectors', { returnObjects: true }) as string[];
   const points = matrix?.points.map((point) => ({
     ...point, name: t(`areaList.${point.area_key}.name`),
   })) ?? [];
+  // Only drawing order changes; coordinates, classifications and table order stay intact.
+  const chartPoints = [...points].sort((a, b) => Number(a.quick_win) - Number(b.quick_win));
   const quadrantLabel = (key: string) => t(`resultsAnalytics.quadrants.${key}`);
 
   return <>
@@ -38,7 +42,7 @@ export function ResultMetrics({ results }: { results: ResultOut }) {
           return <div key={key}>
             <div className="mb-1 flex flex-wrap justify-between gap-2 text-sm">
               <span className="font-medium">{names[index]}</span>
-              <span>{percentage == null ? t('resultsPdf.noData') : `${format(percentage)} %`}</span>
+              <span>{percentage == null ? t('resultsAnalytics.noData') : `${format(percentage)} %`}</span>
             </div>
             {vector && percentage != null && <>
               <Progress aria-label={names[index]} value={percentage} className="h-2" />
@@ -56,7 +60,6 @@ export function ResultMetrics({ results }: { results: ResultOut }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">{t('resultsAnalytics.coverageRule')}</p>
-        <p className="text-sm text-muted-foreground">{t('resultsAnalytics.boundaryRule')}</p>
         {points.length === 0 ? <p>{t('resultsAnalytics.noPoints')}</p> : <>
           <div role="img" aria-label={t('resultsAnalytics.matrixTitle')}>
             <ResponsiveContainer width="100%" height={340}>
@@ -72,18 +75,22 @@ export function ResultMetrics({ results }: { results: ResultOut }) {
                   const point = active ? payload?.[0]?.payload as typeof points[number] | undefined : undefined;
                   return point ? <div className="rounded-md border bg-background p-3 text-sm shadow-md">
                     <p className="font-medium">{point.name}</p>
-                    <p>{t('resultsAnalytics.pain')}: {format(point.pain)}</p>
-                    <p>{t('resultsAnalytics.readiness')}: {format(point.readiness)}</p>
+                    <p>{t('resultsAnalytics.pain')}: {coordinate(point.pain)}</p>
+                    <p>{t('resultsAnalytics.readiness')}: {coordinate(point.readiness)}</p>
                     <p>{quadrantLabel(point.quadrant)}</p>
                   </div> : null;
                 }} />
-                <Scatter data={points} name={t('resultsUI.thArea')} isAnimationActive={false}>
-                  {points.map((point) => <Cell key={point.area_key} fill={point.quick_win ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'} />)}
+                <Scatter data={chartPoints} name={t('resultsUI.thArea')} isAnimationActive={false}>
+                  {chartPoints.map((point) => <Cell key={point.area_key} fill={point.quick_win ? 'hsl(var(--primary))' : 'hsl(var(--muted-foreground))'} />)}
                 </Scatter>
               </ScatterChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-sm">{t('resultsAnalytics.legend')}</p>
+          <details className="text-sm text-muted-foreground">
+            <summary className="cursor-pointer font-medium">{t('resultsAnalytics.matrixDetails')}</summary>
+            <p className="mt-2">{t('resultsAnalytics.boundaryRule')}</p>
+            <p className="mt-1">{t('resultsAnalytics.legend')}</p>
+          </details>
           <Table>
             <TableHeader><TableRow>
               <TableHead>{t('resultsUI.thArea')}</TableHead>
@@ -93,17 +100,26 @@ export function ResultMetrics({ results }: { results: ResultOut }) {
             </TableRow></TableHeader>
             <TableBody>{points.map((point) => <TableRow key={point.area_key}>
               <TableCell>{point.name}</TableCell>
-              <TableCell>{format(point.pain)}</TableCell>
-              <TableCell>{format(point.readiness)}</TableCell>
+              <TableCell>{coordinate(point.pain)}</TableCell>
+              <TableCell>{coordinate(point.readiness)}</TableCell>
               <TableCell><Badge variant={point.quick_win ? 'default' : 'secondary'}>{quadrantLabel(point.quadrant)}</Badge></TableCell>
             </TableRow>)}</TableBody>
           </Table>
         </>}
-        {!!matrix?.pending_areas.length && <div className="space-y-1 text-sm text-muted-foreground">
-          <p>{t('resultsAnalytics.pendingAreas')}</p>
-          <ul className="list-inside list-disc">{matrix.pending_areas.map((area) => <li key={area.area_key}>
-            {t(`areaList.${area.area_key}.name`)}: {t('resultsPreview.coverage', { count: area.numeric_answers, total: area.total_questions })}
-          </li>)}</ul>
+        {!!matrix?.pending_areas.length && <div className="space-y-2">
+          <p className="text-sm font-medium">{t('resultsAnalytics.pendingAreas')}</p>
+          <ul className="grid gap-3 sm:grid-cols-2">{matrix.pending_areas.map((area) => {
+            const name = t(`areaList.${area.area_key}.name`);
+            const progress = area.total_questions > 0 ? 100 * area.numeric_answers / area.total_questions : 0;
+            return <li key={area.area_key} className="rounded-md border p-3">
+              <div className="mb-2 flex items-center justify-between gap-2 text-sm">
+                <span>{name}</span>
+                <span className="shrink-0 text-muted-foreground">{area.numeric_answers}/{area.total_questions}</span>
+              </div>
+              <Progress value={progress} className="h-1.5" aria-label={t('resultsAnalytics.areaProgress', { area: name })}
+                aria-valuetext={t('resultsAnalytics.areaCoverage', { count: area.numeric_answers, total: area.total_questions })} />
+            </li>;
+          })}</ul>
         </div>}
       </CardContent>
     </Card>

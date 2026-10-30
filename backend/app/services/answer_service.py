@@ -9,6 +9,7 @@ from app.api.deps import CurrentUser
 from app.core.config import settings
 from app.core.errors import APIError
 from app.models import Answer, Assessment, AreaState, Question
+from app.services.organization_access import authorize_question, authorize_module, require_org_member
 
 ANSWERED_STATES = ("answered", "idk", "delegated")
 
@@ -167,6 +168,7 @@ async def upsert_answer(db: AsyncSession, assessment: Assessment, question_id: u
     if not question:
         raise APIError(404, "RESOURCE_NOT_FOUND", "Pregunta no encontrada.")
 
+    await authorize_question(db, current, assessment, question)
     _validate_value(state, value)
 
     if enforce_free_gate and question.module == "maturity":
@@ -188,15 +190,20 @@ async def upsert_answer(db: AsyncSession, assessment: Assessment, question_id: u
         )
         db.add(answer)
     await db.flush()
+    await db.refresh(answer, attribute_names=["updated_at"])
     return answer
 
 
 async def batch_upsert(db: AsyncSession, assessment: Assessment, items: list,
                        current: CurrentUser) -> dict:
+    await require_org_member(db, current)
     saved = 0
     failed: List[dict] = []
     prepared = []
     for item in items:
+        candidate = await db.get(Question, item.question_id)
+        if candidate is not None:
+            await authorize_question(db, current, assessment, candidate)
         state = item.state or "answered"
         value = item.value
         if state == "answered" and (value is None or not (1 <= value <= 5)):
@@ -239,12 +246,17 @@ async def batch_upsert(db: AsyncSession, assessment: Assessment, items: list,
 
 
 async def list_answers(db: AsyncSession, assessment: Assessment, module: Optional[str],
-                       area_key: Optional[str]) -> dict:
+                       area_key: Optional[str], current: CurrentUser) -> dict:
+    access = await require_org_member(db, current)
+    if module == "maturity" or area_key:
+        await authorize_module(db, current, module or 'area', area_key)
     stmt = (
         select(Answer.question_id, Question.code, Answer.value, Answer.state)
         .join(Question, Question.id == Answer.question_id)
         .where(Answer.assessment_id == assessment.id)
     )
+    if not access.admin:
+        stmt = stmt.where(Question.module == 'area', Question.area_key.in_(access.area_keys))
     if module:
         stmt = stmt.where(Question.module == module)
     if area_key:

@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import CurrentUser, get_current_user, get_db, require_pro
 from app.schemas.area import AreaActivateResponse, AreaListResponse, CasesResponse
 from app.services.answer_service import load_assessment
+from app.services.organization_access import require_org_admin
 from app.services.area_service import (
     activate_area, deactivate_area, get_cases, list_areas,
 )
@@ -23,7 +24,7 @@ async def get_areas(
     assessment = await load_assessment(db, assessment_id, current)
     locale = current.user.locale or "es"
     locked = bool(current.organization and current.organization.plan == "free")
-    return await list_areas(db, assessment, locale, locked)
+    return await list_areas(db, assessment, locale, locked, current)
 
 
 @router.post("/assessments/{assessment_id}/areas/{area_key}:activate",
@@ -35,6 +36,7 @@ async def activate(
     current: CurrentUser = Depends(require_pro),
 ):
     assessment = await load_assessment(db, assessment_id, current)
+    await require_org_admin(db, current)
     return await activate_area(db, assessment, area_key)
 
 
@@ -46,6 +48,7 @@ async def deactivate(
     current: CurrentUser = Depends(require_pro),
 ):
     assessment = await load_assessment(db, assessment_id, current)
+    await require_org_admin(db, current)
     await deactivate_area(db, assessment, area_key)
     return Response(status_code=204)
 

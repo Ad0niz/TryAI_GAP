@@ -1,3 +1,5 @@
+import { OrganizationAccess } from '@/components/OrganizationAccess';
+import { useOrganizationAccess } from '@/hooks/useOrganizationAccess';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +32,12 @@ interface AreaEntry {
 
 /** Single area: AI-readiness questionnaire + use-case catalog tabs. */
 export default function AreaDetail() {
+  const { areaKey } = useParams<{ areaKey: string }>();
+  return <OrganizationAccess areaKey={areaKey}><AreaDetailContent /></OrganizationAccess>;
+}
+
+function AreaDetailContent() {
+  const access = useOrganizationAccess();
   const { areaKey } = useParams<{ areaKey: string }>();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
@@ -133,13 +141,13 @@ export default function AreaDetail() {
         <Card>
           <CardContent className="flex flex-wrap items-center justify-between gap-3 p-6">
             <p className="text-sm">{t('areas.activateFirst')}</p>
-            <Button
+            {access.admin && <Button
               onClick={() => activate.mutate()}
               disabled={activate.isPending}
               className="brand-gradient border-0 text-white"
             >
               <LockOpen className="h-4 w-4" /> {t('areas.activate')}
-            </Button>
+            </Button>}
           </CardContent>
         </Card>
       )}

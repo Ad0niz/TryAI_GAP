@@ -1,3 +1,4 @@
+vi.mock('@/hooks/useOrganizationAccess', () => ({ useOrganizationAccess: () => ({ admin: true, areaKeys: [], loading: false, error: null }) }));
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Organization } from '@/api/types';
@@ -80,7 +81,7 @@ describe('Settings organization profile', () => {
   it('allows retrying a failed GET', async () => {
     fetchMock.mockImplementationOnce(async () => response({ error: { code: 'FORBIDDEN', message: 'Sin acceso' } }, 403));
     mount();
-    expect(await screen.findByRole('alert')).toHaveTextContent('Sin acceso');
+    expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('orgPermissions.denied'));
     fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
     expect(await screen.findByDisplayValue('Empresa A')).toBeInTheDocument();
   });
@@ -91,7 +92,7 @@ describe('Settings organization profile', () => {
     fireEvent.change(nameInput(), { target: { value: 'Mi cambio' } });
     fetchMock.mockImplementationOnce(async () => response({ error: { code: 'SERVER_ERROR', message: 'Servicio no disponible' } }, 500));
     fireEvent.click(saveButton());
-    expect(await screen.findByRole('alert')).toHaveTextContent('Servicio no disponible');
+    expect(await screen.findByRole('alert')).toHaveTextContent(i18n.t('common.errorGeneric'));
     expect(nameInput()).toHaveValue('Mi cambio');
     expect(saveButton()).toBeEnabled();
     fireEvent.click(saveButton());

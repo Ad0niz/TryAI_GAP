@@ -4,7 +4,7 @@
  */
 import { create } from 'zustand';
 import { ApiError, setSessionExpiredHandler, tokenStorage } from '@/api/client';
-import { acceptInvitation, fetchMe, logoutRequest, verifyMagicLink } from '@/api';
+import { acceptInvitation, passwordLogin, fetchMe, logoutRequest, verifyMagicLink } from '@/api';
 import type { MeResponse, Role } from '@/api/types';
 import { useAssessmentStore } from './assessmentStore';
 
@@ -18,6 +18,8 @@ interface AuthState {
   status: AuthStatus;
   /** Exchange a magic-link token for a session. */
   verify: (token: string) => Promise<MeResponse>;
+  login: (email: string, password: string) => Promise<MeResponse>;
+  clearSession: () => void;
   acceptInvite: (token: string, password: string) => Promise<MeResponse>;
   /** Revoke tokens server-side (best effort) and clear the local session. */
   logout: () => Promise<void>;
@@ -54,6 +56,25 @@ function syncAssessment(user: MeResponse | null): void {
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: loadCachedUser(),
   status: 'idle',
+
+  clearSession() {
+    ++sessionRevision;
+    tokenStorage.clear();
+    persistUser(null);
+    set({ user: null, status: 'unauthenticated' });
+    syncAssessment(null);
+  },
+
+  async login(email, password) {
+    const result = await passwordLogin(email, password);
+    ++sessionRevision;
+    useAssessmentStore.getState().clear();
+    tokenStorage.set(result.access_token, result.refresh_token);
+    persistUser(result.user);
+    set({ user: result.user, status: 'authenticated' });
+    syncAssessment(result.user);
+    return result.user;
+  },
 
   async acceptInvite(token, password) {
     const result = await acceptInvitation(token, password);

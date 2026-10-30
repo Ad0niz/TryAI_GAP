@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.errors import APIError
 from app.models import Assessment, AreaState
 from app.services.answer_service import area_progress_by_key
+from app.services.organization_access import require_org_member
 from app.services.questionnaire_service import AREA_KEYS, area_name
 
 
@@ -18,11 +19,14 @@ async def _states_by_key(db: AsyncSession, assessment_id: uuid.UUID) -> Dict[str
 
 
 async def list_areas(db: AsyncSession, assessment: Assessment, locale: str,
-                     locked: bool) -> dict:
+                     locked: bool, current) -> dict:
+    access = await require_org_member(db, current)
     states = await _states_by_key(db, assessment.id)
     progress = await area_progress_by_key(db, assessment.id)
     items = []
     for key in AREA_KEYS:
+        if not access.allows_area(key):
+            continue
         state = states.get(key)
         items.append({
             "area_key": key,

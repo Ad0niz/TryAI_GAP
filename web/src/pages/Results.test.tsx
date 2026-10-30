@@ -1,3 +1,4 @@
+vi.mock('@/hooks/useOrganizationAccess', () => ({ useOrganizationAccess: () => ({ admin: true, areaKeys: [], loading: false, error: null }) }));
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router';
@@ -132,5 +133,26 @@ describe('APP-06 result preview and paywall', () => {
     await act(async () => { await client.invalidateQueries({ queryKey: ['results-preview', assessment.id] }); });
     await waitFor(() => expect(screen.queryByTestId('full-radar')).not.toBeInTheDocument());
     expect(await screen.findByText(i18n.t('resultsPreview.provisional'))).toBeInTheDocument();
+  });
+});
+
+describe('APP-14 individual initiatives', () => {
+  it.each(['es', 'en', 'de', 'pt'])('hides the empty initiative section in %s for Pro', async lang => {
+    await i18n.changeLanguage(lang);
+    vi.mocked(fetchResultsPreview).mockResolvedValue({ ...preview, details_locked: false });
+    mount();
+    await screen.findByTestId('full-radar');
+    expect(screen.queryByText(i18n.t('results.priorities'))).not.toBeInTheDocument();
+    expect(screen.queryByText(i18n.t('resultsPdf.noPriorities'))).not.toBeInTheDocument();
+  });
+
+  it('shows future initiatives supplied by the backend without generating others', async () => {
+    vi.mocked(fetchResultsPreview).mockResolvedValue({ ...preview, details_locked: false });
+    vi.mocked(fetchResults).mockResolvedValue({ ...full, priorities: [{
+      initiative: 'Proyecto real de prueba', area: 'Ventas', vector: 'Ingresos', pain: 4, readiness: 4, recommendation: 'qw',
+    }] });
+    mount();
+    expect(await screen.findByText('Proyecto real de prueba')).toBeInTheDocument();
+    expect(screen.getByText(i18n.t('results.priorities'))).toBeInTheDocument();
   });
 });
