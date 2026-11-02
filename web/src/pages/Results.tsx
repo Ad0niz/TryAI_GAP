@@ -9,6 +9,7 @@ import { fetchOrganization, fetchResults, fetchResultsPreview } from '@/api';
 import type { ResultOut, ResultPreviewOut } from '@/api/types';
 import { MaturityRadar } from '@/components/questionnaire/MaturityRadar';
 import { ResultMetrics } from '@/components/results/ResultMetrics';
+import { localizeResultLabels } from '@/pdf/reportI18n';
 
 const ReportPdfActions = lazy(() => import('@/pdf/ReportPdf'));
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -36,8 +37,9 @@ function heatClass(v: number | null): string {
   return 'bg-muted';
 }
 
-function ResultsBody({ results }: { results: ResultOut }) {
-  const { t } = useTranslation();
+function ResultsBody({ results: rawResults }: { results: ResultOut }) {
+  const { t, i18n } = useTranslation();
+  const results = localizeResultLabels(rawResults, i18n);
   const { assessment } = useAssessment();
   const recoLabels = t('resultsUI.reco', { returnObjects: true }) as Record<string, string>;
 
@@ -49,7 +51,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
 
   const reportData = {
     orgName: orgQuery.data?.name ?? '—',
-    results,
+    results: rawResults,
   };
 
   return (

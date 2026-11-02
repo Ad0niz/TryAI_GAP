@@ -6,7 +6,7 @@ import type { ReportData, ReportLabels } from './ReportDocument';
  * User-authored organization/initiative names and all numeric values stay intact.
  * The API currently returns display names instead of area/level identifiers.
  */
-export function createReportContent(data: ReportData, i18n: i18n, date = new Date()) {
+export function localizeResultLabels(input: ResultOut, i18n: i18n): ResultOut {
   const locale = i18n.resolvedLanguage ?? i18n.language ?? 'es';
   const t = i18n.getFixedT(locale);
   const locales = ['es', 'en', 'de', 'pt'];
@@ -15,7 +15,6 @@ export function createReportContent(data: ReportData, i18n: i18n, date = new Dat
   const levels = t('resultsPdf.levels', { returnObjects: true }) as Record<string, string>;
   const dimensions = t('maturity.dims', { returnObjects: true }) as { id: string; label: string }[];
   const dimensionNames = Object.fromEntries(dimensions.map(({ id, label }) => [id, label]));
-  const recoLabels = t('resultsUI.reco', { returnObjects: true }) as Record<string, string>;
 
   function areaLabel(value: string) {
     const input = normalize(value);
@@ -61,25 +60,35 @@ export function createReportContent(data: ReportData, i18n: i18n, date = new Dat
   }
 
   const results: ResultOut = {
-    ...data.results,
+    ...input,
     maturity: {
-      ...data.results.maturity,
-      level: levelLabel(data.results.maturity.level),
-      dimensions: data.results.maturity.dimensions.map((dimension) => ({
+      ...input.maturity,
+      level: levelLabel(input.maturity.level),
+      dimensions: input.maturity.dimensions.map((dimension) => ({
         ...dimension,
         label: dimensionNames[dimension.key] ?? t('resultsPdf.unavailable'),
       })),
     },
     heatmap: {
-      vectors: data.results.heatmap.vectors.map(blockLabel),
-      areas: data.results.heatmap.areas.map((area) => ({ ...area, name: areaLabel(area.name) })),
+      vectors: input.heatmap.vectors.map(blockLabel),
+      areas: input.heatmap.areas.map((area) => ({ ...area, name: areaLabel(area.name) })),
     },
-    priorities: data.results.priorities.map((priority) => ({
+    priorities: input.priorities.map((priority) => ({
       ...priority,
       area: areaLabel(priority.area),
       vector: vectorLabel(priority.vector),
     })),
   };
+  return results;
+}
+
+/** Build PDF labels using the same result normalization as the on-screen page. */
+export function createReportContent(data: ReportData, i18n: i18n, date = new Date()) {
+  const locale = i18n.resolvedLanguage ?? i18n.language ?? 'es';
+  const t = i18n.getFixedT(locale);
+  const results = localizeResultLabels(data.results, i18n);
+  const areaNames = t('areaList', { returnObjects: true }) as Record<string, { name: string }>;
+  const recoLabels = t('resultsUI.reco', { returnObjects: true }) as Record<string, string>;
   const score = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const labels: ReportLabels = {
     locale,

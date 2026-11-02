@@ -186,3 +186,17 @@ it('preserves consultant rating from an opened historical review', async () => {
   expect(submitReviewRating).toHaveBeenCalledWith('old', { chapter_key: 'overall', knowledge: 3, friendliness: 4, methodology: 5, comments: null });
   expect(localStorage.getItem('tryaigap.rated.old')).toBe('4');
 });
+
+describe('Review uses the current brand', () => {
+  it.each(['es', 'en', 'de', 'pt'])('shows Klertech without placeholders in %s', async lang => {
+    await i18n.changeLanguage(lang);
+    vi.mocked(fetchReviews).mockResolvedValue({ assessment_id: assessment.id, items: [] });
+    mount();
+    await screen.findByText(i18n.t('reviewHistory.empty'));
+    expect(screen.getByText(i18n.t('review.sub'))).toHaveTextContent('Klertech');
+    for (const key of ['review.sub', 'evaluation.q3Desc', 'evaluation.successSub']) {
+      expect(i18n.t(key)).toContain('Klertech');
+      expect(i18n.t(key)).not.toContain('YourBrand');
+    }
+  });
+});

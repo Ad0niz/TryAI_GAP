@@ -15,7 +15,7 @@ vi.mock('@/api', async () => ({
   fetchOrganization: vi.fn(), fetchResults: vi.fn(), fetchResultsPreview: vi.fn(),
 }));
 vi.mock('@/components/questionnaire/MaturityRadar', () => ({
-  MaturityRadar: () => <div data-testid="full-radar" />,
+  MaturityRadar: ({ data }: { data: { dim: string; score: number }[] }) => <div data-testid="full-radar" data-values={JSON.stringify(data)} />,
 }));
 vi.mock('@/pdf/ReportPdf', () => ({
   default: () => <div data-testid="pdf-actions" />,
@@ -154,5 +154,38 @@ describe('APP-14 individual initiatives', () => {
     mount();
     expect(await screen.findByText('Proyecto real de prueba')).toBeInTheDocument();
     expect(screen.getByText(i18n.t('results.priorities'))).toBeInTheDocument();
+  });
+});
+
+describe('APP-14 labels follow the active interface language', () => {
+  it.each(['es', 'en', 'de', 'pt'])('translates cached Spanish API labels in %s without changing data', async lang => {
+    const payload: ResultOut = {
+      ...structuredClone(full),
+      maturity: { average: 4, level: 'Gestionado', dimensions: [
+        { key: 'datos', label: 'Datos', score: 4 }, { key: 'tech', label: 'Tecnología', score: 4 },
+        { key: 'talento', label: 'Talento', score: 4 }, { key: 'procesos', label: 'Procesos', score: 4 },
+        { key: 'cultura', label: 'Cultura', score: 4 },
+      ] },
+      heatmap: { vectors: ['Bloque A', 'Bloque B', 'Bloque C', 'Bloque D'], areas: [
+        { name: 'Ventas B2B', row: [4, null, 3.25, 5] },
+        { name: 'Custom Datos Company', row: [2, 2, 2, 2] },
+      ] },
+    };
+    const original = structuredClone(payload);
+    vi.mocked(fetchResultsPreview).mockResolvedValue({ ...preview, details_locked: false });
+    vi.mocked(fetchResults).mockResolvedValue(payload);
+    mount();
+    await screen.findByTestId('full-radar');
+    await act(() => i18n.changeLanguage(lang));
+    await waitFor(() => expect(screen.getByText(`${i18n.t('results.levelLabel')}: ${i18n.t('resultsPdf.levels.managed')}`)).toBeInTheDocument());
+    const dims = i18n.t('maturity.dims', { returnObjects: true }) as { id: string; label: string }[];
+    for (const dimension of dims) expect(screen.getAllByText(dimension.label).length).toBeGreaterThan(0);
+    expect(JSON.parse(screen.getByTestId('full-radar').getAttribute('data-values')!)).toEqual(dims.map(d => ({ dim: d.label, score: 4 })));
+    for (const block of ['A','B','C','D']) expect(screen.getByRole('columnheader', { name: i18n.t('resultsPdf.block', { block }) })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: i18n.t('areaList.ventas.name') })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: 'Custom Datos Company' })).toBeInTheDocument();
+    expect(payload).toEqual(original);
+    expect(fetchResults).toHaveBeenCalledTimes(1);
+    expect(await screen.findByTestId('pdf-actions')).toBeInTheDocument();
   });
 });

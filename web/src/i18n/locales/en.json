@@ -691,7 +691,7 @@
   },
   "review": {
     "title": "Human review",
-    "sub": "An YourBrand consultant reviews your assessment, calibrates scores and leaves written recommendations.",
+    "sub": "A Klertech consultant reviews your assessment, calibrates scores and leaves written recommendations.",
     "status": "Current status",
     "stages": [
       "Self-service",
@@ -740,7 +740,7 @@
     "q2Title": "Friendliness & manners",
     "q2Desc": "How respectful, accessible and empathetic was the consultant during the review?",
     "q3Title": "Methodology mastery",
-    "q3Desc": "How much mastery did they show of the 7-module YourBrand methodology?",
+    "q3Desc": "How much mastery did they show of the 7-module Klertech methodology?",
     "q4Title": "Comments (optional)",
     "q4Ph": "Anything to highlight, a suggestion, or a free comment…",
     "labels": [
@@ -754,7 +754,7 @@
     "save": "Submit rating",
     "missing": "Rate the three dimensions to submit.",
     "successTitle": "Thanks for your rating!",
-    "successSub": "We share it with the consultant and with the YourBrand quality team.",
+    "successSub": "We share it with the consultant and with the Klertech quality team.",
     "done": "Close"
   },
   "cases": {

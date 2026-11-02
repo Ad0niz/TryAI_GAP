@@ -691,7 +691,7 @@
   },
   "review": {
     "title": "Revisión humana",
-    "sub": "Un consultor YourBrand revisa tu assessment, calibra los scores y deja recomendaciones por escrito.",
+    "sub": "Un consultor Klertech revisa tu assessment, calibra los scores y deja recomendaciones por escrito.",
     "status": "Estado actual",
     "stages": [
       "Auto-servicio",
@@ -740,7 +740,7 @@
     "q2Title": "Amabilidad y trato",
     "q2Desc": "¿Qué tan respetuoso, accesible y empático fue el consultor durante la revisión?",
     "q3Title": "Dominio de la metodología",
-    "q3Desc": "¿Cuánto dominio demostró sobre la metodología YourBrand de 7 módulos?",
+    "q3Desc": "¿Cuánto dominio demostró sobre la metodología Klertech de 7 módulos?",
     "q4Title": "Comentarios (opcional)",
     "q4Ph": "Algo destacable, una sugerencia o un comentario libre…",
     "labels": [
@@ -754,7 +754,7 @@
     "save": "Enviar evaluación",
     "missing": "Califica las tres dimensiones para enviar.",
     "successTitle": "¡Gracias por tu evaluación!",
-    "successSub": "La compartimos con el consultor y con el equipo de calidad de YourBrand.",
+    "successSub": "La compartimos con el consultor y con el equipo de calidad de Klertech.",
     "done": "Cerrar"
   },
   "cases": {

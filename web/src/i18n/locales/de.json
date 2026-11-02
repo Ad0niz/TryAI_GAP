@@ -691,7 +691,7 @@
   },
   "review": {
     "title": "Menschliche Prüfung",
-    "sub": "Ein YourBrand-Berater prüft Ihr Assessment, kalibriert die Scores und hinterlässt schriftliche Empfehlungen.",
+    "sub": "Ein Klertech-Berater prüft Ihr Assessment, kalibriert die Scores und hinterlässt schriftliche Empfehlungen.",
     "status": "Aktueller Status",
     "stages": [
       "Self-Service",
@@ -740,7 +740,7 @@
     "q2Title": "Freundlichkeit & Umgang",
     "q2Desc": "Wie respektvoll, zugänglich und empathisch war der Berater während der Prüfung?",
     "q3Title": "Methodik-Beherrschung",
-    "q3Desc": "Wie gut beherrschte er/sie die 7-Module-Methodik von YourBrand?",
+    "q3Desc": "Wie gut beherrschte er/sie die 7-Module-Methodik von Klertech?",
     "q4Title": "Kommentare (optional)",
     "q4Ph": "Etwas Hervorzuhebendes, ein Vorschlag oder ein freier Kommentar…",
     "labels": [
@@ -754,7 +754,7 @@
     "save": "Bewertung absenden",
     "missing": "Bewerten Sie die drei Dimensionen, um abzusenden.",
     "successTitle": "Danke für Ihre Bewertung!",
-    "successSub": "Wir teilen sie mit dem Berater und dem Qualitätsteam von YourBrand.",
+    "successSub": "Wir teilen sie mit dem Berater und dem Qualitätsteam von Klertech.",
     "done": "Schließen"
   },
   "cases": {
