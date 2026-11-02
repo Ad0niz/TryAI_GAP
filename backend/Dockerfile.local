@@ -20,6 +20,8 @@ RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
 COPY backend/app ./app
+COPY web/src/i18n/locales/qbank.de.json /workspace/web/src/i18n/locales/qbank.de.json
+COPY web/src/i18n/locales/qbank.pt.json /workspace/web/src/i18n/locales/qbank.pt.json
 COPY backend/migrations ./migrations
 COPY backend/alembic.ini ./alembic.ini
 
