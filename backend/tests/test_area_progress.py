@@ -15,7 +15,7 @@ from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.areas import router as areas_router
 from app.api.routes.assessments import router as assessments_router
 from app.core.errors import register_error_handlers
-from app.models import Answer, AreaState, Assessment, Organization, Question, User
+from app.models import Answer, AreaState, Assessment, Organization, OrgMember, Question, User
 
 
 class AreaProgressAPITests(unittest.IsolatedAsyncioTestCase):
@@ -23,7 +23,7 @@ class AreaProgressAPITests(unittest.IsolatedAsyncioTestCase):
         self.engine = create_async_engine("sqlite+aiosqlite:///:memory:")
         self.sessions = async_sessionmaker(self.engine, expire_on_commit=False, autoflush=False)
         async with self.engine.begin() as connection:
-            for model in (Organization, User, Assessment, Question, Answer, AreaState):
+            for model in (Organization, User, Assessment, Question, Answer, OrgMember, AreaState):
                 await connection.run_sync(model.__table__.create)
         self.org_id, self.other_org_id = uuid.uuid4(), uuid.uuid4()
         self.assessment_id, self.other_assessment_id = uuid.uuid4(), uuid.uuid4()
@@ -44,6 +44,8 @@ class AreaProgressAPITests(unittest.IsolatedAsyncioTestCase):
                 Assessment(id=self.other_assessment_id, organization_id=self.other_org_id, plan="pro"),
                 Assessment(id=self.same_org_assessment_id, organization_id=self.org_id, plan="pro"),
             ])
+            # Persist parent assessments before their area-state rows.
+            await db.flush()
             for key, ids in self.questions.items():
                 for index, question_id in enumerate(ids):
                     db.add(Question(id=question_id, module="area", area_key=key,

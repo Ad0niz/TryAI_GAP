@@ -34,6 +34,9 @@ def validate_password(password: str, confirmation: str) -> None:
 
 
 async def find_user(db: AsyncSession, email: str):
+    # Ignore malformed historical identities without changing generic responses.
+    if not is_valid_email(email):
+        return None
     users = (await db.execute(select(User).where(func.lower(User.email) == email.strip().lower()))).scalars().all()
     return users[0] if len(users) == 1 else None
 

@@ -98,6 +98,8 @@ class MetricsIntegrationTests(unittest.IsolatedAsyncioTestCase):
             db.add(self.user)
             db.add_all([Assessment(id=aid, organization_id=org, plan='pro') for aid, org in (
                 (self.assessment_id, self.org.id), (self.second_id, self.org.id), (self.foreign_id, self.other_org.id))])
+            # Core inserts do not flush pending ORM parents before later answers.
+            await db.flush()
             await db.execute(self.question_table.insert(), [
                 {'id': self.maturity_id, 'module': 'maturity', 'area_key': None, 'code': 'M1',
                  'block_id': 'A', 'dimension': 'datos', 'vector_type': 'efficiency'},

@@ -1,5 +1,5 @@
-"""Corporate-email validation: reject free/consumer providers."""
-import re
+"""Shared email syntax validation and corporate-provider policy; no DNS lookups."""
+from email_validator import EmailNotValidError, validate_email
 
 FREE_EMAIL_DOMAINS = {
     "gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "hotmail.com",
@@ -8,12 +8,21 @@ FREE_EMAIL_DOMAINS = {
     "mail.com", "mail.ru", "yandex.com", "yandex.ru", "pm.me",
 }
 
-_EMAIL_RE = re.compile(r"^[^\s@]+@([^\s@]+\.[^\s@]{2,})$")
-
 
 def parse_domain(email: str) -> str | None:
-    m = _EMAIL_RE.match((email or "").strip().lower())
-    return m.group(1) if m else None
+    if not isinstance(email, str):
+        return None
+    try:
+        address = validate_email(
+            email.strip(), check_deliverability=False,
+            # Syntax only: permit reserved .test domains used by isolated QA.
+            # This does not assert DNS availability or mailbox ownership.
+            test_environment=True,
+        )
+    except EmailNotValidError:
+        return None
+    # Keep the existing requirement for a domain with a suffix, even in QA.
+    return address.domain.lower() if "." in address.domain else None
 
 
 def is_valid_email(email: str) -> bool:

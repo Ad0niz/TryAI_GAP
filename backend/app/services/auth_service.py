@@ -7,6 +7,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.core.emailrules import is_valid_email
 from app.core.errors import APIError
 from app.core.security import (
     access_token_expires_in,
@@ -60,6 +61,8 @@ async def issue_tokens(db: AsyncSession, user: User) -> dict:
 async def request_magic_link(db: AsyncSession, email: str, locale: str = "es") -> None:
     """Create the user if needed, issue a magic link token and send the email."""
     email = (email or "").strip().lower()
+    if not is_valid_email(email):
+        raise APIError(400, "VALIDATION_ERROR", "El correo no es válido.", field="email")
     locale = (locale or "es")[:2]
 
     result = await db.execute(select(User).where(User.email == email))
