@@ -5,6 +5,7 @@ import { CircleX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Spinner } from '@/components/ui/spinner';
+import { accountDestination, accountErrorKey } from '@/lib/accountAuth';
 import { useAuthStore } from '@/store/authStore';
 
 type VerifyState = 'verifying' | 'error';
@@ -28,13 +29,13 @@ export default function AuthVerify() {
     if (!token) return;
     verify(token)
       .then((user) => {
-        navigate(user.organization_id ? '/dashboard' : '/onboarding', { replace: true });
+        navigate(accountDestination(user), { replace: true });
       })
       .catch((e: unknown) => {
-        setErrorMsg(e instanceof Error ? e.message : null);
+        setErrorMsg(t(accountErrorKey(e)));
         setState('error');
       });
-  }, [verify, navigate, token]);
+  }, [verify, navigate, token, t]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">

@@ -1,15 +1,24 @@
-"""Results routes: maturity results + async PDF report jobs (Pro-only)."""
+"""Results routes: provisional preview + Pro-only detailed results and PDF report jobs."""
 import uuid
 from typing import Optional
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import CurrentUser, get_db, require_pro
-from app.schemas.result import ReportCreateOut, ReportOut, ReportRequest, ResultOut
+from app.api.deps import CurrentUser, get_current_user, get_db, require_pro
+from app.schemas.result import ReportCreateOut, ReportOut, ReportRequest, ResultOut, ResultPreviewOut
 from app.services import result_service
 
 router = APIRouter(prefix="/results", tags=["results"])
+
+
+@router.get("/{assessment_id}/preview", response_model=ResultPreviewOut)
+async def get_result_preview(
+    assessment_id: uuid.UUID,
+    current: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    return await result_service.build_result_preview(db, current, assessment_id)
 
 
 @router.get("/{assessment_id}", response_model=ResultOut)

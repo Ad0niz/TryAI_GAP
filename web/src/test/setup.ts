@@ -3,7 +3,7 @@ import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
 // jsdom does not implement matchMedia — stub it for the ThemeProvider.
-if (!window.matchMedia) {
+if (typeof window !== 'undefined' && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
@@ -18,7 +18,7 @@ if (!window.matchMedia) {
 
 afterEach(() => {
   cleanup();
-  localStorage.clear();
+  if (typeof localStorage !== 'undefined') localStorage.clear();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });

@@ -1,3 +1,4 @@
+import { useOrganizationAccess } from '@/hooks/useOrganizationAccess';
 import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -66,7 +67,8 @@ const NAV: NavGroup[] = [
 function NavSection({ onNavigate }: { onNavigate?: () => void }) {
   const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
-  const groups = [...NAV];
+  const access = useOrganizationAccess();
+  const groups = NAV.map(group => ({ ...group, items: group.items.filter(item => access.admin || !['/team', '/maturity', '/results'].includes(item.to)) }));
   if (canAccessConsultant(user?.role)) {
     groups.push({
       labelKey: 'nav.group_consultant',

@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/store/authStore';
+import { useOrganizationAccess } from '@/hooks/useOrganizationAccess';
 import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -84,6 +86,8 @@ function saveBlob(blob: Blob, filename: string) {
 export default function Documents() {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
+  const access = useOrganizationAccess();
+  const user = useAuthStore(s => s.user);
   const { assessment, status: assessmentStatus, reload } = useAssessment();
 
   const [page, setPage] = useState(1);
@@ -105,7 +109,7 @@ export default function Documents() {
   const areas = useMemo(() => areasQuery.data?.items ?? [], [areasQuery.data]);
 
   const docsQuery = useQuery({
-    queryKey: ['documents', page, areaFilter],
+    queryKey: ['documents', user?.id, user?.organization_id, page, areaFilter],
     queryFn: () =>
       fetchDocuments(page, areaFilter !== 'all' ? { areaKey: areaFilter } : {}),
   });
@@ -123,6 +127,9 @@ export default function Documents() {
     if (!assessment) {
       pushNotice({ kind: 'error', text: t('documents.needAssessment') });
       return;
+    }
+    if (!access.admin && (linkArea === 'none' || !access.areaKeys.includes(linkArea))) {
+      pushNotice({ kind: 'error', text: t('orgPermissions.selectArea') }); return;
     }
     for (const file of Array.from(files)) {
       const validation = validateDocumentFile(file);
@@ -154,7 +161,7 @@ export default function Documents() {
             ? t('documents.errBackendCap')
             : e instanceof ApiError && e.status === 415
               ? t('documents.errType', { name: file.name })
-              : t('documents.uploadFailed', { name: file.name });
+              : e instanceof ApiError && e.status === 403 ? t('orgPermissions.denied') : t('documents.uploadFailed', { name: file.name });
         pushNotice({ kind: 'error', text: msg });
       } finally {
         setUploading((prev) => prev.filter((n) => n !== file.name));
@@ -172,8 +179,8 @@ export default function Documents() {
       } else {
         saveBlob(blob, doc.filename);
       }
-    } catch {
-      pushNotice({ kind: 'error', text: t('documents.errDownload') });
+    } catch (e) {
+      pushNotice({ kind: 'error', text: e instanceof ApiError && e.status === 403 ? t('orgPermissions.denied') : t('documents.errDownload') });
     }
   }
 
@@ -183,7 +190,7 @@ export default function Documents() {
       setToDelete(null);
       void queryClient.invalidateQueries({ queryKey: ['documents'] });
     },
-    onError: () => pushNotice({ kind: 'error', text: t('common.errorGeneric') }),
+    onError: () => pushNotice({ kind: 'error', text: t('orgPermissions.denied') }),
   });
 
   const meta = docsQuery.data?.meta;
@@ -245,7 +252,7 @@ export default function Documents() {
                 <SelectValue placeholder={t('documents.selectArea')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">{t('documents.noArea')}</SelectItem>
+                <SelectItem disabled={!access.admin} value="none">{t('documents.noArea')}</SelectItem>
                 {areas.map((a) => (
                   <SelectItem key={a.area_key} value={a.area_key}>
                     {a.name}
@@ -386,7 +393,7 @@ export default function Documents() {
                               variant="ghost"
                               size="icon"
                               aria-label={t('documents.del')}
-                              onClick={() => setToDelete(doc)}
+                              disabled={!access.admin} onClick={() => setToDelete(doc)}
                             >
                               <Trash2 className="h-4 w-4 text-destructive" />
                             </Button>

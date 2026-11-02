@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { createLead, fetchMetadata } from '@/api';
+import { createLead, fetchMetadata, previewRegistration } from '@/api';
+import { AuthFrame } from '@/components/auth/AuthFrame';
+import { RegistrationEmail } from '@/components/auth/RegistrationEmail';
+import { accountErrorKey, passwordError } from '@/lib/accountAuth';
+import { useQueryClient } from '@tanstack/react-query';
 import { tokenStorage } from '@/api/client';
 import type { MetadataResponse } from '@/api';
 import { BrandLogo } from '@/components/BrandLogo';
@@ -48,6 +52,13 @@ const EMPTY: LeadFormValues = {
 export default function LeadGate() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const cache = useQueryClient();
+  const [params, setParams] = useSearchParams();
+  const [token] = useState(() => params.get('token'));
+  const [verifiedEmail, setVerifiedEmail] = useState<string | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [password, setPassword] = useState('');
+  const [confirmation, setConfirmation] = useState('');
   const hydrate = useAuthStore((s) => s.hydrate);
 
   const [values, setValues] = useState<LeadFormValues>(EMPTY);
@@ -62,6 +73,21 @@ export default function LeadGate() {
       .then(setMetadata)
       .catch(() => setMetadata(null));
   }, [i18n.language]);
+
+  useEffect(() => {
+    if (params.has('token')) setParams({}, { replace: true });
+  }, [params, setParams]);
+
+  useEffect(() => {
+    if (!token) return;
+    let active = true;
+    previewRegistration(token).then(result => {
+      if (!active) return;
+      setVerifiedEmail(result.email);
+      setValues(v => ({ ...v, company_email: result.email }));
+    }).catch(err => { if (active) setVerificationError(accountErrorKey(err)); });
+    return () => { active = false; };
+  }, [token]);
 
   const catalogs = useMemo(() => {
     const fallback = (key: string) =>
@@ -83,6 +109,9 @@ export default function LeadGate() {
     setFormError(null);
     setSuggestLogin(false);
 
+    const problem = passwordError(password, confirmation);
+    if (problem) { setFormError(t(problem)); return; }
+    if (!token || !verifiedEmail) return;
     const errors = validateLead(values);
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -93,6 +122,9 @@ export default function LeadGate() {
     setSubmitting(true);
     try {
       const res = await createLead({
+        verification_token: token,
+        password,
+        password_confirmation: confirmation,
         full_name: values.full_name.trim(),
         job_title: values.job_title.trim() || null,
         company_email: values.company_email.trim(),
@@ -103,6 +135,9 @@ export default function LeadGate() {
         terms_accepted: values.terms_accepted,
         locale: i18n.language.slice(0, 2),
       });
+      setPassword(''); setConfirmation('');
+      cache.clear();
+      useAuthStore.getState().clearSession();
       tokenStorage.set(res.access_token, res.refresh_token);
       await hydrate();
       navigate('/onboarding', { replace: true });
@@ -111,7 +146,7 @@ export default function LeadGate() {
       if (mapped.field) {
         setFieldErrors({ [mapped.field]: mapped.i18nKey });
       } else {
-        setFormError(t(mapped.i18nKey));
+        setFormError(t(accountErrorKey(err)));
       }
       setSuggestLogin(mapped.suggestLogin);
     } finally {
@@ -123,6 +158,13 @@ export default function LeadGate() {
     fieldErrors[key] ? (
       <p className="text-xs text-destructive">{t(fieldErrors[key] as string)}</p>
     ) : null;
+
+  if (!token) return <RegistrationEmail />;
+  if (!verifiedEmail) return <AuthFrame title={t('accountAuth.verifyTitle')}>
+    <p role={verificationError ? 'alert' : 'status'}>{t(verificationError || 'common.loading')}</p>
+    <Link to="/start" reloadDocument className="text-primary underline">{t('accountAuth.register')}</Link>
+    <Link to="/login" className="text-primary underline">{t('auth.backToLogin')}</Link>
+  </AuthFrame>;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -172,6 +214,7 @@ export default function LeadGate() {
                   <Label htmlFor="lg-email">{t('leadgate.email')} *</Label>
                   <Input
                     id="lg-email"
+                    disabled
                     type="email"
                     value={values.company_email}
                     onChange={(e) => set('company_email', e.target.value)}
@@ -225,6 +268,13 @@ export default function LeadGate() {
                 />
               </div>
 
+              <div className="space-y-1.5">
+                <Label htmlFor="lg-password">{t('accountAuth.password')}</Label>
+                <Input id="lg-password" type="password" autoComplete="new-password" required minLength={12} maxLength={128} value={password} onChange={e => setPassword(e.target.value)} />
+                <p className="text-xs text-muted-foreground">{t('accountAuth.passwordHint')}</p>
+                <Label htmlFor="lg-confirm">{t('accountAuth.confirmPassword')}</Label>
+                <Input id="lg-confirm" type="password" autoComplete="new-password" required maxLength={128} value={confirmation} onChange={e => setConfirmation(e.target.value)} />
+              </div>
               <label
                 className={cn(
                   'flex cursor-pointer items-start gap-2 text-sm',

@@ -1,12 +1,12 @@
 """Review routes: request expert review, read review state, rate the consultant."""
 import uuid
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser, get_current_user, get_db, require_pro
 from app.schemas.review import (
-    RatingCreate, RatingOut, ReviewCreate, ReviewCreateOut, ReviewOut,
+    RatingCreate, RatingOut, ReviewCreate, ReviewCreateOut, ReviewOut, ReviewListResponse,
 )
 from app.services import review_service
 
@@ -21,6 +21,15 @@ async def create_review(
 ):
     review = await review_service.create_review(db, current, payload)
     return ReviewCreateOut(review_id=review.id, mode=review.mode, stage=review.stage)
+
+
+@router.get("", response_model=ReviewListResponse)
+async def list_reviews(
+    assessment_id: uuid.UUID = Query(...),
+    current: CurrentUser = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    return await review_service.list_reviews(db, current, assessment_id)
 
 
 @router.get("/{review_id}", response_model=ReviewOut)

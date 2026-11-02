@@ -13,6 +13,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from organization_fixture import make_admin
 from app.api.deps import CurrentUser, get_current_user, get_db
 from app.api.routes.team import router
 from app.api.routes.auth import router as auth_router
@@ -75,9 +76,11 @@ class InvitationAPITests(unittest.IsolatedAsyncioTestCase):
             self.assertIsNone(inv.accepted_at)
             self.assertEqual(await db.scalar(select(func.count()).select_from(RefreshToken)), 0)
 
-    def as_organizer(self):
+    async def as_organizer(self):
+        self.organizer_id = uuid.uuid4()
+        await make_admin(self.engine,self.sessions,self.organizer_id,self.org_id)
         self.app.dependency_overrides[get_current_user] = lambda: CurrentUser(
-            user=User(id=uuid.uuid4(), organization_id=self.org_id, role="client"), organization=None,
+            user=User(id=self.organizer_id, organization_id=self.org_id, role="client"), organization=None,
         )
 
     async def test_valid_preview_does_not_consume_then_accepts_and_auth_me_has_org(self):
@@ -200,7 +203,7 @@ class InvitationAPITests(unittest.IsolatedAsyncioTestCase):
             self.assertIn(uid, [member.user_id for member in members])
 
     async def test_resend_rotates_expired_token_and_accepted_cannot_be_resent(self):
-        self.as_organizer()
+        await self.as_organizer()
         async with self.sessions.begin() as db:
             (await db.get(Invitation, self.inv_id)).expires_at = None
         response = await self.client.post(f"/api/v1/invitations/{self.inv_id}/resend")
@@ -214,7 +217,7 @@ class InvitationAPITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.send.await_count, 1)
 
     async def test_creation_stores_only_hash_and_expiry_and_duplicate_active_rejected(self):
-        self.as_organizer()
+        await self.as_organizer()
         payload = {"full_name": "New person", "email": " NEW@example.com ", "area_key": "sales"}
         result = await self.client.post("/api/v1/invitations", json=payload)
         self.assertEqual(result.status_code, 201, result.text)
@@ -227,7 +230,7 @@ class InvitationAPITests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.client.post("/api/v1/invitations", json=payload)).status_code, 409)
 
     async def test_expired_status_visible_in_team_and_can_create_replacement(self):
-        self.as_organizer()
+        await self.as_organizer()
         async with self.sessions.begin() as db:
             (await db.get(Invitation, self.inv_id)).expires_at = None
         roster = await self.client.get("/api/v1/team")
@@ -251,6 +254,91 @@ class InvitationAPITests(unittest.IsolatedAsyncioTestCase):
         async with self.sessions() as db:
             self.assertEqual(await db.scalar(select(func.count()).select_from(User)), 0)
             self.assertEqual((await db.execute(select(OrgMember))).scalar_one().status, "invited")
+
+    async def test_creation_accepts_existing_same_org_and_unassigned_accounts(self):
+        await self.as_organizer()
+        for index, org_id in enumerate([self.org_id, None]):
+            email = f"allowed{index}@example.com"
+            uid = uuid.uuid4()
+            async with self.sessions.begin() as db:
+                db.add(User(id=uid, email=email.upper(), organization_id=org_id))
+            response = await self.client.post("/api/v1/invitations", json={
+                "email": f" {email} ", "full_name": "Allowed", "area_key": "sales",
+            })
+            self.assertEqual(response.status_code, 201, response.text)
+            async with self.sessions() as db:
+                self.assertEqual((await db.get(User, uid)).organization_id, org_id)
+        self.assertEqual(self.send.await_count, 2)
+
+    async def test_create_conflicting_recipient_has_no_writes_or_email(self):
+        await self.as_organizer()
+        uid = uuid.uuid4()
+        async with self.sessions.begin() as db:
+            db.add(User(id=uid, email="CONFLICT@example.com", organization_id=self.other_id))
+        with patch("app.services.team_service.generate_opaque_token", return_value="x" * 43) as generate:
+            response = await self.client.post("/api/v1/invitations", json={
+                "email": " Conflict@example.com ", "full_name": "Conflict", "area_key": "sales",
+            })
+            generate.assert_not_called()
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertEqual(response.json()["error"]["code"], "INVITE_ACCOUNT_CONFLICT")
+        self.assertNotIn(str(self.other_id), response.text)
+        self.assertNotIn("Otra empresa", response.text)
+        self.send.assert_not_awaited()
+        async with self.sessions() as db:
+            self.assertEqual(await db.scalar(select(func.count()).select_from(Invitation)), 1)
+            self.assertEqual(await db.scalar(select(func.count()).select_from(OrgMember)), 2)
+            self.assertEqual((await db.get(User, uid)).organization_id, self.other_id)
+
+    async def test_resend_conflict_preserves_existing_token_expiry_and_status(self):
+        await self.as_organizer()
+        async with self.sessions.begin() as db:
+            db.add(User(email=self.email.upper(), organization_id=self.other_id))
+            invitation = await db.get(Invitation, self.inv_id)
+            invitation.expires_at = now_utc() - timedelta(hours=1)
+        async with self.sessions() as db:
+            invitation = await db.get(Invitation, self.inv_id)
+            before = (invitation.token_hash, invitation.expires_at, invitation.status, invitation.updated_at)
+        with patch("app.services.team_service.generate_opaque_token", return_value="x" * 43) as generate:
+            response = await self.client.post(f"/api/v1/invitations/{self.inv_id}/resend")
+            generate.assert_not_called()
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertEqual(response.json()["error"]["code"], "INVITE_ACCOUNT_CONFLICT")
+        self.send.assert_not_awaited()
+        async with self.sessions() as db:
+            invitation = await db.get(Invitation, self.inv_id)
+            self.assertEqual((invitation.token_hash, invitation.expires_at, invitation.status, invitation.updated_at), before)
+        # Ownership is checked before looking up the recipient.
+        self.app.dependency_overrides[get_current_user] = lambda: CurrentUser(
+            user=User(id=uuid.uuid4(), organization_id=self.other_id, role="client"), organization=None,
+        )
+        response = await self.client.post(f"/api/v1/invitations/{self.inv_id}/resend")
+        self.assertEqual(response.status_code, 404)
+
+    async def test_create_and_resend_reuse_disabled_and_role_guards(self):
+        await self.as_organizer()
+        uid = uuid.uuid4()
+        for status, role, code, http_status in [
+            ("disabled", "client", "INVITE_ACCOUNT_DISABLED", 403),
+            ("active", "admin", "INVITE_ACCOUNT_CONFLICT", 409),
+        ]:
+            async with self.sessions.begin() as db:
+                user = await db.get(User, uid)
+                if user is None:
+                    user = User(id=uid, email=self.email)
+                    db.add(user)
+                user.status, user.role = status, role
+            for response in [
+                await self.client.post("/api/v1/invitations", json={
+                    "email": self.email, "full_name": "Blocked", "area_key": "sales",
+                }),
+                await self.client.post(f"/api/v1/invitations/{self.inv_id}/resend"),
+            ]:
+                self.assertEqual(response.status_code, http_status, response.text)
+                self.assertEqual(response.json()["error"]["code"], code)
+        self.send.assert_not_awaited()
+        await self.assert_untouched()
+
 
 
 if __name__ == "__main__":

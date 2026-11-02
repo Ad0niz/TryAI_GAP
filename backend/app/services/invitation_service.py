@@ -1,6 +1,7 @@
 """Public invitation acceptance. All writes share the request transaction."""
 import asyncio
 import re
+import uuid
 
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
@@ -43,10 +44,11 @@ async def _invitation(db: AsyncSession, token: str, *, lock: bool = False) -> In
     return invitation
 
 
-def _check_user(user: User | None, invitation: Invitation) -> None:
+def check_invitation_user(user: User | None, organization_id: uuid.UUID) -> None:
+    """Shared account compatibility rule for sending, previewing and accepting."""
     if user and user.status == "disabled":
         raise APIError(403, "INVITE_ACCOUNT_DISABLED", "La cuenta está deshabilitada. Contacta al administrador.")
-    if user and (user.role != "client" or user.organization_id not in (None, invitation.organization_id)):
+    if user and (user.role != "client" or user.organization_id not in (None, organization_id)):
         raise APIError(409, "INVITE_ACCOUNT_CONFLICT", "La cuenta no puede asociarse a esta organización. Contacta al administrador.")
 
 
@@ -56,7 +58,7 @@ async def preview_invitation(db: AsyncSession, token: str) -> dict:
     if organization is None:
         raise APIError(400, "INVITE_TOKEN_INVALID", "La organización ya no está disponible.")
     user = (await db.execute(select(User).where(func.lower(User.email) == invitation.email.lower()))).scalar_one_or_none()
-    _check_user(user, invitation)
+    check_invitation_user(user, invitation.organization_id)
     return {
         "organization_name": organization.name, "full_name": invitation.full_name,
         "email": invitation.email, "area_key": invitation.area_key,
@@ -75,7 +77,7 @@ async def accept_invitation(db: AsyncSession, payload: InvitationAccept) -> dict
     user = (await db.execute(select(User).where(
         func.lower(User.email) == invitation.email.lower(),
     ).with_for_update())).scalar_one_or_none()
-    _check_user(user, invitation)
+    check_invitation_user(user, invitation.organization_id)
     password = payload.password.get_secret_value()
     if user and user.password_hash:
         if not await asyncio.to_thread(verify_password, password, user.password_hash):

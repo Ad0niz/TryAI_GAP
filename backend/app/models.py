@@ -23,6 +23,7 @@ class User(Base, UUIDMixin, TimestampMixin):
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
     full_name: Mapped[Optional[str]] = mapped_column(String(160))
     password_hash: Mapped[Optional[str]] = mapped_column(String(255))
+    two_factor_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     role: Mapped[str] = mapped_column(String(20), default="client", nullable=False)  # client|consultant|admin
     locale: Mapped[str] = mapped_column(String(2), default="es", nullable=False)
     status: Mapped[str] = mapped_column(String(20), default="active", nullable=False)  # active|invited|disabled
@@ -107,6 +108,9 @@ class Question(Base, UUIDMixin):
     code: Mapped[str] = mapped_column(String(8), nullable=False)
     position: Mapped[int] = mapped_column(SmallInteger, default=0, nullable=False)
     dimension: Mapped[Optional[str]] = mapped_column(String(20))
+    vector_type: Mapped[Optional[str]] = mapped_column(String(30))  # efficiency|revenue|experience|risk|talent
+    weight_pain: Mapped[int] = mapped_column(SmallInteger, default=1, nullable=False)
+    weight_readiness: Mapped[int] = mapped_column(SmallInteger, default=1, nullable=False)
     __table_args__ = (UniqueConstraint("module", "area_key", "code", name="uq_question_code"),)
 
 
@@ -182,6 +186,8 @@ class Invitation(Base, UUIDMixin, TimestampMixin):
     status: Mapped[str] = mapped_column(String(12), default="sent", nullable=False)  # sent|accepted|expired
     # NULL expires_at identifies legacy links, which must be resent.
     expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
+    # Temporary APP compatibility extension: absent from Administration model.
+    # Retained with 20261022_app11 to preserve atomic single-use acceptance.
     accepted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
 

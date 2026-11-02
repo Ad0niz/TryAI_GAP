@@ -1,3 +1,4 @@
+import { OrganizationAccess } from '@/components/OrganizationAccess';
 import { useEffect } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +11,10 @@ import { useAssessment } from '@/store/assessmentStore';
 
 /** Maturity diagnostic (M1): 5 blocks × 4 questions, scale 1-5, idk, delegation. */
 export default function Maturity() {
+  return <OrganizationAccess><MaturityContent /></OrganizationAccess>;
+}
+
+function MaturityContent() {
   const { t } = useTranslation();
   const { assessment, status, reload } = useAssessment();
 
