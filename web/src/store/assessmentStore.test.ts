@@ -21,6 +21,18 @@ const SUMMARY = {
 };
 
 describe('assessment store', () => {
+  it('ignores an earlier organization response after the session is cleared', async () => {
+    tokenStorage.set('old', 'refresh');
+    let resolve!: (response: Response) => void;
+    vi.stubGlobal('fetch', vi.fn(() => new Promise<Response>((done) => { resolve = done; })));
+    const pending = useAssessmentStore.getState().load();
+    useAssessmentStore.getState().clear();
+    resolve(jsonResponse(200, SUMMARY));
+    await pending;
+    expect(useAssessmentStore.getState().assessment).toBeNull();
+    expect(useAssessmentStore.getState().status).toBe('idle');
+  });
+
   beforeEach(() => {
     useAssessmentStore.setState({ assessment: null, status: 'idle' });
   });

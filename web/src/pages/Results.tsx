@@ -1,13 +1,15 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { OrganizationAccess } from '@/components/OrganizationAccess';
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { CalendarCheck2, Lock } from 'lucide-react';
 import { ApiError } from '@/api/client';
-import { fetchOrganization, fetchResults } from '@/api';
-import type { ResultOut } from '@/api/types';
+import { fetchOrganization, fetchResults, fetchResultsPreview } from '@/api';
+import type { ResultOut, ResultPreviewOut } from '@/api/types';
 import { MaturityRadar } from '@/components/questionnaire/MaturityRadar';
-import type { ReportLabels } from '@/pdf/ReportDocument';
+import { ResultMetrics } from '@/components/results/ResultMetrics';
+import { localizeResultLabels } from '@/pdf/reportI18n';
 
 const ReportPdfActions = lazy(() => import('@/pdf/ReportPdf'));
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -27,15 +29,17 @@ import {
 import { useAssessment } from '@/store/assessmentStore';
 
 /** Heat cell color by 1-5 intensity. */
-function heatClass(v: number): string {
+function heatClass(v: number | null): string {
+  if (v === null) return 'bg-muted text-muted-foreground';
   if (v >= 4) return 'bg-primary text-primary-foreground';
-  if (v === 3) return 'bg-primary/60 text-primary-foreground';
-  if (v === 2) return 'bg-primary/25';
+  if (v >= 3) return 'bg-primary/60 text-primary-foreground';
+  if (v >= 2) return 'bg-primary/25';
   return 'bg-muted';
 }
 
-function ResultsBody({ results }: { results: ResultOut }) {
+function ResultsBody({ results: rawResults }: { results: ResultOut }) {
   const { t, i18n } = useTranslation();
+  const results = localizeResultLabels(rawResults, i18n);
   const { assessment } = useAssessment();
   const recoLabels = t('resultsUI.reco', { returnObjects: true }) as Record<string, string>;
 
@@ -45,42 +49,9 @@ function ResultsBody({ results }: { results: ResultOut }) {
     enabled: !!assessment?.organization_id,
   });
 
-  const dateStr = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'long' }).format(new Date());
-
-  const labels: ReportLabels = useMemo(
-    () => ({
-      coverTitle: t('resultsPdf.coverTitle'),
-      coverSub: t('resultsPdf.coverSub'),
-      generatedOn: t('resultsPdf.generatedOn', { date: dateStr }),
-      overallScore: t('resultsPdf.overallScore', {
-        avg: results.maturity.average.toFixed(1),
-        level: results.maturity.level,
-      }),
-      methodology: t('resultsPdf.methodology'),
-      methodologyBody: t('resultsPdf.methodologyBody'),
-      dimTitle: t('resultsPdf.dimTitle'),
-      dimName: t('resultsPdf.dimName'),
-      dimScore: t('resultsPdf.dimScore'),
-      heatTitle: t('resultsPdf.heatTitle'),
-      prioTitle: t('resultsPdf.prioTitle'),
-      recoTitle: t('resultsPdf.recoTitle'),
-      nextSteps: t('resultsPdf.nextSteps', { returnObjects: true }) as string[],
-      footer: t('resultsPdf.footer'),
-      prioritiesHeaders: {
-        initiative: t('resultsUI.thInitiative'),
-        area: t('resultsUI.thArea'),
-        vector: t('resultsUI.thVector'),
-        recommendation: t('resultsUI.thReco'),
-      },
-      recoLabels,
-    }),
-    [t, dateStr, results, recoLabels],
-  );
-
   const reportData = {
     orgName: orgQuery.data?.name ?? '—',
-    date: dateStr,
-    results,
+    results: rawResults,
   };
 
   return (
@@ -100,7 +71,6 @@ function ResultsBody({ results }: { results: ResultOut }) {
           <Suspense fallback={<Skeleton className="h-9 w-72" />}>
             <ReportPdfActions
               data={reportData}
-              labels={labels}
               fileName={`TryAIGap-Report-${new Date().toISOString().slice(0, 10)}.pdf`}
               texts={{
                 preview: t('results.pdfPreview'),
@@ -153,8 +123,8 @@ function ResultsBody({ results }: { results: ResultOut }) {
       {/* Heatmap */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">{t('results.heatmap')}</CardTitle>
-          <CardDescription>{t('resultsUI.heatTitle')}</CardDescription>
+          <CardTitle className="text-base">{t('resultsPdf.heatTitle')}</CardTitle>
+          <CardDescription>{t('resultsAnalytics.heatDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -177,7 +147,7 @@ function ResultsBody({ results }: { results: ResultOut }) {
                       <span
                         className={`inline-flex h-8 w-8 items-center justify-center rounded-md text-sm font-semibold ${heatClass(v)}`}
                       >
-                        {v}
+                        {v === null ? "—" : v.toFixed(1)}
                       </span>
                     </TableCell>
                   ))}
@@ -188,8 +158,10 @@ function ResultsBody({ results }: { results: ResultOut }) {
         </CardContent>
       </Card>
 
-      {/* Priorities */}
-      <Card>
+      <ResultMetrics results={results} />
+
+      {/* Individual initiatives are shown only when supplied by the backend. */}
+      {results.priorities.length > 0 && <Card>
         <CardHeader>
           <CardTitle className="text-base">{t('results.priorities')}</CardTitle>
         </CardHeader>
@@ -217,34 +189,81 @@ function ResultsBody({ results }: { results: ResultOut }) {
             </TableBody>
           </Table>
         </CardContent>
-      </Card>
+      </Card>}
     </div>
   );
 }
 
-/** Results: overall score, radar, heatmap, priorities + client-side PDF report. */
+function PartialResults({ preview }: { preview: ResultPreviewOut }) {
+  const { t, i18n } = useTranslation();
+  const score = preview.average === null ? null : new Intl.NumberFormat(
+    i18n.resolvedLanguage ?? i18n.language,
+    { minimumFractionDigits: 1, maximumFractionDigits: 1 },
+  ).format(preview.average);
+  return (
+    <Card>
+      <CardHeader>
+        <Badge variant="secondary" className="w-fit">{t('resultsPreview.provisional')}</Badge>
+        <CardTitle>{t('paywall.teaser')}</CardTitle>
+        <CardDescription>{t('resultsPreview.description')}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <p className="text-sm text-muted-foreground">{t('paywall.partial')}</p>
+        {score === null
+          ? <p>{t('resultsPreview.noNumericAnswers')}</p>
+          : <p className="text-3xl font-bold">{score} / 5</p>}
+        <p className="text-sm">{t('resultsPreview.coverage', {
+          count: preview.numeric_answers, total: preview.total_questions,
+        })}</p>
+        <p className="text-sm text-muted-foreground">{t('resultsPreview.limited')}</p>
+        <Button asChild variant="outline">
+          <Link to="/maturity">{t('results.goMaturity')}</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** APP-06: minimal provisional preview for Free; existing full report for Pro. */
 export default function Results() {
+  return <OrganizationAccess><ResultsContent /></OrganizationAccess>;
+}
+
+function ResultsContent() {
   const { t } = useTranslation();
   const { assessment, status: assessmentStatus, reload } = useAssessment();
 
   if (assessmentStatus === 'idle') void reload();
 
+  const previewQuery = useQuery({
+    queryKey: ['results-preview', assessment?.id, assessment?.plan],
+    queryFn: () => fetchResultsPreview(assessment!.id),
+    enabled: !!assessment,
+    retry: 0,
+    staleTime: 0,
+  });
+  // The server's organization plan is authoritative. Do not render cached Pro
+  // details while access is being revalidated or after a failed request.
+  const canViewDetails = previewQuery.isSuccess && !previewQuery.isFetching
+    && previewQuery.data.details_locked === false;
   const resultsQuery = useQuery({
     queryKey: ['results', assessment?.id],
     queryFn: () => fetchResults(assessment!.id),
-    enabled: !!assessment,
+    enabled: !!assessment && canViewDetails,
     retry: 0,
+    staleTime: 0,
   });
 
-  const error = resultsQuery.error;
-  const isPaywall = error instanceof ApiError && error.status === 402;
+  const error = previewQuery.error ?? (canViewDetails ? resultsQuery.error : null);
+  const isPartial = previewQuery.isSuccess && previewQuery.data.details_locked;
+  const isPaywall = isPartial || (error instanceof ApiError && error.status === 402);
   const isNotReady = error instanceof ApiError && error.code === 'RESULTS_NOT_READY';
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold">{t('results.title')}</h1>
-        <p className="text-sm text-muted-foreground">{t('results.sub')}</p>
+        <p className="text-sm text-muted-foreground">{t(isPartial ? 'resultsPreview.description' : 'results.sub')}</p>
       </div>
 
       {!assessment && (
@@ -258,12 +277,14 @@ export default function Results() {
         </Alert>
       )}
 
-      {resultsQuery.isLoading && (
+      {(previewQuery.isLoading || (canViewDetails && resultsQuery.isFetching)) && (
         <div className="space-y-3">
           <Skeleton className="h-24 w-full" />
           <Skeleton className="h-64 w-full" />
         </div>
       )}
+
+      {isPartial && <PartialResults preview={previewQuery.data} />}
 
       {isPaywall && (
         <Card className="border-primary/40">
@@ -272,7 +293,7 @@ export default function Results() {
               <Lock className="h-5 w-5 text-primary" />
               <CardTitle className="text-base">{t('paywall.title')}</CardTitle>
             </div>
-            <CardDescription>{t('paywall.sub')}</CardDescription>
+            <CardDescription>{t('resultsPreview.lockedDescription')}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild className="brand-gradient border-0 text-white">
@@ -299,18 +320,18 @@ export default function Results() {
         </Card>
       )}
 
-      {resultsQuery.isError && !isPaywall && !isNotReady && (
+      {error && !isPaywall && !isNotReady && (
         <Alert variant="destructive">
-          <AlertTitle>{t('common.errorGeneric')}</AlertTitle>
+          <AlertTitle>{t(error instanceof ApiError && error.status === 403 ? 'orgPermissions.denied' : 'common.errorGeneric')}</AlertTitle>
           <AlertDescription>
-            <Button variant="outline" size="sm" onClick={() => void resultsQuery.refetch()}>
+            <Button variant="outline" size="sm" onClick={() => void (previewQuery.isError ? previewQuery.refetch() : resultsQuery.refetch())}>
               {t('common.retry')}
             </Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {resultsQuery.data && <ResultsBody results={resultsQuery.data} />}
+      {canViewDetails && resultsQuery.isSuccess && !resultsQuery.isFetching && !isPaywall && <ResultsBody results={resultsQuery.data} />}
     </div>
   );
 }

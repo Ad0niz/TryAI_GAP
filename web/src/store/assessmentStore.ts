@@ -27,11 +27,14 @@ interface AssessmentState {
   clear: () => void;
 }
 
+let requestVersion = 0;
+
 export const useAssessmentStore = create<AssessmentState>((set, get) => ({
   assessment: null,
   status: 'idle',
 
   async load() {
+    const version = ++requestVersion;
     if (!tokenStorage.getAccess()) {
       set({ assessment: null, status: 'idle' });
       return null;
@@ -39,9 +42,11 @@ export const useAssessmentStore = create<AssessmentState>((set, get) => ({
     set({ status: 'loading' });
     try {
       const assessment = await fetchCurrentAssessment();
+      if (version !== requestVersion) return get().assessment;
       set({ assessment, status: 'ready' });
       return assessment;
     } catch (e) {
+      if (version !== requestVersion) return get().assessment;
       if (e instanceof ApiError && e.status === 404) {
         set({ assessment: null, status: 'missing' });
         return null;
@@ -53,10 +58,12 @@ export const useAssessmentStore = create<AssessmentState>((set, get) => ({
   },
 
   setAssessment(assessment) {
+    ++requestVersion;
     set({ assessment, status: assessment ? 'ready' : 'missing' });
   },
 
   clear() {
+    ++requestVersion;
     set({ assessment: null, status: 'idle' });
   },
 }));

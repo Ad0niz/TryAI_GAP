@@ -14,6 +14,7 @@ from app.services.answer_service import (
     assessment_summary, batch_upsert, list_answers, load_assessment, upsert_answer,
 )
 from app.services.assessment_service import get_current_assessment
+from app.services.organization_access import require_org_member
 
 router = APIRouter(prefix="/assessments", tags=["assessments"])
 
@@ -34,6 +35,7 @@ async def get_assessment(
     current: CurrentUser = Depends(get_current_user),
 ):
     assessment = await load_assessment(db, assessment_id, current)
+    await require_org_member(db, current)
     return await assessment_summary(db, assessment)
 
 
@@ -77,4 +79,4 @@ async def get_answers(
     current: CurrentUser = Depends(get_current_user),
 ):
     assessment = await load_assessment(db, assessment_id, current)
-    return await list_answers(db, assessment, module, area_key)
+    return await list_answers(db, assessment, module, area_key, current)

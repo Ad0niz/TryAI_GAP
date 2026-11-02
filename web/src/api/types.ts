@@ -132,6 +132,9 @@ export interface AssessmentSummary {
 
 // ---------- leads (public signup) ----------
 export interface LeadCreate {
+  verification_token: string;
+  password: string;
+  password_confirmation: string;
   full_name: string;
   job_title?: string | null;
   company_email: string;
@@ -407,7 +410,7 @@ export interface MaturityBlock {
 
 export interface HeatmapArea {
   name: string;
-  row: number[];
+  row: (number | null)[];
 }
 
 export interface HeatmapBlock {
@@ -424,10 +427,48 @@ export interface PriorityItem {
   recommendation: string;
 }
 
+export interface ValueVectorsBlock {
+  status: 'schema_pending' | 'mapping_pending' | 'ready';
+  vectors: { key: string; percentage: number | null; numeric_answers: number }[];
+  mapped_questions: number;
+  total_questions: number | null;
+  unmapped_numeric_answers: number;
+}
+
+export interface AreaCoverage {
+  area_key: string;
+  numeric_answers: number;
+  total_questions: number;
+}
+
+export interface PainReadinessBlock {
+  threshold: number;
+  coverage_rule: 'complete_numeric_blocks';
+  points: (AreaCoverage & {
+    pain: number;
+    readiness: number;
+    quadrant: 'high_high' | 'high_low' | 'low_high' | 'low_low' | 'boundary';
+    quick_win: boolean;
+  })[];
+  pending_areas: AreaCoverage[];
+}
+
+
 export interface ResultOut {
   maturity: MaturityBlock;
   heatmap: HeatmapBlock;
   priorities: PriorityItem[];
+  value_vectors?: ValueVectorsBlock | null;
+  pain_readiness?: PainReadinessBlock | null;
+}
+
+/** APP-06 minimal provisional aggregate; detailed ResultOut remains Pro-only. */
+export interface ResultPreviewOut {
+  provisional: boolean;
+  details_locked: boolean;
+  average: number | null;
+  numeric_answers: number;
+  total_questions: number;
 }
 
 export interface ReportCreateOut {
@@ -466,6 +507,20 @@ export interface ReviewOut {
   stage: number;
   consultant?: string | null;
   chapters: ChapterOut[];
+}
+
+export interface ReviewListItem {
+  review_id: string;
+  mode: string;
+  stage: number;
+  created_at: string;
+  updated_at: string;
+  consultant?: string | null;
+}
+
+export interface ReviewListResponse {
+  assessment_id: string;
+  items: ReviewListItem[];
 }
 
 export interface RatingCreate {
@@ -532,4 +587,18 @@ export interface DelegationInfo {
 export interface DelegationAnswerOut {
   status: string;
   question_code?: string | null;
+}
+export interface InvitationPreview {
+  organization_name: string;
+  full_name: string;
+  email: string;
+  area_key: string | null;
+  expires_at: string;
+  password_is_set: boolean;
+}
+
+export interface InvitationAccepted extends TokenPair {
+  user: MeResponse;
+  status: 'accepted';
+  area_key: string | null;
 }

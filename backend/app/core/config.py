@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     refresh_token_ttl_days: int = 30
     magic_link_ttl_min: int = 15
     delegation_ttl_hours: int = 72
+    invitation_ttl_hours: int = Field(default=72, gt=0)
 
     # Database
     database_url: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/aiassessment"

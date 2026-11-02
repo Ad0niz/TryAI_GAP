@@ -1,3 +1,4 @@
+import { OrganizationAccess } from '@/components/OrganizationAccess';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -86,6 +87,10 @@ const TOTAL_STEPS = 4;
  * Everything degrades gracefully when the backend is offline.
  */
 export default function Onboarding() {
+  return <OrganizationAccess><OnboardingContent /></OrganizationAccess>;
+}
+
+function OnboardingContent() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);

@@ -3,7 +3,7 @@ import logging
 import uuid
 from datetime import timedelta
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
@@ -17,6 +17,9 @@ from app.models import (
     QuestionTranslation, User,
 )
 from app.schemas.team import DelegateCreate, InvitationCreate
+from app.services.organization_access import require_org_admin, authorize_question
+from app.services.answer_service import enforce_free_maturity_limit
+from app.services.invitation_service import check_invitation_user, invitation_status
 
 log = logging.getLogger("app.team")
 
@@ -35,6 +38,7 @@ async def _safe_send(to: str, subject: str, html: str) -> None:
 
 
 async def list_team(db: AsyncSession, current: CurrentUser) -> dict:
+    await require_org_admin(db, current)
     org_id = _require_org(current)
     stmt = (
         select(OrgMember, User)
@@ -73,7 +77,7 @@ async def list_team(db: AsyncSession, current: CurrentUser) -> dict:
                 "full_name": inv.full_name,
                 "email": inv.email,
                 "area_key": inv.area_key,
-                "status": inv.status,
+                "status": invitation_status(inv),
                 "created_at": inv.created_at,
             }
             for inv in invitations
@@ -81,11 +85,21 @@ async def list_team(db: AsyncSession, current: CurrentUser) -> dict:
     }
 
 
+async def _check_recipient(db: AsyncSession, email: str, org_id: uuid.UUID) -> None:
+    user = (await db.execute(select(User).where(
+        func.lower(User.email) == email.strip().lower(),
+    ))).scalar_one_or_none()
+    check_invitation_user(user, org_id)
+
+
 async def create_invitation(db: AsyncSession, current: CurrentUser, payload: InvitationCreate) -> dict:
+    await require_org_admin(db, current)
     org_id = _require_org(current)
     email = (payload.email or "").strip().lower()
     if not is_valid_email(email):
         raise APIError(422, "INVITE_EMAIL_INVALID", "El correo no es válido.", field="email")
+
+    await _check_recipient(db, email, org_id)
 
     existing = await db.execute(
         select(Invitation).where(
@@ -93,9 +107,10 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
             Invitation.email == email,
             Invitation.area_key == payload.area_key,
             Invitation.status == "sent",
+            Invitation.expires_at > now_utc(),
         )
     )
-    if existing.scalar_one_or_none() is not None:
+    if existing.scalars().first() is not None:
         raise APIError(409, "INVITE_ALREADY_EXISTS", "Ya existe una invitación activa para este correo y área.")
 
     raw = generate_opaque_token()
@@ -107,6 +122,7 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
         phone=payload.phone,
         area_key=payload.area_key,
         token_hash=hash_token(raw),
+        expires_at=now_utc() + timedelta(hours=settings.invitation_ttl_hours),
         status="sent",
     )
     db.add(invitation)
@@ -140,12 +156,19 @@ async def create_invitation(db: AsyncSession, current: CurrentUser, payload: Inv
 
 async def resend_invitation(db: AsyncSession, current: CurrentUser, invitation_id: uuid.UUID) -> dict:
     org_id = _require_org(current)
-    invitation = await db.get(Invitation, invitation_id)
+    invitation = (await db.execute(select(Invitation).where(
+        Invitation.id == invitation_id,
+    ).with_for_update())).scalar_one_or_none()
     if invitation is None or invitation.organization_id != org_id:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la invitación.")
+    await require_org_admin(db, current)
 
+    if invitation_status(invitation) == "accepted":
+        raise APIError(409, "INVITE_ALREADY_ACCEPTED", "La invitación ya fue aceptada.")
+    await _check_recipient(db, invitation.email, org_id)
     raw = generate_opaque_token()
     invitation.token_hash = hash_token(raw)
+    invitation.expires_at = now_utc() + timedelta(hours=settings.invitation_ttl_hours)
     invitation.status = "sent"
     await db.flush()
 
@@ -163,6 +186,7 @@ async def delete_invitation(db: AsyncSession, current: CurrentUser, invitation_i
     invitation = await db.get(Invitation, invitation_id)
     if invitation is None or invitation.organization_id != org_id:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la invitación.")
+    await require_org_admin(db, current)
     await db.delete(invitation)
     await db.flush()
 
@@ -183,6 +207,13 @@ async def delegate_question(
     assessment = await db.get(Assessment, assessment_id)
     if assessment is None or assessment.organization_id != org_id:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró el diagnóstico.")
+
+    question = await db.get(Question, question_id)
+    if question is None:
+        raise APIError(404, "RESOURCE_NOT_FOUND", "Pregunta no encontrada.")
+    await authorize_question(db, current, assessment, question)
+    if question.module == "maturity":
+        await enforce_free_maturity_limit(db, assessment, [question_id], current)
 
     raw = generate_opaque_token()
     delegation = Delegation(
@@ -275,6 +306,16 @@ async def answer_delegation(db: AsyncSession, token: str, value: int) -> dict:
         raise APIError(410, "DELEGATION_TOKEN_EXPIRED", "El enlace ha expirado.")
     if value not in (1, 2, 3, 4, 5):
         raise APIError(422, "ANSWER_VALUE_INVALID", "El valor debe estar entre 1 y 5.")
+
+    question = await db.get(Question, delegation.question_id)
+    if question is None:
+        raise APIError(404, "RESOURCE_NOT_FOUND", "Pregunta no encontrada.")
+    if question.module == "area":
+        from app.models import AreaState
+        active = await db.scalar(select(AreaState.id).where(AreaState.assessment_id == delegation.assessment_id,
+            AreaState.area_key == question.area_key, AreaState.active.is_(True)))
+        if active is None:
+            raise APIError(403, "AREA_INACTIVE", "El área está desactivada.")
 
     answer_q = await db.execute(
         select(Answer).where(

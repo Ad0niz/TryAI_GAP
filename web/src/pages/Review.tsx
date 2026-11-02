@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CalendarCheck2, CheckCircle2, Lock, Star, UserRound } from 'lucide-react';
 import { ApiError } from '@/api/client';
-import { createReview, fetchReview, submitReviewRating } from '@/api';
+import { createReview, fetchReview, fetchReviews, submitReviewRating } from '@/api';
 import type { ReviewOut } from '@/api/types';
 import { isRatingComplete } from '@/lib/reviewRating';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -16,9 +16,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { useAssessment } from '@/store/assessmentStore';
+import { useAuthStore } from '@/store/authStore';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-const reviewKey = (assessmentId: string) => `tryaigap.review.${assessmentId}`;
 const ratedKey = (reviewId: string) => `tryaigap.rated.${reviewId}`;
 
 function ScorePicker({
@@ -89,7 +90,7 @@ function ReviewStatus({ review, onRated }: { review: ReviewOut; onRated: (avg: n
       setRatedAvg(res.average);
       setRatingOpen(false);
       onRated(res.average);
-      void queryClient.invalidateQueries({ queryKey: ['review', review.review_id] });
+      void queryClient.invalidateQueries({ queryKey: ['review'] });
     },
     onError: () => setRatingError(true),
   });
@@ -273,54 +274,67 @@ function ReviewStatus({ review, onRated }: { review: ReviewOut; onRated: (avg: n
   );
 }
 
-/** Human review: request, status tracking (polled), consultant rating. */
+/** Review history is discovered from the server; selection is scoped to the assessment. */
 export default function Review() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const queryClient = useQueryClient();
+  const userId = useAuthStore(state => state.user?.id);
   const { assessment, status: assessmentStatus, reload } = useAssessment();
   const [mode, setMode] = useState<'sync' | 'async'>('async');
-  const [requestError, setRequestError] = useState<'paywall' | 'conflict' | 'generic' | null>(null);
+  const [selection, setSelection] = useState<{ assessmentId: string; reviewId: string } | null>(null);
+  const [requestError, setRequestError] = useState<{ assessmentId: string; kind: 'paywall' | 'conflict' | 'generic' | 'forbidden' | 'missing' } | null>(null);
 
-  if (assessmentStatus === 'idle') void reload();
+  useEffect(() => {
+    if (assessmentStatus === 'idle') void reload();
+  }, [assessmentStatus, reload]);
 
-  const storedId = assessment ? localStorage.getItem(reviewKey(assessment.id)) : null;
-  const [createdId, setCreatedId] = useState<string | null>(null);
-  const reviewId = createdId ?? storedId;
-
-  const reviewQuery = useQuery({
-    queryKey: ['review', reviewId],
-    queryFn: async () => {
-      try {
-        return await fetchReview(reviewId!);
-      } catch (e) {
-        // Stored review no longer exists → clear it and fall back to the form.
-        if (e instanceof ApiError && e.status === 404 && assessment) {
-          localStorage.removeItem(reviewKey(assessment.id));
-          return null;
-        }
-        throw e;
-      }
-    },
-    enabled: !!reviewId,
-    refetchInterval: (query) => ((query.state.data?.stage ?? 2) < 2 ? 5000 : false),
+  const listQuery = useQuery({
+    queryKey: ['reviews', userId, assessment?.id],
+    queryFn: () => fetchReviews(assessment!.id),
+    enabled: !!assessment,
     retry: 0,
+    staleTime: 0,
+    refetchInterval: query => query.state.status === 'success' && query.state.data?.items.some(item => item.stage < 2) ? 5000 : false,
+  });
+  const listAuthorized = listQuery.isSuccess && listQuery.isFetchedAfterMount;
+  const items = listAuthorized ? listQuery.data.items : [];
+  const selectedId = selection?.assessmentId === assessment?.id ? selection?.reviewId : undefined;
+  const selected = items.find(item => item.review_id === selectedId);
+  const reviewId = selected?.review_id ?? items[0]?.review_id;
+  const reviewQuery = useQuery({
+    queryKey: ['review', userId, assessment?.id, reviewId],
+    queryFn: () => fetchReview(reviewId!),
+    enabled: !!reviewId && listAuthorized,
+    retry: 0,
+    staleTime: 0,
+    refetchInterval: query => query.state.status === 'success' && (query.state.data?.stage ?? 2) < 2 ? 5000 : false,
   });
 
   const createMutation = useMutation({
-    mutationFn: () => createReview({ assessment_id: assessment!.id, mode }),
-    onSuccess: (res) => {
-      if (assessment) localStorage.setItem(reviewKey(assessment.id), res.review_id);
-      setCreatedId(res.review_id);
+    mutationFn: (request: { assessmentId: string; mode: 'sync' | 'async' }) =>
+      createReview({ assessment_id: request.assessmentId, mode: request.mode }),
+    onSuccess: (res, request) => {
+      setSelection({ assessmentId: request.assessmentId, reviewId: res.review_id });
       setRequestError(null);
+      void queryClient.invalidateQueries({ queryKey: ['reviews'] });
     },
-    onError: (e) => {
-      if (e instanceof ApiError && e.status === 402) setRequestError('paywall');
-      else if (e instanceof ApiError && e.code === 'REVIEW_ALREADY_REQUESTED')
-        setRequestError('conflict');
-      else setRequestError('generic');
+    onError: (error, request) => {
+      const kind = error instanceof ApiError && error.status === 402 ? 'paywall'
+        : error instanceof ApiError && error.status === 403 ? 'forbidden'
+        : error instanceof ApiError && error.status === 404 ? 'missing'
+        : error instanceof ApiError && error.code === 'REVIEW_ALREADY_REQUESTED' ? 'conflict' : 'generic';
+      setRequestError({ assessmentId: request.assessmentId, kind });
+      if (kind === 'conflict') void queryClient.invalidateQueries({ queryKey: ['reviews'] });
     },
   });
 
-  const review = reviewQuery.data;
+  const errorText = (error: unknown) => t(error instanceof ApiError && error.status === 403 ? 'reviewHistory.forbidden'
+    : error instanceof ApiError && error.status === 404 ? 'reviewHistory.notFound' : 'reviewHistory.error');
+  const stages = t('review.stages', { returnObjects: true }) as string[];
+  const dateFmt = new Intl.DateTimeFormat(i18n.resolvedLanguage ?? i18n.language, { dateStyle: 'medium', timeStyle: 'short' });
+  const requestKind = requestError?.assessmentId === assessment?.id ? requestError?.kind : null;
+  const active = items.some(item => item.stage < 2);
+  const review = listAuthorized && reviewQuery.isSuccess && reviewQuery.data.review_id === reviewId ? reviewQuery.data : null;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -329,77 +343,83 @@ export default function Review() {
         <p className="text-sm text-muted-foreground">{t('review.sub')}</p>
       </div>
 
-      {!assessment && (
-        <Alert>
-          <AlertDescription>
-            {t('common.noAssessment')}{' '}
-            <Button asChild variant="outline" size="sm" className="ml-2">
-              <Link to="/onboarding">{t('common.startDiagnostic')}</Link>
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
+      {(assessmentStatus === 'idle' || assessmentStatus === 'loading' || listQuery.isLoading || (!!assessment && !listQuery.isFetchedAfterMount && !listQuery.isError)) &&
+        <div role="status" aria-label={t('reviewHistory.loading')}><Skeleton className="h-40 w-full" /></div>}
+      {assessmentStatus === 'error' && <Alert variant="destructive">
+        <AlertDescription>{t('reviewHistory.error')} <Button variant="outline" size="sm" onClick={() => void reload()}>{t('reviewHistory.retry')}</Button></AlertDescription>
+      </Alert>}
+      {!assessment && assessmentStatus === 'missing' && <Alert>
+        <AlertDescription>{t('common.noAssessment')} <Button asChild variant="outline" size="sm"><Link to="/onboarding">{t('common.startDiagnostic')}</Link></Button></AlertDescription>
+      </Alert>}
+      {listQuery.isError && <Alert variant="destructive">
+        <AlertDescription>{errorText(listQuery.error)} <Button variant="outline" size="sm" onClick={() => void listQuery.refetch()}>{t('reviewHistory.retry')}</Button></AlertDescription>
+      </Alert>}
 
-      {reviewId && reviewQuery.isLoading && <Skeleton className="h-40 w-full" />}
+      {listAuthorized && <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="text-base">{t('reviewHistory.title')}</CardTitle>
+            <Button variant="outline" size="sm" disabled={listQuery.isFetching} onClick={() => void listQuery.refetch()}>{t('reviewHistory.refresh')}</Button>
+          </div>
+          <CardDescription>{t('reviewHistory.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {items.length === 0 ? <p className="text-sm text-muted-foreground">{t('reviewHistory.empty')}</p> : <Table>
+            <TableHeader><TableRow>
+              <TableHead>{t('reviewHistory.date')}</TableHead><TableHead>{t('reviewHistory.mode')}</TableHead>
+              <TableHead>{t('reviewHistory.stage')}</TableHead><TableHead>{t('review.consultantLabel')}</TableHead>
+              <TableHead>{t('reviewHistory.detail')}</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>{items.map(item => <TableRow key={item.review_id}>
+              <TableCell>{dateFmt.format(new Date(item.created_at))}</TableCell>
+              <TableCell>{item.mode === 'sync' || item.mode === 'async' ? t(`review.modes.${item.mode}`) : t('reviewHistory.unknown')}</TableCell>
+              <TableCell><Badge variant="secondary">{stages[item.stage] ?? t('reviewHistory.unknown')}</Badge></TableCell>
+              <TableCell>{item.consultant ?? t('review.pendingAssign')}</TableCell>
+              <TableCell><Button variant={item.review_id === reviewId ? 'secondary' : 'outline'} size="sm"
+                aria-pressed={item.review_id === reviewId} onClick={() => setSelection({ assessmentId: assessment!.id, reviewId: item.review_id })}>
+                {t('reviewHistory.open')}
+              </Button></TableCell>
+            </TableRow>)}</TableBody>
+          </Table>}
+        </CardContent>
+      </Card>}
 
-      {(!reviewId || reviewQuery.data === null) && assessment && !reviewQuery.isLoading && (
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <CalendarCheck2 className="h-5 w-5 text-primary" />
-              <CardTitle className="text-base">{t('review.requestTitle')}</CardTitle>
-            </div>
-            <CardDescription>{t('review.modeLabel')}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <RadioGroup value={mode} onValueChange={(v) => setMode(v as 'sync' | 'async')}>
-              {(['async', 'sync'] as const).map((m) => (
-                <div key={m} className="flex items-start gap-3 rounded-lg border p-3">
-                  <RadioGroupItem value={m} id={`mode-${m}`} className="mt-0.5" />
-                  <div>
-                    <Label htmlFor={`mode-${m}`} className="font-medium">
-                      {t(`review.modes.${m}`)}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">{t(`review.modesDesc.${m}`)}</p>
-                  </div>
-                </div>
-              ))}
-            </RadioGroup>
+      {requestKind === 'conflict' && <Alert><AlertDescription>{t('review.requestedInfo')}</AlertDescription></Alert>}
+      {requestKind === 'paywall' && <Alert><Lock className="h-4 w-4" /><AlertDescription>{t('review.needPro')}{' '}
+        <Button asChild variant="outline" size="sm"><Link to="/estimator">{t('common.upgrade')}</Link></Button>
+      </AlertDescription></Alert>}
+      {(requestKind === 'generic' || requestKind === 'forbidden' || requestKind === 'missing') && <Alert variant="destructive">
+        <AlertDescription>{t(requestKind === 'forbidden' ? 'reviewHistory.forbidden' : requestKind === 'missing' ? 'reviewHistory.notFound' : 'reviewHistory.error')}</AlertDescription>
+      </Alert>}
 
-            {requestError === 'paywall' && (
-              <Alert>
-                <Lock className="h-4 w-4" />
-                <AlertDescription>
-                  {t('review.needPro')}{' '}
-                  <Button asChild variant="outline" size="sm" className="ml-2">
-                    <Link to="/estimator">{t('common.upgrade')}</Link>
-                  </Button>
-                </AlertDescription>
-              </Alert>
-            )}
-            {requestError === 'conflict' && (
-              <Alert>
-                <AlertDescription>{t('review.requestedInfo')}</AlertDescription>
-              </Alert>
-            )}
-            {requestError === 'generic' && (
-              <Alert variant="destructive">
-                <AlertDescription>{t('common.errorGeneric')}</AlertDescription>
-              </Alert>
-            )}
+      {listAuthorized && !active && assessment && <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2"><CalendarCheck2 className="h-5 w-5 text-primary" />
+            <CardTitle className="text-base">{t('review.requestTitle')}</CardTitle>
+          </div>
+          <CardDescription>{t('review.modeLabel')}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <RadioGroup value={mode} onValueChange={value => setMode(value as 'sync' | 'async')}>
+            {(['async', 'sync'] as const).map(value => <div key={value} className="flex items-start gap-3 rounded-lg border p-3">
+              <RadioGroupItem value={value} id={`mode-${value}`} className="mt-0.5" />
+              <div><Label htmlFor={`mode-${value}`} className="font-medium">{t(`review.modes.${value}`)}</Label>
+                <p className="text-sm text-muted-foreground">{t(`review.modesDesc.${value}`)}</p>
+              </div>
+            </div>)}
+          </RadioGroup>
+          <Button className="brand-gradient border-0 text-white" disabled={createMutation.isPending}
+            onClick={() => createMutation.mutate({ assessmentId: assessment.id, mode })}>
+            {createMutation.isPending ? t('common.loading') : t('review.requestCta')}
+          </Button>
+        </CardContent>
+      </Card>}
 
-            <Button
-              className="brand-gradient border-0 text-white"
-              disabled={createMutation.isPending}
-              onClick={() => createMutation.mutate()}
-            >
-              {createMutation.isPending ? t('common.loading') : t('review.requestCta')}
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {review && <ReviewStatus review={review} onRated={() => undefined} />}
+      {reviewId && listAuthorized && reviewQuery.isLoading && <div role="status" aria-label={t('reviewHistory.loadingDetail')}><Skeleton className="h-40 w-full" /></div>}
+      {reviewId && listAuthorized && reviewQuery.isError && <Alert variant="destructive">
+        <AlertDescription>{errorText(reviewQuery.error)} <Button variant="outline" size="sm" onClick={() => void reviewQuery.refetch()}>{t('reviewHistory.retry')}</Button></AlertDescription>
+      </Alert>}
+      {review && assessment && <ReviewStatus key={`${assessment.id}:${review.review_id}`} review={review} onRated={() => undefined} />}
     </div>
   );
 }

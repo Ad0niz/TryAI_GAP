@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import CurrentUser
 from app.core.errors import APIError
+from app.core.security import as_utc
+from app.services.answer_service import load_assessment
 from app.models import Assessment, ConsultantRating, Review, ReviewChapter, User
 from app.schemas.review import RatingCreate, ReviewCreate
 
@@ -35,19 +37,39 @@ async def create_review(
     return review
 
 
-async def get_review(
-    db: AsyncSession, current: CurrentUser, review_id: uuid.UUID
-) -> dict:
+async def list_reviews(db: AsyncSession, current: CurrentUser, assessment_id: uuid.UUID) -> dict:
+    """Discover every review of an owned assessment, newest first with a stable tie-breaker.
+
+    Read access follows the existing organization scope, independently of plan.
+    Consultant assignment and cross-organization access are outside APP-17.
+    """
+    await load_assessment(db, assessment_id, current)
+    rows = (await db.execute(
+        select(Review, User.full_name)
+        .outerjoin(User, Review.consultant_id == User.id)
+        .where(Review.assessment_id == assessment_id)
+        .order_by(Review.created_at.desc(), Review.id.desc())
+    )).all()
+    return {"assessment_id": assessment_id, "items": [
+        {"review_id": review.id, "mode": review.mode, "stage": review.stage,
+         "created_at": as_utc(review.created_at), "updated_at": as_utc(review.updated_at),
+         "consultant": consultant}
+        for review, consultant in rows
+    ]}
+
+
+async def _owned_review(db: AsyncSession, current: CurrentUser, review_id: uuid.UUID) -> Review:
     review = await db.get(Review, review_id)
     if review is None:
         raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la revisión.")
+    await load_assessment(db, review.assessment_id, current)
+    return review
 
-    assessment = await db.get(Assessment, review.assessment_id)
-    authorized = current.role == "consultant" or (
-        assessment is not None and assessment.organization_id == current.organization_id
-    )
-    if not authorized:
-        raise APIError(403, "FORBIDDEN", "No tiene acceso a esta revisión.")
+
+async def get_review(
+    db: AsyncSession, current: CurrentUser, review_id: uuid.UUID
+) -> dict:
+    review = await _owned_review(db, current, review_id)
 
     consultant_name: Optional[str] = None
     if review.consultant_id:
@@ -80,9 +102,7 @@ async def get_review(
 async def create_rating(
     db: AsyncSession, current: CurrentUser, review_id: uuid.UUID, payload: RatingCreate
 ) -> dict:
-    review = await db.get(Review, review_id)
-    if review is None:
-        raise APIError(404, "RESOURCE_NOT_FOUND", "No se encontró la revisión.")
+    review = await _owned_review(db, current, review_id)
 
     scores = (payload.knowledge, payload.friendliness, payload.methodology)
     if any(s is None or not (1 <= s <= 5) for s in scores):

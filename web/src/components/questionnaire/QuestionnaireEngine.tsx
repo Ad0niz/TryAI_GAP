@@ -1,3 +1,4 @@
+import { ApiError } from '@/api/client';
 /**
  * Questionnaire engine shared by the maturity diagnostic and the area kits.
  * Flow per wireframe-v2.html: question → block summary → module summary,
@@ -103,6 +104,7 @@ export function QuestionnaireEngine({ module, areaKey, moduleLabel }: Questionna
     saveStatus,
     saveNow,
     paywallHit,
+    permissionDenied,
     loading: answersLoading,
   } = useQuestionnaireAnswers(assessment?.id, { module, areaKey });
 
@@ -139,6 +141,8 @@ export function QuestionnaireEngine({ module, areaKey, moduleLabel }: Questionna
   const plan = assessment?.plan ?? 'free';
   const isFreeMaturity = module === 'maturity' && plan === 'free';
   const limitReached = isFreeMaturity && freeMaturityLimitReached(plan, answered);
+
+  if (permissionDenied || (qQuery.error instanceof ApiError && qQuery.error.status === 403)) return <p role="alert">{t('orgPermissions.denied')}</p>;
 
   if (qQuery.isLoading || answersLoading) {
     return (

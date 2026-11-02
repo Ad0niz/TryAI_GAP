@@ -22,6 +22,8 @@ import type {
   DocumentListItem,
   DistributorCodeValidateResponse,
   InvitationCreate,
+  InvitationPreview,
+  InvitationAccepted,
   InvitationResponse,
   LeadCreate,
   LeadCreateResponse,
@@ -39,15 +41,25 @@ import type {
   RatingCreate,
   RatingOut,
   ResultOut,
+  ResultPreviewOut,
   ReviewCreate,
   ReviewCreateOut,
   ReviewOut,
+  ReviewListResponse,
   TeamListResponse,
   TokenPair,
   VerifyResponse,
 } from './types';
 
 // ---------- auth ----------
+export function fetchInvitation(token: string): Promise<InvitationPreview> {
+  return api(`/invitations/${encodeURIComponent(token)}`, { auth: false });
+}
+
+export function acceptInvitation(token: string, password: string): Promise<InvitationAccepted> {
+  return api('/invitations/accept', { method: 'POST', body: { token, password }, auth: false });
+}
+
 export function requestMagicLink(email: string, locale: string): Promise<MagicLinkResponse> {
   return api<MagicLinkResponse>('/auth/magic-link', {
     method: 'POST',
@@ -283,12 +295,20 @@ export function postMockStripeWebhook(paymentId: string, providerRef: string): P
 }
 
 // ---------- results / reviews ----------
+export function fetchResultsPreview(assessmentId: string): Promise<ResultPreviewOut> {
+  return api<ResultPreviewOut>(`/results/${assessmentId}/preview`);
+}
+
 export function fetchResults(assessmentId: string): Promise<ResultOut> {
   return api<ResultOut>(`/results/${assessmentId}`);
 }
 
 export function createReview(payload: ReviewCreate): Promise<ReviewCreateOut> {
   return api<ReviewCreateOut>('/reviews', { method: 'POST', body: payload });
+}
+
+export function fetchReviews(assessmentId: string): Promise<ReviewListResponse> {
+  return api<ReviewListResponse>(`/reviews?${new URLSearchParams({ assessment_id: assessmentId })}`);
 }
 
 export function fetchReview(reviewId: string): Promise<ReviewOut> {
@@ -336,4 +356,25 @@ export function answerDelegation(token: string, value: number): Promise<Delegati
     body: { value },
     auth: false,
   });
+}
+
+
+export function passwordLogin(email: string, password: string): Promise<TokenPair & { user: MeResponse }> {
+  return api('/auth/login', { method: 'POST', body: { email, password }, auth: false });
+}
+export function requestRegistration(email: string, locale: string): Promise<MagicLinkResponse> {
+  return api('/auth/register/request', { method: 'POST', body: { email, locale }, auth: false });
+}
+export function previewRegistration(token: string): Promise<{ email: string }> {
+  return api('/auth/register/preview', { method: 'POST', body: { token }, auth: false });
+}
+export function requestPasswordReset(email: string, locale: string): Promise<MagicLinkResponse> {
+  return api('/auth/password/reset/request', { method: 'POST', body: { email, locale }, auth: false });
+}
+export function resetPassword(token: string, password: string, password_confirmation: string): Promise<void> {
+  return api('/auth/password/reset', { method: 'POST', body: { token, password, password_confirmation }, auth: false });
+}
+
+export function fetchOrganizationPermissions(): Promise<{ organization_admin: boolean; area_keys: string[] }> {
+  return api('/auth/permissions');
 }

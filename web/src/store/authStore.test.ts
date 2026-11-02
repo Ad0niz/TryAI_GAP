@@ -28,6 +28,21 @@ const ME_BODY: MeResponse = {
 };
 
 describe('auth store', () => {
+  it('does not overwrite an accepted invitation with a previous in-flight profile', async () => {
+    tokenStorage.set('old-access', 'old-refresh');
+    let resolve!: (response: Response) => void;
+    vi.stubGlobal('fetch', vi.fn((url: string) => {
+      if (url.endsWith('/auth/me')) return new Promise<Response>((done) => { resolve = done; });
+      if (url.endsWith('/invitations/accept')) return Promise.resolve(jsonResponse(200, { ...VERIFY_BODY, user: ME_BODY }));
+      return Promise.resolve(jsonResponse(404, { error: { code: 'ASSESSMENT_NOT_FOUND' } }));
+    }));
+    const pending = useAuthStore.getState().hydrate();
+    await useAuthStore.getState().acceptInvite('token', 'A long password');
+    resolve(jsonResponse(200, { ...ME_BODY, organization_id: null }));
+    await pending;
+    expect(useAuthStore.getState().user?.organization_id).toBe('org-1');
+  });
+
   beforeEach(() => {
     useAuthStore.setState({ user: null, status: 'idle' });
   });

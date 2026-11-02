@@ -12,8 +12,9 @@ backend/app/seed_area_questions.py, so parents[2] is the repo root).
 If a kit file is missing at runtime (e.g. production deploys that do not
 ship the Excel files) the seed logs a warning and continues.
 
-NOTE: there is currently NO English marketing kit. The EN translation of
-marketing questions falls back to the Spanish text until the kit exists.
+Marketing and Operations English kits reuse the existing qbank.en texts.
+Existing exact Spanish-as-English fallback rows are repaired in place; custom
+translations and every question/answer identity are preserved.
 """
 import logging
 import re
@@ -23,6 +24,7 @@ from typing import Dict, List, Optional, Tuple
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.question_vectors import AREA_VECTOR_TYPES
 from app.models import Question, QuestionTranslation
 
 log = logging.getLogger("app.seed.areas")
@@ -32,7 +34,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # area_key -> (spanish kit, english kit or None)
 AREA_KITS: Dict[str, Tuple[str, Optional[str]]] = {
     "ventas":      ("Spanish/Kit_Ventas_B2B.xlsx",               "English/EN Sales Kit B2B.xlsx"),
-    "marketing":   ("Spanish/Kit_Marketing_DemandGen_B2B.xlsx",  None),  # EN kit does not exist yet
+    "marketing":   ("Spanish/Kit_Marketing_DemandGen_B2B.xlsx",  "English/EN Marketing and Demand Generation.xlsx"),
     "servicio":    ("Spanish/Kit_Servicio_Cliente_B2B.xlsx",     "English/EN Customer Service Kit.xlsx"),
     "finanzas":    ("Spanish/Kit_Finanzas_Administracion.xlsx",  "English/EN Finance and Administration.xlsx"),
     "rrhh":        ("Spanish/Kit_RRHH_Talento.xlsx",             "English/EN HR and Talent Kit.xlsx"),
@@ -90,6 +92,60 @@ def parse_kit(path: Path) -> Optional[Tuple[Dict[str, str], List[Tuple[str, str]
         return None
 
 
+async def _repair_known_english_fallback(db: AsyncSession, area_key: str,
+                                         es_rel: str, en_rel: Optional[str]) -> int:
+    """Repair only the known, unchanged ES-as-EN fallback of these two areas.
+
+    Both stored ES and EN must still equal the Spanish source (text and title).
+    This protects customized copy. An absent EN row is added only for a question
+    whose stored Spanish text matches its canonical source. Caller owns commit.
+    """
+    if area_key not in ("marketing", "operaciones") or en_rel is None:
+        return 0
+    es = parse_kit(REPO_ROOT / es_rel)
+    en = parse_kit(REPO_ROOT / en_rel)
+    if es is None or en is None:
+        return 0
+    es_blocks, es_items = es
+    en_blocks, en_items = en
+    es_texts, en_texts = dict(es_items), dict(en_items)
+    questions = (await db.scalars(select(Question).where(
+        Question.module == "area", Question.area_key == area_key,
+    ))).all()
+    translations = (await db.scalars(select(QuestionTranslation).where(
+        QuestionTranslation.question_id.in_([q.id for q in questions]),
+        QuestionTranslation.locale.in_(("es", "en")),
+    ))).all()
+    rows = {}
+    for row in translations:
+        key = (row.question_id, row.locale)
+        if key in rows:
+            raise ValueError("Duplicate translation; review before repairing English")
+        rows[key] = row
+    repaired = 0
+    for question in questions:
+        source = es_texts.get(question.code)
+        replacement = en_texts.get(question.code)
+        title = es_blocks.get(question.block_id)
+        english_title = en_blocks.get(question.block_id)
+        if not source or not replacement or not english_title:
+            continue
+        spanish = rows.get((question.id, "es"))
+        english = rows.get((question.id, "en"))
+        if spanish is None or (spanish.text, spanish.block_title) != (source, title):
+            continue
+        if english is None:
+            db.add(QuestionTranslation(question_id=question.id, locale="en",
+                                       text=replacement, block_title=english_title))
+            repaired += 1
+        elif (english.text, english.block_title) == (source, title) and replacement != source:
+            english.text = replacement
+            english.block_title = english_title
+            repaired += 1
+    await db.flush()
+    return repaired
+
+
 async def seed_area_questions(db: AsyncSession) -> None:
     """Idempotently load area questions + ES/EN translations into the DB."""
     existing = (
@@ -102,7 +158,10 @@ async def seed_area_questions(db: AsyncSession) -> None:
     seeded_areas = 0
     for area_key, (es_rel, en_rel) in AREA_KITS.items():
         if area_key in done:
-            log.info("Area questions already present for %s. Skipping.", area_key)
+            repaired = await _repair_known_english_fallback(db, area_key, es_rel, en_rel)
+            if repaired:
+                log.info("Repaired %d known English fallback rows for %s.", repaired, area_key)
+            log.info("Area questions already present for %s. Skipping questions.", area_key)
             continue
 
         es = parse_kit(REPO_ROOT / es_rel)
@@ -133,6 +192,7 @@ async def seed_area_questions(db: AsyncSession) -> None:
                 code=code,
                 position=pos,
                 dimension=None,
+                vector_type=AREA_VECTOR_TYPES[area_key],
             )
             db.add(q)
             await db.flush()
@@ -140,7 +200,7 @@ async def seed_area_questions(db: AsyncSession) -> None:
                 question_id=q.id, locale="es",
                 text=es_text, block_title=es_blocks.get(block_id),
             ))
-            en_text = en_by_code.get(code, es_text)  # ES fallback (marketing gap)
+            en_text = en_by_code.get(code, es_text)  # Fallback only if a kit is unavailable.
             en_title = en_blocks.get(block_id) or es_blocks.get(block_id)
             db.add(QuestionTranslation(
                 question_id=q.id, locale="en",

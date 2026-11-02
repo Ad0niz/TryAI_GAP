@@ -2,7 +2,6 @@
 from the Excel kits + a demo distributor code.
 
 Run:  python -m app.seed
-(DE/PT fall back to EN via the questionnaire resolver.)
 """
 import asyncio
 
@@ -11,6 +10,8 @@ from sqlalchemy import select
 from app.db.session import AsyncSessionLocal, init_models
 from app.models import DistributorCode, Question, QuestionTranslation
 from app.seed_area_questions import seed_area_questions
+from app.seed_extra_translations import seed_extra_translations
+
 
 # block_id -> (dimension_key, es_title, en_title)
 BLOCKS = {
@@ -94,6 +95,11 @@ async def seed() -> None:
         # Area questionnaires from the Excel kits (idempotent; tolerant of
         # missing kit files so production deploys without them still work).
         await seed_area_questions(db)
+
+        # Complete German and Portuguese translations after the
+        # base maturity/area questions have been created.
+        await db.flush()
+        await seed_extra_translations(db)
 
         await db.commit()
     print("Seed complete.")
